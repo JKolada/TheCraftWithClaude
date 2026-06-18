@@ -17,8 +17,22 @@ Paleta (fiolet→cyan) i typografia (Playfair Display + Outfit) spójne z marką
 1. **Reuse jako `/docs/rules/`** — repo dołączane do każdego nowego projektu (np. git submodule),
    żeby agent miał te zasady w kontekście od Dnia 0.
 2. **Materiał publiczny** — pomoc dla **każdej** osoby zaczynającej przygodę z Claude, nie tylko
-   dla autora. Stąd treść ma być **generyczna**: reguły uniwersalne, a konkretne projekty (np.
-   WhiskyPolska) służą tylko za ilustrację — nigdy za temat. Nie pisz doktryny „pod jeden projekt".
+   dla autora. Stąd treść ma być **generyczna**: reguły uniwersalne, a konkretne projekty służą
+   tylko za ilustrację (jako „projekt referencyjny”) — nigdy za temat. Nie pisz doktryny „pod jeden projekt".
+
+## Edycje (rejestr podania, nie różne treści)
+
+Ta sama doktryna w trzech rejestrach — różni się **język podania**, nie zasady:
+
+1. **TECHNICZNA** — *to repo, edycja bieżąca*. Dla osób ogarniających kod, stack, git. Pełny żargon
+   (commit, deploy, migracja, partial index) bez tłumaczenia.
+2. **BIZ-TECH** *(planowana)* — pomost. Dla product/biznes z technicznym zacięciem: terminy z krótkim
+   wyjaśnieniem, decyzje z „dlaczego biznesowym”.
+3. **BIZNESOWA** *(planowana)* — dla osób nietechnicznych. Zero żargonu bez analogii, decyzje domyślne
+   + prośba o zgodę zamiast narady technicznej.
+
+Bieżąca edycja stemplowana w [codex.json](codex.json) (`edition`). Pisząc treść TECHNICZNĄ, twórz ją
+**przekładalnie na niższe rejestry** (zasada bez nieprzetłumaczalnego żargonu w samym sednie reguły).
 
 ## Stack i charakter repo
 

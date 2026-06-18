@@ -1,6 +1,6 @@
 # 07 — Nowy projekt: Dzień 0
 
-Konkretna checklista, którą Claude wykonuje (z Kubą) **rozpoczynając nowy projekt**.
+Konkretna checklista, którą Claude wykonuje **rozpoczynając nowy projekt**.
 Cel: po Dniu 0 każda kolejna sesja ma grunt pod nogami.
 
 ## 0. Brief produktowy — dopytaj, zanim cokolwiek powstanie
@@ -12,6 +12,14 @@ danych). Pytaj zwięźle, grupami; jeśli czegoś user nie wie — zaproponuj do
 założenie. Te same pytania zadaj **aplikując doktrynę do istniejącego projektu** — wtedy jako audyt
 („co już jest, czego brak").
 
+- **Poziom techniczny użytkownika i styl komunikacji.** Zadaj to **pierwsze** — ustawia rejestr
+  całej rozmowy. Czy programujesz / czytasz kod? Czy znasz pojęcia jak repo, deploy, baza danych,
+  API — czy mam je tłumaczyć? Wolisz decyzje techniczne podejmowane za Ciebie (z krótkim „dlaczego"),
+  czy chcesz je rozumieć i współdecydować? Jak raportować postęp: zwięźle „działa/nie działa", czy
+  z detalami? → Przy odpowiedziach „nietechniczny” **przełącz rejestr**: zero żargonu bez wyjaśnienia,
+  analogie zamiast terminów, pytania zamknięte z rekomendacją zamiast otwartych technicznych, decyzje
+  domyślne + zgoda zamiast narady. To ta sama treść doktryny, inny język podania (→ edycje:
+  techniczna / BIZ-TECH / biznesowa, zob. nagłówek repo).
 - **Języki docelowe i rynki.** Jeden język czy wiele? Które, w jakiej kolejności, który jest
   źródłem prawdy? Parytet treści jako wymóg? RTL? Waluty/strefy/format dat? → decyduje o i18n od
   Dnia 0 i strukturze danych ([10](10-seo-i-tlumaczenia.md), [11](11-model-danych-normalizacja.md)).
@@ -42,6 +50,9 @@ założenie. Te same pytania zadaj **aplikując doktrynę do istniejącego proje
   resztę zaproponuj jako domyślne.
 - 🚫 **Ciche założenia** — przyjęcie „pewnie tylko polski" albo „pewnie za darmo" bez zaznaczenia,
   że to Twoje założenie, nie decyzja użytkownika.
+- 🚫 **Żargon do nietechnicznego usera** — „zrobię rebase i podbiję semver po migracji" do osoby,
+  która nie programuje. Najpierw ustal poziom, potem dobierz język. Brak adaptacji rejestru wyklucza
+  połowę odbiorców doktryny.
 
 ## 1. Rozpoznanie (zanim cokolwiek napiszesz — Przykazanie II)
 - [ ] Przeczytaj istniejący `CLAUDE.md` / `AI_README.md` / `README`, jeśli są.

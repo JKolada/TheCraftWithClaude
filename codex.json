@@ -4,5 +4,11 @@
   "released": "2026-06-18",
   "url": "https://codex.jakub.solutions",
   "chapters": 14,
-  "note": "Bieżące wydanie doktryny. `version` musi zgadzać się z najwyższym wpisem w CHANGELOG.md. Wersjonowanie semantyczne; data = dzień publikacji (deploy + gotowe do pobrania)."
+  "edition": "techniczna",
+  "editions": {
+    "techniczna": "available",
+    "biz-tech": "planned",
+    "biznesowa": "planned"
+  },
+  "note": "Bieżące wydanie doktryny (edycja TECHNICZNA — dla osób ogarniających kod/stack). Planowane edycje BIZ-TECH (pomost) i BIZNESOWA (dla nietechnicznych) podają tę samą doktrynę innym rejestrem. `version` musi zgadzać się z najwyższym wpisem w CHANGELOG.md. Wersjonowanie semantyczne; data = dzień publikacji (deploy + gotowe do pobrania)."
 }

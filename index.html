@@ -109,6 +109,8 @@
   .tagline{color:var(--ink-dim); max-width:660px; margin:.5em auto 0; font-size:18px}
   .brandline{margin-top:14px; font-size:13px; letter-spacing:.04em; color:var(--ink-3)}
   .brandline a{color:var(--accent-2); text-decoration:none; font-weight:600}
+  .editionline{margin:14px 0 0; display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap}
+  .edition-note{font-size:12px; color:var(--ink-3); letter-spacing:.03em}
   .rule{max-width:var(--maxw); margin:34px auto; border:none; border-top:1px solid var(--line)}
   h2.section{font-family:var(--serif); font-size:15px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin:8px 0 18px; font-weight:700}
 
@@ -144,6 +146,39 @@
   #reader{display:none; padding:26px 0 10px}
   body.reading #home{display:none}
   body.reading #reader{display:block}
+
+  /* ---- Brief (interaktywny formularz) ---- */
+  #brief{display:none; padding:26px 0 30px}
+  body.briefing #home{display:none}
+  body.briefing #reader{display:none}
+  body.briefing #brief{display:block}
+  .cta{display:inline-block; background:var(--grad); color:#fff; text-decoration:none; font-weight:700;
+       padding:11px 20px; border-radius:12px; box-shadow:0 8px 24px rgba(60,48,160,.22);
+       transition:transform .12s ease, box-shadow .12s ease}
+  .cta:hover{transform:translateY(-2px); box-shadow:0 12px 30px rgba(60,48,160,.3)}
+  .brief-head{max-width:var(--readw); margin:0 auto 22px}
+  .brief-head h1{font-family:var(--serif); font-size:clamp(28px,4.5vw,42px); margin:.1em 0 .25em; font-weight:800}
+  .brief-head p{color:var(--ink-dim); font-size:16px; margin:.3em 0}
+  form.briefform{max-width:var(--readw); margin:0 auto; display:grid; gap:20px}
+  .bfield{display:grid; gap:7px}
+  .bfield > label{font-weight:700; font-size:15px}
+  .bfield .hint{color:var(--ink-3); font-size:13px; font-weight:400; margin-top:-3px}
+  .bfield input[type=text], .bfield textarea, .bfield select{
+    width:100%; font:15px/1.5 var(--sans); color:var(--ink); background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+  }
+  .bfield textarea{min-height:78px; resize:vertical}
+  .bfield input:focus, .bfield textarea:focus, .bfield select:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+  .brief-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:4px}
+  .btn{font:600 14px var(--sans); cursor:pointer; border-radius:10px; padding:10px 18px; border:1px solid var(--line); background:var(--surface); color:var(--ink)}
+  .btn-primary{background:var(--grad); color:#fff; border:none; box-shadow:0 6px 18px rgba(60,48,160,.2)}
+  .btn:hover{border-color:var(--accent); color:var(--accent)}
+  .btn-primary:hover{color:#fff; transform:translateY(-1px)}
+  .brief-out{max-width:var(--readw); margin:24px auto 0}
+  .brief-out textarea{width:100%; min-height:300px; font:13px/1.55 var(--mono); color:var(--ink);
+    background:var(--code-bg); border:1px solid var(--line); border-radius:12px; padding:14px}
+  .brief-note{max-width:var(--readw); margin:8px auto 0; color:var(--ink-3); font-size:13px}
+  .copied{color:var(--ok); font-weight:600; font-size:13px; margin-left:6px}
 
   .readbar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:8px}
   .back{display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:var(--ink-dim); font-weight:600; font-size:14px}
@@ -222,6 +257,7 @@
     </a>
     <span class="spacer"></span>
     <nav>
+      <a href="#brief">Brief</a>
       <a href="https://github.com/JKolada/ClaudeBuildCodex" target="_blank" rel="noopener" class="gh" aria-label="Kod źródłowy na GitHubie" title="GitHub — kod źródłowy">
         <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-github"></use></svg>
         <span>GitHub</span>
@@ -265,6 +301,8 @@
     <div class="barline"></div>
     <div class="kicker">Doktryna budowania z Claude</div>
     <h1>Claude <span class="en">Build Codex</span></h1>
+    <p class="editionline"><span class="pill">Edycja: Techniczna</span> <span class="edition-note">BIZ-TECH i Biznesowa — wkrótce</span></p>
+    <p style="margin-top:18px"><a class="cta" href="#brief">Wypełnij brief projektu →</a></p>
     <p class="tagline">Zwarta doktryna budowania i prowadzenia aplikacji <b>end-to-end</b> z Claude —
     zestaw konkretnych <b>reguł, przykazań i antywzorców</b>. Pomyślana jak <code>/docs/rules/</code>
     dołączane do każdego nowego projektu.</p>
@@ -332,6 +370,95 @@
   </div>
   <article class="prose" id="content"></article>
   <nav class="prevnext" id="prevnext"></nav>
+</section>
+
+<!-- ========================= BRIEF (interaktywny) ========================= -->
+<section id="brief" class="wrap">
+  <div class="readbar">
+    <a class="back" href="#">← Strona główna</a>
+    <span class="spacer"></span>
+    <a class="back" href="#07-nowy-projekt-checklist">Rozdział 07 — Dzień 0 →</a>
+  </div>
+
+  <div class="brief-head">
+    <h1>Brief projektu</h1>
+    <p>Odpowiedz na kilka pytań, a my złożymy z nich gotowy <b>brief</b> w Markdown. Wklej go w pierwszej
+    wiadomości do Claude (albo do <code>CLAUDE.md</code>), gdy zaczynasz projekt z tym zestawem reguł
+    w <code>/docs/rules/</code>. To krok 0 z <a href="#07-nowy-projekt-checklist">rozdziału 07</a>.</p>
+    <p class="brief-note" style="margin-left:0">Nic nie wychodzi z Twojej przeglądarki — generowanie dzieje się lokalnie.</p>
+  </div>
+
+  <form class="briefform" id="briefform" autocomplete="off">
+    <div class="bfield">
+      <label for="bf-level">Twój poziom techniczny <span class="hint">— ustawia sposób, w jaki Claude ma z Tobą rozmawiać</span></label>
+      <select id="bf-level">
+        <option value="">— wybierz —</option>
+        <option value="Techniczny: programuję, znam git/deploy/bazy. Mów wprost, żargon OK.">Programuję — mów wprost, żargon OK</option>
+        <option value="Średni (BIZ-TECH): ogarniam pojęcia, ale nie koduję. Tłumacz terminy w skrócie.">Trochę ogarniam — tłumacz terminy w skrócie</option>
+        <option value="Nietechniczny: nie programuję. Bez żargonu, analogie, decyzje domyślne + prośba o zgodę.">Nietechniczny — bez żargonu, prowadź mnie</option>
+      </select>
+    </div>
+
+    <div class="bfield">
+      <label for="bf-name">Nazwa / domena / pomysł w jednym zdaniu</label>
+      <input type="text" id="bf-name" placeholder="np. PriceComp — porównywarka cen dla X" />
+    </div>
+
+    <div class="bfield">
+      <label for="bf-langs">Języki i rynki <span class="hint">— jeden czy wiele? który główny? waluty/strefy?</span></label>
+      <input type="text" id="bf-langs" placeholder="np. PL teraz, EN później; PLN; parytet treści wymagany" />
+    </div>
+
+    <div class="bfield">
+      <label for="bf-mvp">Funkcjonalności — rdzeń (MVP) <span class="hint">— bez czego produkt nie istnieje? konta? integracje?</span></label>
+      <textarea id="bf-mvp" placeholder="np. lista produktów + wyszukiwarka + konta; integracja płatności i e-mail"></textarea>
+    </div>
+
+    <div class="bfield">
+      <label for="bf-later">Funkcjonalności — „później” <span class="hint">— miłe-do-mienia, poza MVP</span></label>
+      <textarea id="bf-later" placeholder="np. aplikacja mobilna, rekomendacje, panel partnera"></textarea>
+    </div>
+
+    <div class="bfield">
+      <label for="bf-money">Monetyzacja <span class="hint">— jak zarabia? kiedy pojawia się płatność?</span></label>
+      <input type="text" id="bf-money" placeholder="np. freemium + subskrypcja od Dnia 1, Stripe, faktury VAT" />
+    </div>
+
+    <div class="bfield">
+      <label for="bf-ux">Styl UX i kierunek wizualny <span class="hint">— grupa docelowa, ton, marka, jasny/ciemny, WCAG</span></label>
+      <textarea id="bf-ux" placeholder="np. konsumencki, przewiewny landing; jest paleta i logo; tryb jasny+ciemny; WCAG AA"></textarea>
+    </div>
+
+    <div class="bfield">
+      <label for="bf-anim">Animacje i „odczucie” interfejsu</label>
+      <select id="bf-anim">
+        <option value="">— wybierz —</option>
+        <option value="Statyczny i szybki — minimum animacji, priorytet wydajności.">Statyczny i szybki — minimum animacji</option>
+        <option value="Umiarkowane mikrointerakcje — subtelne przejścia, z poszanowaniem prefers-reduced-motion.">Umiarkowane mikrointerakcje</option>
+        <option value="Bogaty, animowany interfejs — wow-efekt, ale pilnuj Core Web Vitals i prefers-reduced-motion.">Bogaty, animowany — wow-efekt</option>
+      </select>
+    </div>
+
+    <div class="bfield">
+      <label for="bf-mkt">Wydźwięk marketingowy <span class="hint">— value prop, kto klient, ton, czego unikać</span></label>
+      <textarea id="bf-mkt" placeholder="np. „najszybciej porównasz ceny X”; klient: świadomy kupujący; ton: rzeczowy, bez nachalności"></textarea>
+    </div>
+
+    <div class="brief-actions">
+      <button type="submit" class="btn btn-primary">Generuj brief ↓</button>
+      <button type="reset" class="btn">Wyczyść</button>
+    </div>
+  </form>
+
+  <div class="brief-out" id="brief-out" hidden>
+    <div class="brief-actions" style="margin-bottom:10px">
+      <button type="button" class="btn btn-primary" id="bf-copy">Kopiuj</button>
+      <button type="button" class="btn" id="bf-download">Pobierz .md</button>
+      <span class="copied" id="bf-copied" hidden>Skopiowano ✓</span>
+    </div>
+    <textarea id="bf-result" readonly spellcheck="false"></textarea>
+    <p class="brief-note">Wklej to Claude’owi jako pierwszą wiadomość projektu. Puste pola pominęliśmy.</p>
+  </div>
 </section>
 
 <!-- Snapshot rozdziałów (generowany przez build.py) — pozwala czytać treść po file://. -->
@@ -437,9 +564,81 @@
 
   function showHome(){
     document.body.classList.remove("reading");
+    document.body.classList.remove("briefing");
     document.title = "Claude Build Codex · jakub.solutions";
     window.scrollTo(0,0);
   }
+
+  function showBrief(){
+    document.body.classList.remove("reading");
+    document.body.classList.add("briefing");
+    document.title = "Brief projektu · Claude Build Codex";
+    window.scrollTo(0,0);
+  }
+
+  // ---- Brief: złóż Markdown z odpowiedzi ----
+  (function(){
+    var form = document.getElementById("briefform");
+    if(!form) return;
+    var out = document.getElementById("brief-out");
+    var result = document.getElementById("bf-result");
+    var copied = document.getElementById("bf-copied");
+    function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+    function line(label, v){ return v ? ("- **"+label+":** "+v+"\n") : ""; }
+
+    function build(){
+      var md = "# Brief projektu\n\n";
+      md += "> Brief startowy (Dzień 0) złożony w Claude Build Codex. Zasady doktryny: `/docs/rules/`.\n\n";
+      var lvl = val("bf-level");
+      if(lvl){
+        md += "## Jak ze mną rozmawiać\n" + lvl + "\n\n";
+      }
+      md += "## Produkt\n";
+      md += line("Pomysł", val("bf-name"));
+      md += line("Języki i rynki", val("bf-langs"));
+      md += line("Monetyzacja", val("bf-money"));
+      md += "\n## Funkcjonalności\n";
+      md += line("Rdzeń (MVP)", val("bf-mvp"));
+      md += line("Później", val("bf-later"));
+      md += "\n## Doświadczenie i marka\n";
+      md += line("Styl UX / wizualny", val("bf-ux"));
+      md += line("Animacje", val("bf-anim"));
+      md += line("Wydźwięk marketingowy", val("bf-mkt"));
+      md += "\n---\n";
+      md += "Zacznij od kroku 0 z rozdziału 07: dopytaj o luki w tym briefie, oznacz przyjęte założenia, "
+          + "potem złóż `CLAUDE.md` i zapisz cel w `memory/`.\n";
+      return md;
+    }
+
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      result.value = build();
+      out.hidden = false;
+      copied.hidden = true;
+      out.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+    form.addEventListener("reset", function(){ out.hidden = true; });
+
+    document.getElementById("bf-copy").addEventListener("click", function(){
+      result.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch(e){}
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(result.value).then(function(){ copied.hidden = false; });
+      }
+      if(ok) copied.hidden = false;
+      window.getSelection && window.getSelection().removeAllRanges();
+    });
+
+    document.getElementById("bf-download").addEventListener("click", function(){
+      var blob = new Blob([result.value], {type:"text/markdown;charset=utf-8"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = "brief-projektu.md";
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+    });
+  })();
 
   function showChapter(c){
     document.body.classList.add("reading");
@@ -487,7 +686,8 @@
   function route(){
     var hash = location.hash.replace(/^#/,"");
     hash = hash.split("?")[0];
-    if(hash && bySlug[hash]){ showChapter(bySlug[hash]); }
+    if(hash === "brief"){ showBrief(); }
+    else if(hash && bySlug[hash]){ showChapter(bySlug[hash]); }
     else { showHome(); }
   }
 
