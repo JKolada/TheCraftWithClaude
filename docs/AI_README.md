@@ -10,6 +10,7 @@ Konwencja z rozdziału [01](../01-dokumentacja-i-ai-readme.md). Uwaga: **to repo
 |---------|-------|
 | `plans/` | Decyzje i kierunki rozwoju. Jeden plik = jeden temat (`NNNN-tytuł.md`). |
 | `plans/0001-i18n-i-pakowanie.md` | Kierunek: wersje językowe (EN) + pakowanie `docs/rules/` per język przez The Craft Web. |
+| `plans/0002-monetyzacja-i-platnosci.md` | **Niezrealizowane** — monetyzacja i płatności. Brak hands-on → świadomie bez rozdziału doktryny; plan trzyma kierunek. |
 
 ## Zasady
 
