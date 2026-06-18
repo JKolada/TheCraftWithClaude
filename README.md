@@ -18,9 +18,11 @@ dla agenta, testowalna, bezpieczna w zmianie i godna zaufania.
 ## Jak czytać
 
 - **[index.html](index.html)** — czytnik dla człowieka: spis przykazań + rozdziały renderowane
-  z `.md` w przeglądarce, wygodne na telefonie i desktopie, z przełącznikiem jasny/ciemny.
-  **Otwórz z dwukliku** (działa dzięki snapshotowi `content.js`) lub przez serwer
-  (`python -m http.server 8080`) / hosting — serwowane zawsze pokazuje świeże `.md`.
+  z `.md` w przeglądarce, wygodne na telefonie i desktopie, z przełącznikiem jasny/ciemny
+  **i przełącznikiem treści PL/EN**. **Otwórz z dwukliku** (działa dzięki snapshotowi `content.js`)
+  lub przez serwer (`python -m http.server 8080`) / hosting — serwowane zawsze pokazuje świeże `.md`.
+- **🇬🇧 English:** the doctrine is available in English under [`en/`](en/00-przykazania.md) (same chapters,
+  same filenames). PL (root) is canonical; `en/` is its translation. Toggle PL/EN in the reader.
 - **Edytujesz treść?** Po zmianie `.md` uruchom `python build.py`, żeby odświeżyć snapshot dla `file://`.
 - **Na GitHubie** pliki `.md` renderują się natywnie — wystarczy klikać linki w tabeli niżej.
 - **Spieszysz się?** Przeczytaj [00 — Dekalog](00-przykazania.md). To cała doktryna w jednym ekranie.

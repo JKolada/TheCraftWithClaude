@@ -16,26 +16,39 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 
-def main():
+def collect(base):
+    """Zbierz {slug: markdown} z katalogu base (rozdziały NN-*.md + README, jeśli jest)."""
     docs = {}
-    files = sorted(p for p in ROOT.glob("[0-9][0-9]-*.md"))
-    readme = ROOT / "README.md"
+    files = sorted(p for p in base.glob("[0-9][0-9]-*.md"))
+    readme = base / "README.md"
     if readme.exists():
         files.append(readme)
     for path in files:
-        slug = path.stem  # nazwa bez .md
-        docs[slug] = path.read_text(encoding="utf-8")
+        docs[path.stem] = path.read_text(encoding="utf-8")  # slug = nazwa bez .md
+    return docs
+
+def main():
+    # Wielojęzycznie: PL kanonicznie w rootcie, EN w en/. Każdy język = osobny namespace.
+    langs = {"pl": ROOT}
+    en_dir = ROOT / "en"
+    if en_dir.is_dir():
+        langs["en"] = en_dir
+
+    by_lang = {code: collect(base) for code, base in langs.items()}
 
     # ensure_ascii=True → czysty ASCII (odporne na detekcję kodowania po file://).
-    payload = json.dumps(docs, ensure_ascii=True, sort_keys=True)
+    payload = json.dumps(by_lang, ensure_ascii=True, sort_keys=True)
     out = (
         "/* PLIK GENEROWANY przez build.py — nie edytuj ręcznie. "
-        "Źródłem prawdy są pliki .md. */\n"
+        "Źródłem prawdy są pliki .md. Struktura: { lang: { slug: markdown } }. */\n"
         "window.RZEMIOSLO_DOCS = " + payload + ";\n"
     )
     (ROOT / "content.js").write_text(out, encoding="utf-8")
-    total = sum(len(v) for v in docs.values())
-    print(f"content.js: {len(docs)} docs, {total} chars.")
+    parts = []
+    for code, docs in sorted(by_lang.items()):
+        total = sum(len(v) for v in docs.values())
+        parts.append(f"{code}: {len(docs)} docs, {total} chars")
+    print("content.js — " + " | ".join(parts) + ".")
 
 if __name__ == "__main__":
     main()

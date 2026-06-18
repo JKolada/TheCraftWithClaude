@@ -1,8 +1,21 @@
 # 0001 — Wersje językowe i pakowanie per język
 
-> Status: **przyjęty kierunek, realizacja odroczona** (na razie PL jest jedynym językiem).
-> Data decyzji: 2026-06-18. Dotyczy podziału ról między **to repo (rdzeń reguł)** a **The Craft Web
-> (prezentacja + pakowanie)**.
+> Status: **EN zrealizowane** (2026-06-18) — repo jest dwujęzyczne (PL + EN). Pakowanie per język
+> (Web) i kolejne języki — nadal otwarte. Dotyczy podziału ról między **to repo (rdzeń reguł)**
+> a **The Craft Web (prezentacja + pakowanie)**.
+
+## Zrealizowane (2026-06-18)
+
+- **Układ: PL kanonicznie w rootcie, EN w `en/`** (te same nazwy plików `00-*.md`…`14-*.md`).
+  Świadome odejście od pierwotnego `lang/pl` + `lang/en`: zerowe ryzyko dla istniejących linków PL,
+  a Web i tak czyta `lang_paths` z `codex.json` (`{"pl":".","en":"en"}`). Pełną symetrię `lang/<code>/`
+  można wprowadzić później, jeśli dojdzie trzeci język.
+- **Slugi/numery wspólne dla obu języków** (kotwice). Treść EN to tłumaczenie 1:1 listy rozdziałów.
+- **`build.py`** generuje `content.js` jako `{lang:{slug:md}}` (PL + EN). **`codex.json`** zyskał
+  `languages`, `default_language`, `lang_paths`.
+- **Czytnik** (`index.html`) ma minimalny **przełącznik treści PL/EN** (`#langToggle`, zapis w
+  `localStorage` `rzemioslo-lang`); fetch z rootu (PL) lub `en/` (EN); chrome strony zostaje PL.
+- **Parytet jako reguła** (CLAUDE.md + AI_README): zmiana reguły w PL → aktualizacja `en/` w tym kroku.
 
 ## Problem
 

@@ -31,12 +31,13 @@ repo — odpowiada za publiczną stronę, **edycje** (rejestr podania) i **wersj
 
 - **Edycje** (ten sam rdzeń, inny rejestr): **TECHNICZNA** (to repo) → **BIZ-TECH** (pomost) → **BIZNESOWA**
   (nietechniczna). To warstwa podania, którą **buduje Web**, nie treść trzymana tutaj.
-- **Języki**: rdzeń jest po polsku; wersja **EN** planowana. Pisz reguły **przekładalnie** (bez
-  nieprzekładalnego żargonu w sednie). Tłumaczenia i paczki `docs/rules/<lang>/` montuje Web z treści
-  tego repo + `codex.json`.
+- **Języki**: **PL (kanon, root) + EN (`en/`)** — równoległy zestaw `00-*.md`…`14-*.md` o tych samych
+  nazwach plików (EN = tłumaczenie, nie osobna doktryna). Pisz reguły **przekładalnie**; zmiana reguły
+  w PL pociąga aktualizację EN (parytet → [10](10-seo-i-tlumaczenia.md)). Czytnik ma minimalny
+  **przełącznik treści PL/EN** (dev). Paczki `docs/rules/<lang>/` per język montuje Web z treści tego repo.
 
-Tu, w rdzeniu: **nie dodawaj badge'y edycji, marketingu ani przełącznika języka.** Kierunek wersji EN
-i pakowania per język → [docs/plans/0001-i18n-i-pakowanie.md](docs/plans/0001-i18n-i-pakowanie.md).
+Tu, w rdzeniu: **nie dodawaj badge'y edycji ani marketingu** (to warstwa Web). Konwencja i18n i pakowania
+→ [docs/plans/0001-i18n-i-pakowanie.md](docs/plans/0001-i18n-i-pakowanie.md).
 
 ## Stack i charakter repo
 
@@ -75,6 +76,9 @@ python build.py                 # regeneruje content.js z plików .md
 
 - **Treść = pliki `.md`.** `index.html` ich nie zawiera — czyta je przez `fetch` (świeże) lub ze
   snapshotu `content.js` (file://). Jedno źródło prawdy. Edytujesz rozdział → edytujesz `.md`, nie HTML.
+- **Parytet PL↔EN.** PL (root) jest kanonem; **`en/` to tłumaczenie** o tych samych nazwach plików.
+  Zmiana reguły w PL → zaktualizuj odpowiednik w `en/` w tym samym kroku (inaczej EN kłamie). Nie
+  lokalizuj nazw plików — tylko treść w środku.
 - **Po edycji `.md` uruchom `python build.py`** — regeneruje `content.js` (snapshot dla `file://`).
   `content.js` jest **generowany** (commituj go, ale nie edytuj ręcznie — nadpisze go build).
 - **Lista rozdziałów żyje w jednym miejscu** — tablica `CHAPTERS` w `<script>` w `index.html`.
@@ -104,9 +108,11 @@ python build.py                 # regeneruje content.js z plików .md
 ## Stan bieżący (2026-06-18)
 
 - **15 rozdziałów** (`00`–`14`) + `README.md`. Rdzeń: 00–08; pogłębienie: 09–14.
+- **Dwa języki:** PL kanonicznie w rootcie, **EN w `en/`** (te same nazwy plików). `content.js`
+  trzyma oba: `{lang:{slug:md}}`.
 - `index.html` — SPA-czytnik: strona główna (dekalog + karty) i widok rozdziału (render `.md`,
-  select rozdziałów, prev/next, responsywny mobile/desktop, przełącznik jasny/ciemny). Treść:
-  fetch świeżych `.md`, a po `file://` — snapshot `content.js`.
+  select rozdziałów, prev/next, responsywny, przełącznik jasny/ciemny **i przełącznik treści PL/EN**).
+  Treść: fetch świeżych `.md` (PL z rootu / EN z `en/`), a po `file://` — snapshot `content.js`.
 - `build.py` → `content.js` (snapshot dla `file://`). `CLAUDE.md` + `AI_README.md` — dokumentacja repo.
 - Brak otwartych TODO w treści. Wersja żywa — rozszerzana po projektach, które czegoś nauczyły.
 

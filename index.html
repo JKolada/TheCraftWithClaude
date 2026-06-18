@@ -82,6 +82,12 @@
     border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink-dim);
     cursor:pointer; padding:0; transition:color .12s ease, border-color .12s ease, transform .12s ease;
   }
+  .lang-toggle{
+    display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:36px; padding:0 9px;
+    border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink-dim);
+    cursor:pointer; font:700 12.5px/1 var(--sans); letter-spacing:.06em; transition:color .12s ease, border-color .12s ease;
+  }
+  .lang-toggle:hover{color:var(--accent); border-color:var(--accent)}
   .theme-toggle:hover{color:var(--accent); border-color:var(--accent)}
   .theme-toggle:active{transform:scale(.94)}
   .theme-toggle svg{width:18px; height:18px}
@@ -267,6 +273,7 @@
         <span>GitHub</span>
       </a>
       <a href="https://jakub.solutions">jakub.solutions</a>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Język treści rozdziałów" title="Język treści rozdziałów (PL / EN)">PL</button>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Przełącz motyw" title="Przełącz jasny / ciemny">
         <svg class="i-sun"  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-sun"></use></svg>
         <svg class="i-moon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-moon"></use></svg>
@@ -532,6 +539,12 @@
   var slug = function(file){ return file.replace(/\.md$/,""); };
   var bySlug = {}; CHAPTERS.forEach(function(c){ bySlug[slug(c.file)] = c; });
 
+  // Język TREŚCI rozdziałów. PL kanonicznie w rootcie, EN w en/. Chrome (strona główna,
+  // brief) pozostaje po polsku — pełna prezentacja wielojęzyczna to The Craft Web.
+  var LANG = "pl";
+  try { var _l = localStorage.getItem("rzemioslo-lang"); if(_l==="pl"||_l==="en") LANG = _l; } catch(e){}
+  function langPath(file){ return LANG === "pl" ? file : (LANG + "/" + file); }
+
   // ---- Karty na stronie głównej ----
   function card(c){
     var badge = c.group === "deep" ? c.no : c.no;
@@ -726,7 +739,8 @@
     document.title = c.no + " — " + c.title + " · Rzemiosło";
     prevNext(c);
 
-    if(cache[c.file]){ contentEl.innerHTML = cache[c.file]; rewriteLinks(contentEl); window.scrollTo(0,0); return; }
+    var ckey = LANG + ":" + c.file;
+    if(cache[ckey]){ contentEl.innerHTML = cache[ckey]; rewriteLinks(contentEl); window.scrollTo(0,0); return; }
 
     contentEl.innerHTML = '<div class="loading">Wczytywanie…</div>';
     window.scrollTo(0,0);
@@ -734,16 +748,17 @@
     function render(md){
       var html = window.marked ? marked.parse(md) : ("<pre>"+md.replace(/[&<>]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[ch];})+"</pre>");
       html = swapIcons(html);
-      cache[c.file] = html;
+      cache[ckey] = html;
       contentEl.innerHTML = html;
       rewriteLinks(contentEl);
     }
     function embedded(){
-      return (window.RZEMIOSLO_DOCS && window.RZEMIOSLO_DOCS[slug(c.file)]) || null;
+      var byLang = window.RZEMIOSLO_DOCS && window.RZEMIOSLO_DOCS[LANG];
+      return (byLang && byLang[slug(c.file)]) || null;
     }
 
     // Najpierw świeży .md przez fetch (działa, gdy strona jest serwowana — zawsze aktualne).
-    fetch(c.file, {cache:"no-cache"}).then(function(r){
+    fetch(langPath(c.file), {cache:"no-cache"}).then(function(r){
       if(!r.ok) throw new Error("HTTP "+r.status);
       return r.text();
     }).then(render).catch(function(){
@@ -758,7 +773,7 @@
         + '<p>Wygeneruj snapshot (<code>python build.py</code>) albo uruchom serwer lokalny:</p>'
         + '<pre style="background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto"><code>python -m http.server 8080</code></pre>'
         + '<p>…i otwórz <code>http://localhost:8080/</code>. W każdej chwili możesz otworzyć surowy plik: '
-        + '<a href="'+c.file+'">'+c.file+'</a>.</p>'
+        + '<a href="'+langPath(c.file)+'">'+langPath(c.file)+'</a>.</p>'
         + '</div>';
     });
   }
@@ -770,6 +785,20 @@
     else if(hash && bySlug[hash]){ showChapter(bySlug[hash]); }
     else { showHome(); }
   }
+
+  // Przełącznik języka treści (PL ⇄ EN). Cache jest per-język, więc wystarczy przerysować widok.
+  (function(){
+    var btn = document.getElementById("langToggle");
+    if(!btn) return;
+    function sync(){ btn.textContent = LANG.toUpperCase(); btn.setAttribute("aria-pressed", LANG === "en" ? "true" : "false"); }
+    sync();
+    btn.addEventListener("click", function(){
+      LANG = (LANG === "pl") ? "en" : "pl";
+      try { localStorage.setItem("rzemioslo-lang", LANG); } catch(e){}
+      sync();
+      route();
+    });
+  })();
 
   window.addEventListener("hashchange", route);
   route();

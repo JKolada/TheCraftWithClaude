@@ -35,7 +35,9 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-i-pakowanie.
 
 | Plik | Po co to |
 |------|----------|
-| `index.html` | **Minimalny czytnik lokalny/dev** (podgląd treści dla autora/agenta) — NIE publiczna witryna. Strona główna (dekalog + karty) + widok rozdziału + brief. |
+| `index.html` | **Minimalny czytnik lokalny/dev** (podgląd treści dla autora/agenta) — NIE publiczna witryna. Strona główna (dekalog + karty) + widok rozdziału + brief + przełącznik języka treści (PL/EN). |
+| `00`–`14` (root) | **Treść PL** (kanoniczna, źródło prawdy). Slugi/numery = stabilne kotwice, wspólne dla wszystkich języków. |
+| `en/` | **Treść EN** — równoległy zestaw `00-*.md`…`14-*.md` (te same nazwy plików, treść po angielsku). Tłumaczenie PL. |
 | `docs/` | Plany i decyzje meta repo (nie treść doktryny): `docs/AI_README.md`, `docs/plans/`. |
 | `content.js` | **Generowany** snapshot `.md` osadzony w JS — pozwala renderować treść po `file://`. Nie edytuj ręcznie. |
 | `build.py` | Skrypt buildu: łączy pliki `.md` → `content.js`. Uruchom po edycji treści (`python build.py`). |
@@ -72,9 +74,12 @@ Jeden plik, bez zależności build. Mechanika:
   ("core"|"deep"), title, desc`.
 - **Routing przez hash:** `#NN-nazwa` → widok rozdziału; pusty/`#` → strona główna. `route()`
   reaguje na `hashchange`.
-- **Render (dwutorowo):** najpierw `fetch(file)` (świeże `.md`, gdy serwowane); na błędzie fetcha
-  (`file://`) — snapshot `window.RZEMIOSLO_DOCS[slug]` z `content.js`. Wynik → `marked.parse()` →
-  `.prose`, cache w pamięci (`cache[file]`).
+- **Język treści:** `LANG` (`pl`/`en`, zapis w `localStorage` `rzemioslo-lang`). Ścieżka rozdziału =
+  `file` (PL, root) albo `en/`+`file` (EN). Przełącznik `#langToggle` w topbarze. Chrome strony
+  (dekalog, karty, brief) zostaje po polsku — pełna prezentacja wielojęzyczna to The Craft Web.
+- **Render (dwutorowo):** najpierw `fetch(langPath(file))` (świeże `.md`, gdy serwowane); na błędzie
+  fetcha (`file://`) — snapshot `window.RZEMIOSLO_DOCS[LANG][slug]` z `content.js`. Wynik →
+  `marked.parse()` → `.prose`, cache w pamięci (`cache[LANG+":"+file]`).
 - **`rewriteLinks()`** po renderze: linki `*.md` → `#slug` (nawigacja w SPA), `index.html` → `#`,
   zewnętrzne `http(s)` → `target=_blank`; tabele owijane w `.tablewrap` dla scrolla na mobile.
 - **Motyw:** `[data-theme]` na `<html>` (`light`/`dark`); brak atrybutu = wg systemu. Przełącznik
@@ -93,16 +98,21 @@ Jeden plik, bez zależności build. Mechanika:
 - **`index.html` NIE zawiera treści rozdziałów** — czyta `.md`/`content.js`. Nie wklejaj treści do HTML.
 - **Dodajesz/zmieniasz rozdział → zsynchronizuj 3 miejsca + build:** `CHAPTERS` (index.html), tabela
   w `README.md`, tabela w tym pliku, potem `python build.py`. Rozjazd = martwy wpis (gorszy niż brak).
-- **Nazwy plików = stabilne kotwice** (`#NN-nazwa`, cele linków względnych). Nie zmieniaj bez powodu.
+- **Parytet PL↔EN:** zmiana reguły w `00`–`14` (PL) wymaga aktualizacji odpowiednika w `en/` (ta sama
+  lista, te same nazwy plików). EN to **tłumaczenie**, nie osobna doktryna. `content.js` trzyma oba języki.
+- **Nazwy plików = stabilne kotwice** (`#NN-nazwa`, cele linków względnych), **wspólne dla PL i EN**.
+  Nie lokalizujemy nazw plików — tylko treść w środku. Nie zmieniaj bez powodu.
 - **Marka:** zmiany kolorów rób na zmiennych CSS (`--accent`, `--accent-2`, `--grad`), nie na
   wartościach w miejscu użycia. Tryb jasny i ciemny muszą oba wyglądać dobrze.
 - **Treść generyczna, nie „pod jeden projekt".** Konkretne projekty służą
   tylko za ilustrację (`np. …`, „projekt referencyjny"), nigdy za temat rozdziału. Nie czyń żadnego projektu bohaterem doktryny.
-- **Wersja angielska** planowana w przyszłości — pisz reguły przekładalnie. Na razie język = polski.
+- **Dwa języki: PL (kanon, root) + EN (`en/`).** Pisz reguły przekładalnie. Kierunek i konwencja →
+  [docs/plans/0001-i18n-i-pakowanie.md](docs/plans/0001-i18n-i-pakowanie.md). Paczki per język montuje Web.
 
 ## Liczby
 
-- 15 rozdziałów (`00`–`14`) + `README.md`. Rdzeń: 9 plików (00–08). Pogłębienie: 6 (09–14).
+- 15 rozdziałów (`00`–`14`) + `README.md`, w **dwóch językach** (PL root + EN `en/`).
+  Rdzeń: 9 plików (00–08). Pogłębienie: 6 (09–14).
 - `index.html`: 1 plik; runtime z CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (16 dokumentów, ~87 tys. znaków).
+  (PL: 16 dok. ~87 tys. znaków; EN: 15 dok. ~85 tys. znaków; struktura `{lang:{slug:md}}`).
 - Brak testów (repo dokumentacji). „Test" = podgląd przez serwer **i** z dwukliku (`file://`) + klik po rozdziałach.
