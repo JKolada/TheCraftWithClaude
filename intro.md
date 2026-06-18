@@ -55,6 +55,10 @@ scrambles "because someone asked to delete their account."
 to **every** new app, fill in the [brief](index.html#brief), and go — and each new project benefits
 from the lessons of the last.
 
+**You don't even have to read the whole Decalogue first.** The fastest start: install **Claude Desktop /
+Claude Code**, fill in the [brief](index.html#brief), attach The Craft as `docs/rules/` — and you're off.
+The agent reads the rules so you don't have to memorize them; the doctrine just works in the background.
+
 > **Try it once.** Take your next idea, attach The Craft, start from [Day 0](07-new-project-day-0.md),
 > and build it like a craftsman — slow where a mistake is expensive, fast where it's cheap. You'll see
 > the difference not on day one, but in **month three** — when the app is still a pleasure to work on.

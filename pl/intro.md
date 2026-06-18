@@ -56,6 +56,10 @@ poprawek „bo ktoś poprosił o usunięcie konta".
 `docs/rules/` do **każdej** nowej aplikacji, wypełniasz [brief](index.html#brief) i ruszasz — a każdy
 kolejny projekt korzysta z lekcji poprzedniego.
 
+**Nie musisz nawet czytać całego Dekalogu na start.** Najszybsze wejście: zainstaluj **Claude Desktop /
+Claude Code**, wypełnij [brief](index.html#brief), dołącz The Craft jako `docs/rules/` — i jedziesz.
+Agent czyta reguły, więc nie musisz ich pamiętać; doktryna po prostu działa w tle.
+
 > **Spróbuj raz.** Weź następny pomysł, dołącz The Craft, zacznij od [Dnia 0](07-new-project-day-0.md)
 > i zbuduj go jak rzemieślnik — wolno tam, gdzie błąd jest drogi; szybko tam, gdzie jest tani.
 > Zobaczysz różnicę nie pierwszego dnia, ale **trzeciego miesiąca** — gdy aplikacja wciąż jest
