@@ -197,6 +197,15 @@
   .brief-group{margin:22px 0 -6px; font-family:var(--serif); font-size:13px; letter-spacing:.12em;
     text-transform:uppercase; color:var(--accent); font-weight:700}
   .brief-group:first-child{margin-top:0}
+  .bfield-label{margin:0 0 2px; font-weight:700; font-size:15px}
+  .checks{display:flex; flex-wrap:wrap; gap:8px; margin-top:2px}
+  .chk{display:inline-flex; align-items:center; gap:7px; font-size:14px; color:var(--ink);
+    background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:6px 11px; cursor:pointer;
+    transition:border-color .12s ease}
+  .chk:hover{border-color:var(--accent)}
+  .chk input{accent-color:var(--accent); margin:0}
+  .chk:has(input:checked){border-color:var(--accent); background:var(--accent-soft)}
+  .bf-other{margin-top:8px}
 
   .readbar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:8px}
   .back{display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:var(--ink-dim); font-weight:600; font-size:14px}
@@ -415,6 +424,42 @@
         <option value="Średni (BIZ-TECH): ogarniam pojęcia, ale nie koduję. Tłumacz terminy w skrócie.">Trochę ogarniam — tłumacz terminy w skrócie</option>
         <option value="Nietechniczny: nie programuję. Bez żargonu, analogie, decyzje domyślne + prośba o zgodę.">Nietechniczny — bez żargonu, prowadź mnie</option>
       </select>
+    </div>
+
+    <div class="bfield">
+      <p class="bfield-label" data-bf-label="bf-langs-spoken"></p>
+      <div class="checks" id="bf-langs-spoken">
+        <label class="chk"><input type="checkbox" value="English"> English</label>
+        <label class="chk"><input type="checkbox" value="Polski"> Polski</label>
+        <label class="chk"><input type="checkbox" value="Deutsch"> Deutsch</label>
+        <label class="chk"><input type="checkbox" value="Español"> Español</label>
+        <label class="chk"><input type="checkbox" value="Français"> Français</label>
+        <label class="chk"><input type="checkbox" value="Italiano"> Italiano</label>
+        <label class="chk"><input type="checkbox" value="Português"> Português</label>
+        <label class="chk"><input type="checkbox" value="Українська"> Українська</label>
+      </div>
+      <input type="text" id="bf-langs-spoken-other" class="bf-other" />
+    </div>
+
+    <div class="bfield">
+      <p class="bfield-label" data-bf-label="bf-tech-known"></p>
+      <div class="checks" id="bf-tech-known">
+        <label class="chk"><input type="checkbox" value="Python"> Python</label>
+        <label class="chk"><input type="checkbox" value="JavaScript"> JavaScript</label>
+        <label class="chk"><input type="checkbox" value="TypeScript"> TypeScript</label>
+        <label class="chk"><input type="checkbox" value="HTML/CSS"> HTML/CSS</label>
+        <label class="chk"><input type="checkbox" value="SQL"> SQL</label>
+        <label class="chk"><input type="checkbox" value="Node.js"> Node.js</label>
+        <label class="chk"><input type="checkbox" value="React"> React</label>
+        <label class="chk"><input type="checkbox" value="Docker"> Docker</label>
+        <label class="chk"><input type="checkbox" value="Git"> Git</label>
+        <label class="chk"><input type="checkbox" value="Bash"> Bash</label>
+        <label class="chk"><input type="checkbox" value="Java"> Java</label>
+        <label class="chk"><input type="checkbox" value="C#"> C#</label>
+        <label class="chk"><input type="checkbox" value="PHP"> PHP</label>
+        <label class="chk"><input type="checkbox" value="Go"> Go</label>
+      </div>
+      <input type="text" id="bf-tech-known-other" class="bf-other" />
     </div>
 
     <p class="brief-group">Produkt i problem</p>
@@ -760,6 +805,8 @@
       {key:"mid", pl:{text:"Trochę ogarniam — tłumacz terminy w skrócie",phrase:"Średni (BIZ-TECH): ogarniam pojęcia, ale nie koduję. Tłumacz terminy w skrócie."}, en:{text:"I get some of it — explain terms briefly",phrase:"Middle (BIZ-TECH): I get the concepts but don't code. Explain terms briefly."}},
       {key:"non", pl:{text:"Nietechniczny — bez żargonu, prowadź mnie",phrase:"Nietechniczny: nie programuję. Bez żargonu, analogie, decyzje domyślne + prośba o zgodę."}, en:{text:"Non-technical — no jargon, guide me",phrase:"Non-technical: I don't program. No jargon, use analogies, default decisions + ask for approval."}}
     ]},
+    {id:"bf-langs-spoken", type:"checks", pl:{label:"Języki, którymi mówisz / czytasz",hint:"— żebym rozmawiał z Tobą w Twoim natywnym; zaznacz wszystkie, których używasz",otherPh:"inne (po przecinku)"}, en:{label:"Languages you speak / read",hint:"— so I talk to you in your native one; check all you use",otherPh:"other (comma-separated)"}},
+    {id:"bf-tech-known", type:"checks", pl:{label:"Technologie, które znasz",hint:"— żebym dobrał głębię wyjaśnień i oparł się na Twoim stacku; zaznacz, co ogarniasz",otherPh:"inne (po przecinku)"}, en:{label:"Technologies you know",hint:"— so I pitch explanations right and lean on your stack; check what you're comfortable with",otherPh:"other (comma-separated)"}},
     {id:"bf-name", pl:{label:"Nazwa / pomysł w jednym zdaniu",hint:"— elevator pitch: dokończ „To jest aplikacja, która…”",ph:"np. PriceComp — porównywarka cen, która pokazuje, gdzie kupić X najtaniej"}, en:{label:"Name / idea in one sentence",hint:"— elevator pitch: finish “This is an app that…”",ph:"e.g. PriceComp — a price comparison that shows where to buy X cheapest"}},
     {id:"bf-problem", pl:{label:"Problem i grupa docelowa",hint:"— jaki ból rozwiązujesz i dla KOGO? im konkretniej, tym trafniejszy MVP. Podpowiedź: „kto + kiedy + czego dziś nie może”.",ph:"np. kupujący traci czas na sprawdzanie 10 sklepów; chce jednej listy cen z linkiem do zakupu"}, en:{label:"Problem & target audience",hint:"— what pain do you solve and for WHOM? the more concrete, the better the MVP. Hint: “who + when + what they can't do today”.",ph:"e.g. buyers waste time checking 10 shops; they want one price list with a buy link"}},
     {id:"bf-similar", pl:{label:"Podobne produkty / inspiracje",hint:"— co już istnieje? co robią dobrze, a co chcesz zrobić inaczej/lepiej? (jeśli nie znasz — wpisz „nie wiem”)",ph:"np. Ceneo — szerokie, ale słabe na niszę X; chcę głębiej + lepsze filtry"}, en:{label:"Similar products / inspiration",hint:"— what already exists? what do they do well, and what do you want to do differently/better? (if you don't know — write “don't know”)",ph:"e.g. Ceneo — broad but weak on niche X; I want deeper + better filters"}},
@@ -788,6 +835,13 @@
     grps.forEach(function(el,i){ if(BRIEF_GROUPS[i]) el.textContent = BRIEF_GROUPS[i][LANG]; });
     BRIEF_FIELDS.forEach(function(f){
       var loc = f[LANG];
+      if(f.type === "checks"){
+        var gl = document.querySelector('[data-bf-label="'+f.id+'"]');
+        if(gl){ gl.innerHTML = loc.label + ' <span class="hint">'+loc.hint+'</span>'; }
+        var oth = document.getElementById(f.id+"-other");
+        if(oth && loc.otherPh !== undefined){ oth.setAttribute("placeholder", loc.otherPh); }
+        return;
+      }
       var lab = document.querySelector('label[for="'+f.id+'"]');
       if(lab){ lab.innerHTML = '<span>'+loc.label+'</span> <span class="hint">'+loc.hint+'</span>'; }
       var inp = document.getElementById(f.id);
@@ -830,29 +884,41 @@
                   "bf-mvp","bf-data","bf-later","bf-scale","bf-ux","bf-anim","bf-mkt",
                   "bf-privacy","bf-constraints"];
     function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; }
-    // Wartość do briefu: select → fraza dla bieżącego języka (po kluczu); reszta → tekst.
+    function checksChecked(id){ return Array.prototype.slice.call(document.querySelectorAll('#'+id+' input[type=checkbox]:checked')).map(function(i){return i.value;}); }
+    function checksOther(id){ var o=document.getElementById(id+"-other"); return o ? o.value.trim() : ""; }
+    // Wartość do briefu: select → fraza (po kluczu); checks → zaznaczone + „inne"; reszta → tekst.
     function fieldVal(id){
       var f = BRIEF_BY_ID[id], el = document.getElementById(id);
+      if(f && f.type === "checks"){ var parts = checksChecked(id); var o = checksOther(id); if(o) parts.push(o); return parts.join(", "); }
       if(!el) return "";
-      if(f && f.opts){ var o = f.opts.filter(function(x){return x.key===el.value;})[0]; return o ? o[LANG].phrase : ""; }
+      if(f && f.opts){ var op = f.opts.filter(function(x){return x.key===el.value;})[0]; return op ? op[LANG].phrase : ""; }
       return el.value.trim();
     }
     function lbl(id){ var f=BRIEF_BY_ID[id]; return f ? f[LANG].label : id; }
     function line(id){ var v=fieldVal(id); return v ? ("- **"+lbl(id)+":** "+v+"\n") : ""; }
 
-    // Autozapis roboczy do localStorage — odpowiedzi przeżywają odświeżenie/zamknięcie karty.
+    // Autozapis roboczy do localStorage — odpowiedzi (też checkboxy) przeżywają odświeżenie.
     function save(){
       try{
-        var data = {}; FIELDS.forEach(function(id){ data[id] = val(id); });
+        var data = {};
+        BRIEF_FIELDS.forEach(function(f){
+          data[f.id] = (f.type === "checks") ? {c: checksChecked(f.id), o: checksOther(f.id)} : val(f.id);
+        });
         localStorage.setItem(STORE, JSON.stringify(data));
         if(saved){ saved.hidden = false; }
       }catch(e){}
     }
     function restore(){
       try{
-        var data = JSON.parse(localStorage.getItem(STORE) || "{}");
-        FIELDS.forEach(function(id){ var el = document.getElementById(id); if(el && data[id]) el.value = data[id]; });
-        if(saved && Object.keys(data).some(function(k){return data[k];})) saved.hidden = false;
+        var data = JSON.parse(localStorage.getItem(STORE) || "{}"), any = false;
+        BRIEF_FIELDS.forEach(function(f){
+          var v = data[f.id]; if(v === undefined || v === null) return;
+          if(f.type === "checks"){
+            (v.c||[]).forEach(function(k){ var i=document.querySelector('#'+f.id+' input[value="'+(""+k).replace(/"/g,'\\"')+'"]'); if(i){ i.checked=true; any=true; } });
+            var o=document.getElementById(f.id+"-other"); if(o && v.o){ o.value=v.o; any=true; }
+          } else { var el=document.getElementById(f.id); if(el && v){ el.value=v; any=true; } }
+        });
+        if(saved && any) saved.hidden = false;
       }catch(e){}
     }
     applyBrief();   // zbuduj opcje z kluczami ZANIM restore() przywróci wybór
@@ -864,7 +930,12 @@
       var g = BRIEF_GEN[LANG];
       var md = g.title + "\n\n" + g.lead;
       var lvl = fieldVal("bf-level");
-      if(lvl){ md += g.howTalk + "\n" + lvl + "\n\n"; }
+      var comm = line("bf-langs-spoken") + line("bf-tech-known");
+      if(lvl || comm){
+        md += g.howTalk + "\n";
+        if(lvl){ md += lvl + "\n"; }
+        md += comm + "\n";
+      }
       md += g.secProduct + "\n";
       md += line("bf-name") + line("bf-problem") + line("bf-similar") + line("bf-langs") + line("bf-money");
       md += "\n" + g.secFeat + "\n";
