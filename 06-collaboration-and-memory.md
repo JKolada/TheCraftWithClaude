@@ -47,9 +47,24 @@ The agent's file-based memory (`memory/`) holds what **can't be read from the co
 The facts > a good impression. "Tests failed — here's the output." "A step was skipped." "Done and
 verified" — without hedging, when truly verified.
 
+## Close a unit of work with a summary
+When a change lands, don't bury it in prose — present a clear **change summary, ideally a widget tailored
+to the user** (their technical level → [07](07-new-project-day-0.md)), so they can scan the status at a glance and pick the next step:
+
+- **What changed** — one line; the files/areas touched.
+- **Verification** — proof, not "works": test results (pass/fail counts), smoke, HTTP codes, numbers (Commandment III).
+- **The commit** — short hash, date, one-line message (Commandment VIII).
+- **Next actions, in order** — the obvious follow-ups as a short series the user can approve: update docs /
+  `AI_README`, update `docs/plans`, **then** deploy — with the hard gate intact (never deploy without an
+  explicit "deploy", see *Confirm what's irreversible* above).
+
+Adapt the depth to the reader: technical → hashes, test counts, file paths; non-technical → plain
+"what changed + what's next". Widgets and other Claude-Code surfaces for this → [16](16-driving-claude.md).
+
 ## Anti-patterns
 - 🚫 Scaling before review.
 - 🚫 A survey of options instead of a recommendation.
 - 🚫 Overwriting/deleting without looking at the target.
 - 🚫 Memory as a dumping ground for facts from the repo.
 - 🚫 Treating one-time consent as standing.
+- 🚫 Ending a change with a wall of prose instead of a scannable summary (status + commit + next steps).

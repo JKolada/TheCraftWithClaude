@@ -47,9 +47,24 @@ Plikowa pamięć agenta (`memory/`) trzyma to, czego **nie da się wyczytać z k
 Stan faktyczny > dobre wrażenie. „Testy padły — oto output." „Krok pominięto." „Gotowe i
 zweryfikowane" — bez hedgingu, gdy naprawdę zweryfikowane.
 
+## Domknij jednostkę pracy podsumowaniem
+Gdy zmiana wchodzi, nie chowaj jej w prozie — pokaż czytelne **podsumowanie zmian, najlepiej jako widget
+dopasowany do użytkownika** (jego poziom techniczny → [07](07-new-project-day-0.md)), żeby ogarnął status na pierwszy rzut oka i wybrał następny krok:
+
+- **Co się zmieniło** — jedna linia; dotknięte pliki/obszary.
+- **Weryfikacja** — dowód, nie „działa": wyniki testów (ile pass/fail), smoke, kody HTTP, liczby (Przykazanie III).
+- **Commit** — krótki hash, data, jednolinijkowy opis (Przykazanie VIII).
+- **Następne działania, po kolei** — oczywiste kroki jako krótka seria do zatwierdzenia: update docs /
+  `AI_README`, update `docs/plans`, **potem** deploy — z twardą bramką (nigdy bez jawnego „wdrażaj",
+  zob. *Potwierdzaj nieodwracalne* wyżej).
+
+Dobierz głębię do odbiorcy: techniczny → hashe, liczby testów, ścieżki plików; nietechniczny → proste
+„co się zmieniło + co dalej". Widgety i inne powierzchnie Claude Code do tego → [16](16-driving-claude.md).
+
 ## Anty-wzorce
 - 🚫 Skalowanie przed review.
 - 🚫 Survey opcji zamiast rekomendacji.
 - 🚫 Nadpisanie/kasowanie bez spojrzenia na cel.
 - 🚫 Pamięć jako wysypisko faktów z repo.
 - 🚫 Traktowanie jednorazowej zgody jako stałej.
+- 🚫 Kończenie zmiany ścianą prozy zamiast skanowalnym podsumowaniem (status + commit + następne kroki).
