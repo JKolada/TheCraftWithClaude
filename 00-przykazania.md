@@ -8,7 +8,8 @@ Każde przykazanie ma rozwinięcie w dalszych rozdziałach.
 ### I. Dokumentuj dla agenta, nie dla archiwum.
 Każdy katalog ma `AI_README.md`. Aktualizujesz go **przed** commitem, nie „kiedyś".
 Dokumentacja, którą czyta się przed dotknięciem kodu, oszczędza godziny re-derywacji;
-dokumentacja pisana po fakcie gnije. → [01](01-dokumentacja-i-ai-readme.md)
+dokumentacja dopisywana po fakcie („udokumentuję na końcu") rozjeżdża się z kodem i zaczyna
+kłamać — bo kontekst już wyparował, a „koniec" nie nadchodzi. → [01](01-dokumentacja-i-ai-readme.md)
 
 ### II. Szukaj w historii, zanim napiszesz linijkę.
 `git log -S"symbol"`, `git log --grep`, `git blame`, AI_README katalogu. Większość

@@ -23,6 +23,29 @@ odchodzisz świadomie (i zapisujesz dlaczego jako ADR).
 Reguła nadrzędna: **nudna, dojrzała technologia bije modną.** Liczy się ekosystem, dokumentacja
 i testowalność — nie hype.
 
+## Sprawdzony zestaw (konkretny baseline)
+
+Zestaw przerobiony w boju na realnym projekcie — bierz z niego to, czego wymaga zadanie, resztę pomiń.
+Wszystko **dojrzałe, dobrze udokumentowane, łatwe do testowania i hostowania na jednym VPS**:
+
+| Warstwa | Narzędzia |
+|---------|-----------|
+| **Format / treść** | HTML5 (server-rendered), Markdown (docs), **JSON** (API, config), XML gdy wymusza integracja |
+| **Dane / zapytania** | **SQL** — SQLite (WAL) na start → PostgreSQL przy skali; migracje forward-only |
+| **Backend / skrypty** | **Python** (dane, scrapery, migracje na stdlib) · **Node.js + Express** (web/API) · EJS (szablony serwerowe) |
+| **Frontend** | minimalny **JS** (vanilla), `marked` do renderu MD; **ikony SVG: wyłącznie Lucide** (jedno źródło geometrii, spójność); fonty self-host |
+| **Sesje / bezpieczeństwo** | trwały store sesji (osobny plik, → [14](14-odpornosc-operacyjna.md)), `helmet`, rate-limit, `bcrypt`, OAuth (passport) |
+| **Poczta** | SMTP (587 STARTTLS), zweryfikowana domena nadawcy (→ [14](14-odpornosc-operacyjna.md)) |
+| **Media / obraz** | konwersja do **WebP** (Pillow); porównania obrazów (OpenCV) tylko gdy realnie trzeba |
+| **Ingest / scraping** | `requests` + BeautifulSoup (+lxml), fuzzy-match (rapidfuzz), Playwright gdy trzeba przeglądarki (→ [14](14-odpornosc-operacyjna.md)) |
+| **LLM** | klient API (Claude / Anthropic SDK), odpowiedzi **streamowane SSE** (→ [13](13-wydajnosc-frontend-i-sql.md)) |
+| **Testy** | `pytest` (Python) · Jest + supertest (Node) · Playwright (e2e) (→ [03](03-testowanie-i-weryfikacja.md)) |
+| **Build / dev** | esbuild, nodemon; Docker dla powtarzalności |
+| **Serwer / ops** | jeden **VPS (Hetzner)** + nginx (TLS, reverse proxy) + `pm2`/`systemd`; analityka GA4 |
+
+**Reguła ikon:** dla SVG trzymaj się **jednego zestawu — Lucide** (geometria w `<symbol>`/sprite,
+reszta to styl). Mieszanie bibliotek ikon = niespójny UI i rozjazd wag/stroke'ów.
+
 ## Python jako domyślny język
 - **Dlaczego:** czytelność (kod jak proza — łatwy review przez człowieka *i* agenta), baterie
   w zestawie, jeden język na API + skrypty + dane/LLM. Mniej kontekstów do trzymania w głowie.
@@ -55,9 +78,17 @@ i testowalność — nie hype.
 - **Nie konteneryzuj na siłę** pojedynczego skryptu. Docker tam, gdzie zależności bolą — nie jako rytuał.
 
 ## Serwer i hosting — jeden box, dobre nawyki
+
+> **Monolit jest domyślną architekturą — promuj go jako najłatwiejszy w utrzymaniu.** Jedna
+> aplikacja (web + API + zadania) i jedna baza na **jednym VPS** to coś, co ogarniasz w głowie:
+> jeden deploy, jeden log, jeden backup, jeden rollback. Debug to czytanie jednego procesu, nie
+> korelowanie śladów po sieci. Rozbicie na usługi/serverless **dokłada** sieć, wersjonowanie
+> kontraktów i klasę nowych awarii (→ [14](14-odpornosc-operacyjna.md)) — sięgaj po nie dopiero,
+> gdy **metryka** (ruch, zespół, izolacja awarii) realnie tego wymaga, nie „bo tak się robi".
+
 - **Default: jeden VPS (Hetzner) + nginx** (reverse proxy, TLS) + `systemd`/`pm2`/Docker do
-  procesów. Tani, przewidywalny, pełna kontrola. Wiele projektów na jednym boxie = osobny vhost
-  + osobny katalog, te same reguły deployu (→ [05](05-git-i-wdrozenia.md)).
+  procesów. Tani, przewidywalny, pełna kontrola, **zero cold startu**. Wiele projektów na jednym
+  boxie = osobny vhost + osobny katalog, te same reguły deployu (→ [05](05-git-i-wdrozenia.md)).
 - **Scale-to-zero** (Cloud Run / serverless) gdy ruch nierówny/globalny, a **cold start**
   akceptowalny; **always-on VPS** gdy ruch przewidywalny. Świadomy tradeoff koszt/latencja,
   zapisany jako ADR (→ [12](12-elastycznosc-i-skalowalnosc.md)).

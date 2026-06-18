@@ -85,10 +85,26 @@ docs/
 | Literówka, formatowanie | ❌ |
 
 ## Dokumentacja jako kod
+- **Źródło prawdy to `.md`** — ręcznie pisany, wersjonowany w git jak reszta kodu. Historia docsów
+  (`git log` po `.md`) mówi *kiedy i czemu* reguła się zmieniła. Nie trzymaj prawdy w wygenerowanym HTML.
 - **Linki względne** między plikami `.md` — żeby dało się klikać i walidować.
 - **Jeden „spis treści"** (np. `docs/AI_README.md`) z tabelą „gdzie zacząć dla zadania X".
-- Ciężkie rzeczy (regeneracja statycznego HTML z docsów) — **nie przy każdym commicie**;
-  rób zbiorczo i sugeruj userowi, nie odpalaj sam.
+
+## Czytnik dokumentacji i regeneracja
+
+`.md` jest źródłem prawdy, ale człowiek czyta wygodniej w przeglądarce. Dodaj **prosty czytnik
+`documentation.html` w rootcie repo** — renderuje `.md` (np. `marked`), wersjonowany w git jak
+każdy plik. Jeden plik, bez bundlera; działa z dwukliku i z serwera (ten codex sam tak działa).
+
+- **Wygenerowany artefakt (snapshot/HTML) jest pochodną, nie źródłem.** Commituj go, ale **nigdy
+  nie edytuj ręcznie** — nadpisze go build.
+- **Regeneracja NIE odpala się sama.** Żadnego auto-buildu przy każdym commicie (szum, zwłoka,
+  konflikty). Odpalasz ją **na polecenie** — najlepiej skillem (→ [02](02-skille-i-refaktoring.md)),
+  nie hookiem.
+- **Skill regeneracji patrzy w git od ostatniej aktualizacji docsów.** Zamiast ślepo przebudowywać
+  wszystko: czyta `git log <ostatni-commit-docs>..HEAD` (albo od taga `docs-*`), widzi **co realnie
+  się zmieniło** (Przykazanie II → [05](05-git-i-wdrozenia.md)), aktualizuje dotknięte sekcje i
+  **wypisuje, co zmienił**. Tani, świadomy, sprawdzalny — zamiast „przebuduj i ufaj".
 
 ## Anty-wzorce
 - 🚫 „Zaktualizuję docs na końcu" → koniec nie nadchodzi, dokumentacja kłamie.
