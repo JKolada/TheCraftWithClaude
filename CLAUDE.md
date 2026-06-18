@@ -66,6 +66,7 @@ python -m http.server 8080      # → http://localhost:8080/   (albo: npx serve 
 
 # dwuklik index.html (file://) działa, o ile content.js jest aktualny:
 python build.py                 # regeneruje content.js z plików .md
+python test.py                  # smoke: parytet PL/EN, martwe linki, świeżość content.js, spójność metadanych
 ```
 
 - Po `http(s)://` (localhost, GitHub Pages, hosting) — render z **żywych** `.md`.
@@ -81,6 +82,9 @@ python build.py                 # regeneruje content.js z plików .md
   lokalizuj nazw plików — tylko treść w środku.
 - **Po edycji `.md` uruchom `python build.py`** — regeneruje `content.js` (snapshot dla `file://`).
   `content.js` jest **generowany** (commituj go, ale nie edytuj ręcznie — nadpisze go build).
+- **Przed commitem uruchom `python test.py`** — smoke test (parytet PL↔EN, martwe linki, świeżość
+  `content.js`, spójność `CHAPTERS`/tabel/`codex.json`). Zielone = struktura spójna; nie łapie runtime JS
+  (od tego podgląd w przeglądarce, Przykazanie III).
 - **Lista rozdziałów żyje w jednym miejscu** — tablica `CHAPTERS` w `<script>` w `index.html`.
   Dodajesz/zmieniasz rozdział → aktualizujesz `CHAPTERS` (karty, dropdown i prev/next generują się
   z niej) **oraz** tabelę w `README.md` i `AI_README.md`.

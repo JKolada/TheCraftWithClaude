@@ -2,6 +2,10 @@
 .obsidian/
 .claude/settings.local.json
 
+# python
+__pycache__/
+*.pyc
+
 # os
 .DS_Store
 Thumbs.db

@@ -591,7 +591,9 @@
 
   var contentEl = document.getElementById("content");
   var prevnextEl = document.getElementById("prevnext");
-  var cache = {};
+  var cache = {};       // ckey → wyrenderowany HTML
+  var cacheMd = {};     // ckey → surowy markdown (by nie re-renderować, gdy fetch zwróci to samo)
+  var preserveScroll = false;  // ustawiane przez przełącznik języka — nie skacz na górę
 
   // Emoji w treści .md → ikony Lucide ze sprite'u (jedyne źródło geometrii to <symbol> na dole).
   function iconSvg(id, cls){ return '<svg class="icon '+cls+'" aria-hidden="true"><use href="#ic-'+id+'"></use></svg>'; }
@@ -757,13 +759,13 @@
     document.title = (c.no ? c.no + " — " : "") + c.title + " · Rzemiosło";
     prevNext(c);
 
-    var ckey = LANG + ":" + c.file;
-    if(cache[ckey]){ contentEl.innerHTML = cache[ckey]; rewriteLinks(contentEl); window.scrollTo(0,0); return; }
+    var keepScroll = preserveScroll; preserveScroll = false;
+    if(!keepScroll) window.scrollTo(0,0);
 
-    contentEl.innerHTML = '<div class="loading">Wczytywanie…</div>';
-    window.scrollTo(0,0);
+    var ckey = LANG + ":" + c.file;
 
     function render(md){
+      cacheMd[ckey] = md;
       var html = window.marked ? marked.parse(md) : ("<pre>"+md.replace(/[&<>]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[ch];})+"</pre>");
       html = swapIcons(html);
       cache[ckey] = html;
@@ -775,14 +777,21 @@
       return (byLang && byLang[slug(c.file)]) || null;
     }
 
-    // Najpierw świeży .md przez fetch (działa, gdy strona jest serwowana — zawsze aktualne).
+    // 1) Natychmiastowa treść — bez migotania „Wczytywanie…": cache → snapshot z content.js.
+    var painted = false;
+    if(cache[ckey]){ contentEl.innerHTML = cache[ckey]; rewriteLinks(contentEl); painted = true; }
+    else { var snap = embedded(); if(typeof snap === "string"){ render(snap); painted = true; } }
+    if(!painted){ contentEl.innerHTML = '<div class="loading">Wczytywanie…</div>'; }
+
+    // 2) W tle: świeży .md (gdy serwowane). Aktualizuj TYLKO gdy realnie inny niż pokazany — bez zbędnego re-renderu.
     fetch(langPath(c.file), {cache:"no-cache"}).then(function(r){
       if(!r.ok) throw new Error("HTTP "+r.status);
       return r.text();
-    }).then(render).catch(function(){
-      // Fetch zablokowany (najczęściej otwarcie przez file://) → snapshot z content.js.
-      var snap = embedded();
-      if(typeof snap === "string"){ render(snap); return; }
+    }).then(function(md){
+      if(md !== cacheMd[ckey]){ render(md); }
+    }).catch(function(){
+      // Fetch zablokowany (file://) — jeśli już mamy treść ze snapshotu/cache, nic nie rób.
+      if(painted) return;
       // Brak i fetcha, i snapshotu — pokaż instrukcję.
       contentEl.innerHTML =
         '<div class="notice">'
@@ -815,7 +824,9 @@
       LANG = (LANG === "pl") ? "en" : "pl";
       try { localStorage.setItem("rzemioslo-lang", LANG); } catch(e){}
       sync();
+      preserveScroll = true;   // przełączasz język tej samej strony — nie skacz na górę
       route();
+      preserveScroll = false;
     });
   })();
 

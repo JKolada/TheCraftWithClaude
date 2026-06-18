@@ -28,23 +28,26 @@ def collect(base):
         docs[path.stem] = path.read_text(encoding="utf-8")  # slug = nazwa bez .md
     return docs
 
-def main():
+def content_js():
+    """Zwróć (tekst content.js, mapę {lang:{slug:md}}). Jedno źródło prawdy buildu — używa go też test."""
     # Wielojęzycznie: PL kanonicznie w rootcie, EN w en/. Każdy język = osobny namespace.
     langs = {"pl": ROOT}
     en_dir = ROOT / "en"
     if en_dir.is_dir():
         langs["en"] = en_dir
-
     by_lang = {code: collect(base) for code, base in langs.items()}
-
     # ensure_ascii=True → czysty ASCII (odporne na detekcję kodowania po file://).
     payload = json.dumps(by_lang, ensure_ascii=True, sort_keys=True)
-    out = (
+    text = (
         "/* PLIK GENEROWANY przez build.py — nie edytuj ręcznie. "
         "Źródłem prawdy są pliki .md. Struktura: { lang: { slug: markdown } }. */\n"
         "window.RZEMIOSLO_DOCS = " + payload + ";\n"
     )
-    (ROOT / "content.js").write_text(out, encoding="utf-8")
+    return text, by_lang
+
+def main():
+    text, by_lang = content_js()
+    (ROOT / "content.js").write_text(text, encoding="utf-8")
     parts = []
     for code, docs in sorted(by_lang.items()):
         total = sum(len(v) for v in docs.values())
