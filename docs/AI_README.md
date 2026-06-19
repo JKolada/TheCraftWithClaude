@@ -11,6 +11,7 @@ Konwencja z rozdziału [01](../01-documentation-and-ai-readme.md). Uwaga: **to r
 | `plans/` | Decyzje i kierunki rozwoju. Jeden plik = jeden temat (`NNNN-tytuł.md`). |
 | `plans/0001-i18n-and-packaging.md` | Kierunek: wersje językowe (EN) + pakowanie `docs/rules/` per język przez The Craft Web. |
 | `plans/0002-monetization-and-payments.md` | **Niezrealizowane** — monetyzacja i płatności. Brak hands-on → świadomie bez rozdziału doktryny; plan trzyma kierunek. |
+| `plans/0003-doctrine-expansion-backlog.md` | **Otwarty backlog** kandydatów na rozdziały/sekcje (auth/authz, secrets+runbook wycieku, CI/CD, a11y, FinOps) — z audytu. Zrealizowany → awansuje i znika. |
 
 ## Zasady
 
