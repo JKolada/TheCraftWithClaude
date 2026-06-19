@@ -75,28 +75,29 @@ przykazanie/temat, zwarty, zakończony antywzorcami.
 
 ## Indeks tematów → plik (grep-friendly)
 
-> **Szukasz konkretu? Nie czytaj wszystkiego.** `grep -i <temat>` po tym indeksie (PL+EN keywordy) →
+> **Szukasz konkretu? Nie czytaj wszystkiego.** `grep -i <temat>` po tym indeksie (polskie keywordy) →
 > nazwa pliku w tej samej linii → przeczytaj **tylko ten rozdział**. Tak oszczędzasz kontekst w
 > docelowym projekcie (reguła: [01](01-documentation-and-ai-readme.md)).
-> Slug pliku jest wspólny dla EN (root, baza) i PL (`pl/`).
+> **To wersja PL** (tłumaczenie). Baza (EN) i jej keywordy są w rootcie ([`../AI_README.md`](../AI_README.md));
+> slug pliku jest wspólny dla wszystkich języków. Inne języki: w analogicznych podfolderach.
 
-- **`00-commandments.md`** — dekalog, decalogue, 10 przykazań, ten commandments, 7 grzechów, seven deadly sins, złota zasada, golden rule, altytuda, altitude, rdzeń doktryny, core.
-- **`01-documentation-and-ai-readme.md`** — dokumentacja, documentation, AI_README, CLAUDE.md, docs, /docs, plany, plans, grep, keyword index, oszczędność kontekstu, context economy, czytnik, documentation.html, regeneracja, struktura folderów, folder structure.
-- **`02-skills-and-refactoring.md`** — skill, slash-command, /run, /add-migration, automatyzacja, automation, hook, refaktoring, refactoring, prior-art, reuse, backward-compat, shim, SOLID, single responsibility, open/closed, dependency inversion, /simplify, /code-review.
-- **`03-testing-and-verification.md`** — test, testowanie, testing, TDD, test-first, piramida, test pyramid, unit, integration, e2e, Playwright, pytest, Jest, smoke test, weryfikuj nie deklaruj, verify don't declare, regresja, regression, CI.
-- **`04-scripts-and-databases.md`** — skrypt, script, mutacja, dry-run, --execute, idempotencja, idempotency, migracja, migration, forward-only, backup, restore, retencja, retention, seed, backfill, baza, database.
-- **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, wdrożenie, deployment, tag, rollback, swap bazy, database swap, konta, accounts, slug, maintenance window, nginx, pm2, sesje, sessions, FK order, integrity_check, sieroty, orphans, .gitignore, CRLF.
-- **`06-collaboration-and-memory.md`** — współpraca, collaboration, plan iteruj review, plan iterate review, pamięć, memory, memory/, potwierdzaj nieodwracalne, confirm irreversible, raportuj uczciwie, report honestly, feedback.
-- **`07-new-project-day-0.md`** — nowy projekt, new project, Dzień 0, Day 0, checklist, brief, brief produktowy, product brief, monetyzacja, monetization, onboarding, setup, poziom techniczny, technical level, runbook.
-- **`08-stack-and-technologies.md`** — stack, technologie, technologies, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolit, monolith, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
-- **`09-law-and-protecting-the-creator.md`** — prawo, law, regulamin, terms of service, ToS, polityka prywatności, privacy policy, RODO, GDPR, zgody, consent, cookie, disclaimer, JDG, sole proprietorship, bramka wieku, age gate, 18+, retencja, prawa użytkownika, user rights, usunięcie konta, account deletion, ochrona twórcy.
-- **`10-seo-and-translations.md`** — SEO, hreflang, JSON-LD, schema, canonical, sitemap, meta, OG, Open Graph, E-E-A-T, YMYL, programmatic SEO, tłumaczenia, translations, i18n, l10n, parytet językowy, language parity, RTL, lokalizacja.
-- **`11-data-model-and-normalization.md`** — model danych, data model, normalizacja, normalization, denormalizacja, denormalization, słownik, lookup table, controlled vocabulary, slug, slug zamiast ID, slug not ID, active-row, expired_at, partial index, junction, M:N, klucz obcy, foreign key, ERD, schemat.
-- **`12-flexibility-and-scalability.md`** — elastyczność, flexibility, skalowalność, scalability, rozdziel warstwy, separate layers, granice, boundaries, feature flag, feature flags, ship dark, ramp, scale-to-zero, always-on, cold start, cache, invalidation, over-engineering, ADR.
-- **`13-performance-frontend-and-sql.md`** — wydajność, performance, mierz najpierw, measure first, Lighthouse, Core Web Vitals, CWV, LCP, CLS, INP, indeks, index, partial index, EXPLAIN QUERY PLAN, N+1, SELECT *, WAL, WebP, cache busting, lazy load, streaming, SSE, pagination, paginacja.
-- **`14-operational-resilience.md`** — odporność, resilience, runtime, crash, unhandledRejection, uncaughtException, restart loop, retry, backoff, timeout, 429, rate limit, rotacja, rotation, User-Agent, resumable, wznawialne, checkpoint, scraper, długie joby, long jobs, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, email, poczta, kwota, quota, koszt, cost, abuse, sesje, sessions, MemoryStore.
-- **`15-scraping-ai-and-chatbots.md`** — scraping, scraper, crawler, robots.txt, selektor, selector, parsing, BeautifulSoup, requests, fuzzy match, rapidfuzz, dedup, delta, incremental, AI API, LLM, model, JSON schema, tool use, kontrakt wyjścia, output contract, cache, kwota, quota, chatbot, asystent, assistant, system prompt, grounding, RAG, prompt injection, halucynacja, hallucination, eval, golden set, disclaimer.
-- **`16-driving-claude.md`** — Claude Code, skill, skille, slash-command, slash, /run, /run-tests, hook, model, modele, przełączanie modeli, model switch, autopilot, auto-accept, autonomiczny, autonomous, tło, background, run_in_background, długie zadania, long jobs, agentic, agentowe, subagent, subagenci, workflow, fan-out, równolegle, parallel, orkiestracja, orchestration, bariery, guardrails.
+- **`00-commandments.md`** — przykazania, dekalog, 10 przykazań, siedem grzechów głównych, złota zasada, altytuda, rdzeń doktryny.
+- **`01-documentation-and-ai-readme.md`** — dokumentacja, AI_README, CLAUDE.md, docs, /docs, plany, grep, indeks słów kluczowych, oszczędność kontekstu, czytnik, documentation.html, regeneracja, struktura folderów.
+- **`02-skills-and-refactoring.md`** — skill, slash-komenda, /run, /add-migration, automatyzacja, hook, refaktoring, prior-art, reuse, backward-compat, shim, SOLID, single responsibility, open/closed, dependency inversion, /simplify, /code-review.
+- **`03-testing-and-verification.md`** — test, testowanie, TDD, test-first, piramida testów, unit, integration, e2e, Playwright, pytest, Jest, smoke test, weryfikuj nie deklaruj, regresja, CI.
+- **`04-scripts-and-databases.md`** — skrypt, mutacja, dry-run, --execute, idempotencja, migracja, forward-only, backup, restore, retencja, seed, backfill, baza danych.
+- **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, wdrożenie, tag, rollback, swap bazy, konta, slug, okno maintenance, nginx, pm2, sesje, kolejność FK, integrity_check, sieroty, .gitignore, CRLF.
+- **`06-collaboration-and-memory.md`** — współpraca, plan iteruj review, pamięć, potwierdzaj nieodwracalne, raportuj uczciwie, feedback, podsumowanie zmian, widget, następne działania, język natywny.
+- **`07-new-project-day-0.md`** — nowy projekt, Dzień 0, checklista, brief, brief produktowy, monetyzacja, onboarding, setup, wpięcie The Craft, docs/rules, submodule, poziom techniczny, języki programisty, znane technologie, runbook.
+- **`08-stack-and-technologies.md`** — stack, technologie, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolit, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
+- **`09-law-and-protecting-the-creator.md`** — prawo, regulamin, polityka prywatności, RODO, zgody, cookie, disclaimer, JDG, bramka wieku, 18+, retencja danych, prawa użytkownika, usunięcie konta, ochrona twórcy.
+- **`10-seo-and-translations.md`** — SEO, hreflang, JSON-LD, schema, canonical, sitemap, meta, OG, Open Graph, E-E-A-T, YMYL, programmatic SEO, tłumaczenia, i18n, l10n, parytet językowy, RTL, lokalizacja.
+- **`11-data-model-and-normalization.md`** — model danych, normalizacja, denormalizacja, słownik lookup, controlled vocabulary, slug, slug zamiast ID, active-row, expired_at, partial index, junction, M:N, klucz obcy, ERD, schemat.
+- **`12-flexibility-and-scalability.md`** — elastyczność, skalowalność, rozdziel warstwy, granice, feature flag, ship dark, ramp, scale-to-zero, always-on, cold start, cache, inwalidacja, over-engineering, ADR.
+- **`13-performance-frontend-and-sql.md`** — wydajność, mierz najpierw, Lighthouse, Core Web Vitals, CWV, LCP, CLS, INP, indeks, partial index, EXPLAIN QUERY PLAN, N+1, SELECT *, WAL, WebP, cache busting, lazy load, streaming, SSE, paginacja.
+- **`14-operational-resilience.md`** — odporność, runtime, crash, unhandledRejection, uncaughtException, pętla restartów, retry, backoff, timeout, 429, rate limit, rotacja, User-Agent, wznawialne, checkpoint, scraper, długie joby, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, poczta, kwota, koszt, abuse, sesje, MemoryStore.
+- **`15-scraping-ai-and-chatbots.md`** — scraping, scraper, crawler, robots.txt, selektor, parsing, BeautifulSoup, requests, fuzzy match, rapidfuzz, dedup, delta, incremental, AI API, LLM, model, JSON schema, tool use, kontrakt wyjścia, cache, kwota, chatbot, asystent, system prompt, grounding, RAG, prompt injection, halucynacja, eval, golden set, disclaimer.
+- **`16-driving-claude.md`** — Claude Code, skill, skille, slash-komenda, slash, /run, /run-tests, hook, model, przełączanie modeli, autopilot, auto-accept, autonomiczny, tło, background, run_in_background, długie zadania, agentowe, subagent, workflow, fan-out, równolegle, orkiestracja, bariery.
 
 ## Architektura `index.html` (kontrakt)
 
