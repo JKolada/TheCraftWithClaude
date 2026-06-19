@@ -11,7 +11,7 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
-## 1.0.0 — 2026-06-18
+## 1.0.0 — 2026-06-19
 
 Pierwsze publiczne wydanie. Pełna doktryna gotowa do użycia jako `/docs/rules/` w nowym projekcie.
 
