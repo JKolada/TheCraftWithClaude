@@ -10,7 +10,7 @@ agent never opens are dead — the wiring is what makes them act.
 
 - **Place The Craft in `docs/rules/`** — as a git submodule (stays updatable) or a plain copy:
   ```bash
-  git submodule add https://github.com/JKolada/ClaudeBuildCodex docs/rules
+  git submodule add https://github.com/JKolada/TheCraftWithClaude docs/rules
   # or: just copy the files into docs/rules/
   ```
 - **Point the project's `CLAUDE.md` at it** — so every session loads the rules and knows how to navigate

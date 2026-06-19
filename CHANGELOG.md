@@ -2,7 +2,7 @@
 
 Wszystkie istotne zmiany doktryny **Rzemiosło — The Craft (Kolada Build)**. Wersjonowanie **semantyczne**
 (MAJOR.MINOR.PATCH). **Data wpisu = dzień publikacji** — wtedy wersja została zdeployowana na
-[codex.jakub.solutions](https://codex.jakub.solutions) i gotowa do pobrania.
+[thecraft.jakub.solutions](https://thecraft.jakub.solutions) i gotowa do pobrania.
 
 Zasada: jedno źródło prawdy. `version` w [codex.json](codex.json) zawsze odpowiada najwyższemu
 wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Przykazanie VIII.
@@ -22,7 +22,7 @@ zrozumiały, bezpieczny w zmianie i godny zaufania.
   **Dekalog** (00) + rdzeń (01–08) + pogłębienie (09–16) — od dokumentacji, testów, gita i wdrożeń,
   przez prawo, SEO i model danych, po wydajność, odporność operacyjną, scraping/AI i prowadzenie Claude.
 - **Czytnik HTML** paczki — render `.md` z dwukliku (`file://`), tryb jasny/ciemny, przełącznik EN/PL.
-- **Witryna** [codex.jakub.solutions](https://codex.jakub.solutions) — przyjazne opakowanie z pobieraniem.
+- **Witryna** [thecraft.jakub.solutions](https://thecraft.jakub.solutions) — przyjazne opakowanie z pobieraniem.
 
 ---
 

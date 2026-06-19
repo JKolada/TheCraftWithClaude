@@ -13,7 +13,7 @@ New here? Read the manifesto: **[What The Craft is](intro.md)** · or the whole 
 The Craft is meant to be dropped into a project as `docs/rules/`, so the agent reads it from Day 0:
 
 ```bash
-git submodule add https://github.com/JKolada/ClaudeBuildCodex docs/rules
+git submodule add https://github.com/JKolada/TheCraftWithClaude docs/rules
 # or just copy the files into docs/rules/
 ```
 

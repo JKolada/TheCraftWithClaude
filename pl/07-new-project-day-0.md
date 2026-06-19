@@ -10,7 +10,7 @@ których agent nigdy nie otworzy, są martwe — to wpięcie sprawia, że dział
 
 - **Umieść The Craft w `docs/rules/`** — jako git submodule (zostaje aktualizowalne) albo zwykła kopia:
   ```bash
-  git submodule add https://github.com/JKolada/ClaudeBuildCodex docs/rules
+  git submodule add https://github.com/JKolada/TheCraftWithClaude docs/rules
   # albo: po prostu skopiuj pliki do docs/rules/
   ```
 - **Wskaż na to w `CLAUDE.md` projektu** — żeby każda sesja ładowała reguły i wiedziała, jak po nich
