@@ -69,6 +69,51 @@ Pytanie: gdzie żyje kanoniczna treść tłumaczeń i jak rozdzielić to od wars
 - Renderuje publiczną witrynę i **edycje** (techniczna → BIZ-TECH → biznesowa) jako warstwę podania
   nad tą samą treścią. Macierz `język × edycja` żyje po stronie Web; rdzeń dostarcza język × TECHNICZNA.
 
+## Co pakować do zipa `docs/rules/<lang>/` (spec dla Web)
+
+Zasada: paczka zawiera **tylko to, co agent realnie czyta** w docelowym projekcie — nic z tooling/prezentacji/
+meta tego repo. Jeden język = jeden zip (źródło: root = EN, `pl/` = PL).
+
+**Pakuj:**
+
+- **`AI_README.md`** — *wejście agenta*: mapa rozdziałów + grep-index w danym języku. Web **przycina**
+  sekcje repo-wewnętrzne (architektura `index.html`, gotchas builda, „Rdzeń vs Web") — w paczce zostaje
+  **indeks rozdziałów + „temat → plik"** i nota „czytaj tylko trafiony plik".
+- **`00-commandments.md` … `16-driving-claude.md`** — komplet rozdziałów w danym języku (17).
+- **`intro.md`** — manifest (opcjonalnie). Jeśli pakujesz, **przepisz lub usuń** linki do `index.html#brief`
+  (w paczce nie ma czytnika) → URL briefu na stronie Web, albo zdejmij link.
+- **Stempel wersji** — `craft.json` (lub `VERSION.md`): `version`, `language`, `edition`, `released`,
+  `source` (commit/URL repo). Żeby projekt wiedział, którą wersję ma i czy jest update. Pola z `codex.json`.
+
+**NIE pakuj** (to rdzeń/prezentacja/meta, nie doktryna):
+
+- `index.html`, `content.js`, `build.py`, `test.py` (czytnik + tooling),
+- `CLAUDE.md` (konstytucja **tego** repo — docelowy projekt ma własny `CLAUDE.md`),
+- `README.md` (front door GitHuba), `docs/`, `public/`, `CHANGELOG.md`,
+- drugi język (gdy pakujesz EN — nie wkładaj `pl/`, i odwrotnie).
+
+**Struktura zipa:**
+
+```
+docs/rules/
+  AI_README.md          # mapa + grep-index w <lang> (przycięty z repo-wewnętrznych sekcji)
+  intro.md              # manifest (opcjonalnie, z naprawionymi linkami)
+  00-commandments.md
+  …
+  16-driving-claude.md
+  craft.json            # version + language + edition + released + source
+```
+
+**Gotchas pakowania:**
+
+- **Cross-linki** w rozdziałach (`[NN](NN-nazwa.md)`) działają w `docs/rules/` (te same nazwy, jeden
+  katalog) — **nie ruszaj**. Linki spoza katalogu (np. `index.html#brief` w intro) — napraw/zdejmij.
+- **Slug wspólny dla języków** → identyczny układ paczki niezależnie od `<lang>`; różni się tylko treść.
+- **Edycja:** na teraz tylko **TECHNICZNA**; BIZ-TECH/biznesowa to ten sam zestaw plików, inny rejestr →
+  pole `edition` w stemplu, gdy powstaną.
+- **Wpięcie u klienta** (→ [07](../../07-new-project-day-0.md)): submodule albo kopia + wpis w `CLAUDE.md`
+  projektu „czytaj `docs/rules/` co sesję; grep po `docs/rules/AI_README.md`".
+
 ## Otwarte (do rozstrzygnięcia przy starcie EN)
 
 - **Workflow tłumaczenia:** człowiek vs agent + review; jak pilnować, że zmiana reguły w PL
