@@ -61,6 +61,23 @@ already?", a column/flag of unknown origin, dating a regression, and before ever
 - **Sync with `main` often** (merge/rebase into your branch) — small, frequent conflicts instead of
   one giant conflict at the end.
 
+### Branching grows with the project — don't start at the top
+Match the workflow to where the project actually is; escalate only when a real trigger forces it:
+
+1. **Solo, no live users → just `main`.** Commit straight to it, with discipline. No branches, no ceremony —
+   the simplest thing that works (→ [12](12-flexibility-and-scalability.md): don't over-engineer).
+2. **First production deploy (even solo) → short branches that merge straight to `main`.** Now `main` *is*
+   "what's live", so keep it **always-deployable**: do each change on a `feat/`/`fix/` branch, review the
+   diff, merge to `main`, tag the deploy (→ *Tag every deploy*). Trunk-based, no long-lived branches.
+3. **Project grows / more people / parallel streams → add `develop` + a `preproduction` environment.**
+   Feature branches merge into **`develop`** (integration); a release goes `develop → main`. Deploy to a
+   **`preproduction` that is a copy of production** (same schema, config, a realistic data sample) and verify
+   there **before** prod — the last gate that catches "works in dev, breaks in prod".
+
+Each rung is added **when a metric forces it** (real users → 2; a teammate or parallel work → 3), never
+preemptively. Don't run a three-environment GitFlow for a solo prototype — and don't stay on bare `main`
+once real users depend on it.
+
 > **Review isn't a formality — it's a second pair of eyes before prod.** On a team every PR has a
 > reviewer; solo, the "reviewer" is a deliberate second pass over the diff (and Claude as devil's
 > advocate). A change lands on `main` reviewed, not "because it works on my machine".

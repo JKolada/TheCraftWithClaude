@@ -61,6 +61,23 @@ kolumnie/fladze nieznanego pochodzenia, datowaniu regresji, przed każdym refakt
 - **Synchronizuj się z `main` często** (merge/rebase w swoją gałąź) — konflikty małe i częste zamiast
   jednego gigantycznego na końcu.
 
+### Branching rośnie z projektem — nie zaczynaj od góry
+Dopasuj workflow do tego, gdzie projekt naprawdę jest; eskaluj dopiero, gdy realny trigger to wymusi:
+
+1. **Solo, brak żywych userów → sam `main`.** Commituj wprost, z dyscypliną. Bez gałęzi, bez ceremonii —
+   najprostsze, co działa (→ [12](12-flexibility-and-scalability.md): nie over-engineeruj).
+2. **Pierwsze wdrożenie produkcyjne (nawet solo) → krótkie gałęzie mergowane prosto do `main`.** Teraz `main`
+   *to* „co jest live", więc trzymaj go **zawsze wdrażalnym**: każdą zmianę na gałęzi `feat/`/`fix/`,
+   przejrzyj diff, merge do `main`, otaguj deploy (→ *Taguj KAŻDY deploy*). Trunk-based, bez długich gałęzi.
+3. **Projekt rośnie / więcej osób / równoległe nurty → dołóż `develop` + środowisko `preproduction`.**
+   Gałęzie feature mergują do **`develop`** (integracja); wydanie idzie `develop → main`. Wdrażaj na
+   **`preproduction`, które jest kopią produkcji** (ten sam schemat, config, realistyczna próbka danych) i
+   weryfikuj tam **przed** prodem — ostatnia bramka łapiąca „działa na dev, pada na prodzie".
+
+Każdy szczebel dokładasz, **gdy metryka go wymusi** (żywi userzy → 2; współpracownik lub praca równoległa →
+3), nigdy na zapas. Nie odpalaj trzy-środowiskowego GitFlow dla solowego prototypu — ale i nie zostawaj na
+gołym `main`, gdy realni userzy już od niego zależą.
+
 > **Review to nie formalność — to druga para oczu przed prodem.** W zespole każdy PR ma recenzenta;
 > solo „recenzentem" jest świadomy drugi przegląd diffu (i Claude jako adwokat diabła). Zmiana wchodzi
 > na `main` przejrzana, nie „bo działa u mnie".
