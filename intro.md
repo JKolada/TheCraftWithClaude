@@ -17,6 +17,17 @@ instead of ID. You evolve, migrate, and scale **without rewriting from scratch**
 for personal privacy and the law** (GDPR, consents, protecting the creator) built in from the start,
 not bolted on at the end.
 
+## Who it's for
+
+A **single developer** — a solo creator or a one-person shop — building and running a real application
+**individually, with AI as the pair**: not an enterprise team with dedicated ops, QA, and reviewers.
+It's written to that scale — one head, one server, one deploy you can hold in your mind. **"Solo"
+doesn't mean "one writer", though:** you'll routinely run **several Claude sessions at once** on the
+same repo (a fix in one, a feature in another), and that is already a multi-writer situation. So the
+coordination rules here (issues, short branches, push/pull discipline, "don't ship what you didn't mean
+to") exist for **parallel agent sessions** — they earn their keep the moment a second session is open,
+long before any human teammate appears (→ [05](05-git-and-deployments.md), [06](06-collaboration-and-memory.md)).
+
 ## What you get
 
 - **Code that reads like prose** — matched to its surroundings, easy to review for a human *and* an agent.

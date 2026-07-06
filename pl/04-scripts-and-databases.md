@@ -34,6 +34,16 @@ ucięcie czyta się jako „pokryłem wszystko", a nie pokryłeś.
 Interpreter, zmienne (`PYTHONIOENCODING=utf-8` na Windows), skąd brać venv. Agent nie
 zgaduje ścieżki do Pythona — czyta ją z `CLAUDE.md`.
 
+### 6. Ścieżki absolutne, gdy wartość przechodzi między narzędziami
+Ścieżka pliku **nie jest przenośna między narzędziami.** Git Bash rozwija `/tmp` do katalogu temp MSYS;
+Python na Windows rozwija *to samo* `/tmp` do `<dysk-cwd>:\tmp`; PowerShell do jeszcze innego miejsca.
+Podaj ścieżkę względną — albo zakotwiczoną, ale bez litery dysku — z jednego narzędzia do drugiego, a
+każde czyta/pisze **inny plik**: skrypt migracji po cichu miele pustą bazę, gdy Twoja kopia 200 MB leży
+nietknięta w temp powłoki. Gdy ścieżka (lub dowolna wartość) przechodzi powłoka → interpreter → aplikacja,
+zrób z niej **absolutną, w pełni kwalifikowaną ścieżkę** (`Z:/work/x.db`, nie `/tmp/x.db`), albo rozwiń ją
+raz i przekazuj rozwiniętą. Gdy wynik „nic nie zrobił" Cię zaskakuje, wypisz `os.path.abspath(p)` / `pwd -W`
+i porównaj — zwykle to dwa narzędzia niezgodne co do tego, gdzie wskazuje ścieżka względna.
+
 ## Bazy danych i migracje
 
 ### Migracje są forward-only
@@ -66,6 +76,15 @@ darmowy. Rozważ taki model wszędzie, gdzie historia ma wartość.
 ### Snapshot do transferu rób przez `.backup` / `VACUUM INTO`, nie `cp` żywego pliku
 Żywy SQLite z WAL skopiowany `cp` bywa niespójny. `.backup` (online-safe) albo
 `VACUUM INTO` dają spójną, zdefragmentowaną kopię. **Nigdy nie SCP żywego `.db`.**
+
+### Masową/nieodwracalną mutację danych przećwicz na świeżej KOPII proda — nie na samym dry-run
+Dry-run pokazuje *plan*; nie dowodzi *wyniku* ani nie ujawnia konfliktów, które żyją tylko w realnych
+danych — np. narzędzie merge, które błędnie czyta **przeterminowany wiersz** jako konflikt i kasuje zły
+*aktywny*, albo snapshot, którego ID dryfnęły od czasu napisania planu. Przed masowym merge/dedup/mass-update
+na prodzie: `.backup` proda → odpal operację na **kopii** → sprawdź wynik (liczby wierszy, `integrity_check`
+i spot-check trudnych przypadków). Snapshot proda z tymi samymi ID pozwala przećwiczyć *dokładnie* ten
+przebieg, zanim dotkniesz żywych danych — dużo taniej niż rollback. To danowy brat „przećwicz deploy na
+preprodzie" (→ [05](05-git-and-deployments.md)).
 
 ## Anty-wzorce
 - 🚫 Skrypt mutujący bez `--dry-run`.

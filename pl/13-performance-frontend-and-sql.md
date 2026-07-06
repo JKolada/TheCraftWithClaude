@@ -33,6 +33,29 @@ metryka wskazuje, i **udowodnij liczbą**, że poprawiłeś. Wydajność to też
 - **Server-side pagination** — nigdy nie ślij całego katalogu do przeglądarki (np.
   paginacja po stronie serwera dla ~kilku tysięcy pozycji).
 
+## Mobile: viewport to ruchomy cel
+
+Na telefonie viewport **nie jest stałym prostokątem**: pasek URL rośnie i kurczy się przy scrollu, a
+klawiatura ekranowa zjada dolną połowę. Potraktuj go jako statyczny, a dostajesz elementy schowane **za**
+klawiaturą albo wysoki pusty pas tam, gdzie *był* pasek URL. Mierz **realny** viewport — nie zakładaj go.
+
+- **Używaj jednostki dynamicznej.** `100dvh` (dynamic viewport height) na pełnoekranowy panel — **nie** `100vh`
+  (to *największy* viewport i wchodzi pod pasek URL). Zadeklaruj najpierw `height: 100vh` jako fallback, potem
+  `height: 100dvh` jako override — **kolejność właściwości ma znaczenie**, stary silnik trzyma ostatnią regułę, którą rozumie.
+- **Elementy „przyklejone" nad klawiaturą kotwicz do `visualViewport`, nie do layout viewport.** Input czatu albo
+  sticky CTA na `position: fixed; bottom: 0` jest mierzony względem *layout* viewport i wjeżdża pod klawiaturę.
+  Jedyną pewną kotwicą jest **API `visualViewport`** (`.height`/`.offsetTop`, odczyt na jego `resize`/`scroll`)
+  — zasłania różnice zachowania klawiatury iOS vs Android. Skacz do nowego rozmiaru; **nie animuj** otwarcia
+  klawiatury (`transition`/`transform` na evencie klawiatury daje widoczny skok).
+- **`flex-basis` ustawiony dla wiersza staje się WYSOKOŚCIĄ w kolumnie.** `flex: 1 1 220px` to podpowiedź
+  *szerokości* w wierszu; ta sama reguła pod breakpointem `flex-direction: column` robi **pusty box wysoki na 220px.**
+  Zresetuj basis (`flex: 0 0 auto`) na breakpoincie, gdzie oś główna się obraca.
+- **Emulator kłamie; DOM i urządzenie nie.** Device-mode desktopowej przeglądarki renderuje elementy `dvh`/fixed
+  inaczej niż realny telefon — nie „naprawiaj" layoutu ze screenshota. Mierz
+  `getBoundingClientRect()`/`getComputedStyle()` na realnych elementach i trzymaj **projekt testowy na profilu
+  urządzenia** (np. osobny projekt Playwright przypięty do telefonu), który co przebieg sprawdza geometrię: brak
+  poziomego overflow, taby w jednej linii, kluczowy element nad foldem. *Weryfikuj, nie deklaruj* (→ [03](03-testing-and-verification.md)).
+
 ## SQL
 - **Indeksy** na kolumnach z `WHERE` i `JOIN` — gorące zapytanie bez indeksu to skan całej tabeli.
 - **Partial indexes** — np. `uniq_prices_active … WHERE expired_at IS NULL` (indeks
@@ -54,6 +77,10 @@ metryka wskazuje, i **udowodnij liczbą**, że poprawiłeś. Wydajność to też
 - 🚫 **Client-side pagination ogromnych zbiorów** — ślesz kilka tysięcy rekordów, by pokazać 20.
 - 🚫 **Blokowanie UI w oczekiwaniu na pełną odpowiedź LLM** zamiast streamingu (→ [12](12-flexibility-and-scalability.md)).
 - 🚫 **Brak cache drogich agregatów** — `COUNT(*)` po całej bazie na każde żądanie.
+- 🚫 **`100vh` na pełnoekranowy panel mobilny** — dół chowa się pod paskiem URL/klawiaturą (użyj `dvh` + `visualViewport`).
+- 🚫 **`position: fixed; bottom: 0` na input przyklejony nad klawiaturą** — wjeżdża pod klawiaturę (kotwicz do `visualViewport`).
+- 🚫 **flex-basis przeniesiony z wiersza w breakpoint kolumny** — wysoki pusty box (zresetuj basis, gdzie oś się obraca).
+- 🚫 **„Naprawianie" mobile ze screenshota z desktopowego emulatora** — naprawiasz artefakt; mierz realną geometrię DOM / testuj na profilu urządzenia.
 
 ## Dla nowych projektów
 Wpisz do Dnia 0 (→ [07](07-new-project-day-0.md)): **baseline Lighthouse** zaraz po

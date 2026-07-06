@@ -18,6 +18,17 @@ forward-only, slug zamiast ID. Rozwijasz, migrujesz i skalujesz **bez przepisywa
 z **poszanowaniem prywatności osobistej i prawa** (RODO/GDPR, zgody, ochrona twórcy) wpisanym od
 początku, nie doklejonym na końcu.
 
+## Dla kogo to jest
+
+**Pojedynczy developer** — solowy twórca albo jednoosobowy warsztat — budujący i prowadzący realną
+aplikację **indywidualnie, z AI jako parą**: nie korporacyjny zespół z dedykowanym ops, QA i recenzentami.
+Pisane pod tę skalę — jedna głowa, jeden serwer, jeden deploy, który ogarniasz w myślach. **„Solo" nie
+znaczy jednak „jeden piszący":** rutynowo odpalasz **kilka sesji Claude naraz** na tym samym repo (fix
+w jednej, feature w drugiej), a to już jest sytuacja wielu piszących. Dlatego reguły koordynacji tutaj
+(issues, krótkie gałęzie, dyscyplina push/pull, „nie wypuszczaj tego, czego nie zamierzałeś") istnieją dla
+**równoległych sesji agenta** — zarabiają na siebie w chwili, gdy druga sesja jest otwarta, długo przed
+pojawieniem się jakiegokolwiek ludzkiego współpracownika (→ [05](05-git-and-deployments.md), [06](06-collaboration-and-memory.md)).
+
 ## Co dostajesz
 
 - **Kod, który czyta się jak proza** — dopasowany do otoczenia, łatwy w review przez człowieka *i* agenta.

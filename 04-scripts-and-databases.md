@@ -34,6 +34,16 @@ truncation reads as "I covered everything" when you didn't.
 The interpreter, the variables (`PYTHONIOENCODING=utf-8` on Windows), where to get the venv. The agent
 doesn't guess the path to Python — it reads it from `CLAUDE.md`.
 
+### 6. Absolute paths when a value crosses a tool boundary
+A file path is **not portable between tools.** Git Bash resolves `/tmp` to the MSYS temp dir; Python on
+Windows resolves the *same* `/tmp` to `<cwd-drive>:\tmp`; PowerShell to yet another place. Hand a
+relative — or rooted-but-driveless — path from one tool to another and each reads/writes a **different
+file**: a migration script silently churning an empty DB while your 200 MB copy sits untouched in the
+shell's temp dir. Whenever a path (or any value) passes shell → interpreter → app, make it an
+**absolute, fully-qualified path** (`Z:/work/x.db`, not `/tmp/x.db`), or resolve it once and pass the
+resolved form. When a "did nothing" result surprises you, print `os.path.abspath(p)` / `pwd -W` and
+compare — it's usually two tools disagreeing about where a relative path points.
+
 ## Databases and migrations
 
 ### Migrations are forward-only
@@ -66,6 +76,15 @@ comes for free. Consider this model anywhere history has value.
 ### Make a transfer snapshot with `.backup` / `VACUUM INTO`, not `cp` on a live file
 A live SQLite with WAL copied via `cp` can be inconsistent. `.backup` (online-safe) or
 `VACUUM INTO` give a consistent, defragmented copy. **Never SCP a live `.db`.**
+
+### Rehearse a bulk/irreversible data mutation on a fresh prod COPY — not just a dry-run
+A dry-run prints the *plan*; it can't prove the *outcome* or surface conflicts that live only in real
+data — e.g. a merge tool that mis-reads a **stale expired row** as a conflict and deletes the wrong
+*active* one, or a snapshot whose IDs drifted since the plan was written. Before a bulk
+merge/dedup/mass-update on prod: `.backup` prod → run the operation on the **copy** → check the result
+(row counts, `integrity_check`, and spot-check the tricky cases). A same-ID prod snapshot lets you
+rehearse the *exact* run before touching the live data — much cheaper than a rollback. This is the data
+sibling of "rehearse the deploy on preprod" (→ [05](05-git-and-deployments.md)).
 
 ## Anti-patterns
 - 🚫 A mutating script without `--dry-run`.

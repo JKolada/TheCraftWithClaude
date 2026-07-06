@@ -11,6 +11,28 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
+## 1.0.1 — 2026-07-06
+
+Lekcje z pracy w projekcie referencyjnym, wpisane do istniejących rozdziałów (bez zmiany listy rozdziałów —
+stąd PATCH). Rdzeń: doktryna jest pisana pod **jednego developera z AI**, gdzie „solo" i tak znaczy **kilka
+równoległych sesji Claude** na jednym repo — i to one, nie ludzki zespół, wymuszają dyscyplinę koordynacji.
+
+### Dodane
+- **[intro] „Dla kogo to jest".** Pojedynczy developer + AI jako para; „solo" to i tak wielu piszących
+  (równoległe sesje agenta) → reguły koordynacji istnieją już przy drugiej otwartej sesji.
+- **[05] Koordynacja pracy równoległej.** Przeramowanie „pracy zespołowej" na **równoległe sesje Claude**;
+  diff-przed-mergem do gałęzi deployu i pułapka **cherry-pick 3-way merge**; **`origin` vs lokalne** (deploy
+  wypuszcza `origin`, sprawdź push przed deployem); **boot-check na celu przed reloadem**; pełna sekcja
+  **próby generalnej deployu: dev → preprod → prod** (budowa preprodu z proda, anonimizacja PII, `SITE_URL`
+  env-overridable, pułapki ACME/SSH/canonical). + nowe antywzorce.
+- **[04] Ścieżki absolutne na granicy narzędzi** (`/tmp` znaczy co innego w Git Bash / Pythonie / PowerShell)
+  oraz **próba generalna masowej mutacji na kopii proda** (nie tylko dry-run).
+- **[13] Mobile: viewport to ruchomy cel.** `100dvh` zamiast `100vh` (kolejność deklaracji), elementy nad
+  klawiaturą kotwiczone do **`visualViewport`**, `flex-basis` z wiersza staje się wysokością w kolumnie,
+  emulator kłamie → mierz geometrię DOM / testuj na profilu urządzenia. + nowe antywzorce.
+
+---
+
 ## 1.0.0 — 2026-06-19
 
 Pierwsze publiczne wydanie — **kompletna doktryna The Craft**, gotowa do wpięcia jako `docs/rules/`
