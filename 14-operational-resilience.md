@@ -28,9 +28,11 @@ A "collect everything → save once" scraper/ETL loses 100% of its work on every
 
 - **Checkpoint completed units** (a file/table of URLs/IDs) — a restart resumes from where it left off, not from scratch.
 - **Save every N**, not at the end — a crash costs the last batch, not the whole run.
-- **Run long jobs from a real terminal**, not from a Claude session in the background. The agent's
-  background is a **non-durable runner** — tearing down the session host kills the process halfway
-  (it's not anti-bot, it's a vanishing runner).
+- **Match the runner to the job's lifetime.** The agent's background is durable *within* the session —
+  it survives turns and reports back when it finishes, so use it (→ [16](16-driving-claude.md)) — but it
+  dies *with* the session: tearing down the session host kills the process halfway (it's not anti-bot,
+  it's a vanishing runner). Anything that must outlive the conversation goes to a **detached process or
+  the OS scheduler** (→ § 7), never to the session background.
 - End-to-end idempotency (→ [04](04-scripts-and-databases.md)): a resumed job doesn't duplicate already-saved data.
 
 ## 3. Treat external sources as hostile
@@ -82,6 +84,28 @@ closes, before a user emails you. "Verify, don't declare" (→ [03](03-testing-a
 Start tiny: logs with levels + a health check + one uptime ping covers most of the value. Grow only when a
 real incident shows the gap (capture the lesson in the runbook → [05](05-git-and-deployments.md)).
 
+## 7. Recurring jobs: watch the result, not the runner
+
+A nightly job is the part of prod that fails **silently by design** — nobody is watching at 4 a.m., and
+a failure looks exactly like a quiet night. Three rules, each paid for with an incident:
+
+- **The watchdog measures the data, not the job.** Exit code 0, a log file that grew, "26 scrapers, 0
+  errors" — every one of those can be true while the data is frozen. Assert on the **age of the freshest
+  record per source** (`MAX(updated_at)` grouped by shop/feed/tenant) instead. That survives a job that
+  ran and fetched nothing, an ingest that failed after a successful fetch, and a source added next month —
+  none of which a log-scraping check survives. In the reference project a green nightly report ran for
+  three days beside **44% of the catalogue frozen**: the report wasn't lying, it simply knew nothing
+  about the second data path.
+- **A green report only covers what it knows about.** When part of the pipeline runs elsewhere — another
+  machine, another schedule, a manual step — the main report's *silence* about it is not good news.
+  Either every path ends in its own evidence, or one watchdog sees them all.
+- **Scheduler config is production, and it lives outside the repo.** That incident wasn't a code bug: the
+  scheduled task had "run as soon as possible after a missed start" switched off and a "don't start on
+  battery" condition, so a sleeping laptop meant a skipped night that was never retried. No test, review
+  or `git log` could have caught it. Write the settings that matter into the runbook (retry-on-miss,
+  power/network conditions, the account it runs as, the working directory → [05](05-git-and-deployments.md))
+  and re-check them after every OS, hardware or account change.
+
 ## Anti-patterns
 - 🚫 **No global error catcher** — one bad request restarts the service for everyone.
 - 🚫 **A scraper with no checkpoints** run from the session background — crash = run from scratch, vanishing runner = perpetual failure.
@@ -90,6 +114,8 @@ real incident shows the gap (capture the lesson in the runbook → [05](05-git-a
 - 🚫 **A paid API with no quota** — a surprise bill and an open abuse vector.
 - 🚫 **Sessions in process memory** — every deploy logs everyone out (→ [05](05-git-and-deployments.md)).
 - 🚫 **No logs/alerts** — you find out prod is down from the user, not the system; "it works" with no way to know.
+- 🚫 **A recurring job watched by its own exit code** — it reports success for a week while the data stands still.
+- 🚫 **Scheduler settings nobody wrote down** — the run is "automated" right up to the night it silently isn't.
 - 🚫 **Secrets/PII in logs** — the log drain becomes the breach.
 
 ## For new projects

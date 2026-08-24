@@ -160,7 +160,7 @@ A single file, no build dependencies. Mechanics:
 - 17 chapters (`00`–`16`) + `README.md`, in **two languages** (EN root = base + PL `pl/`).
   Core: 9 files (00–08). Deep dive: 8 (09–16).
 - `index.html`: 1 file; runtime from a CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 docs ~141k chars; PL: 18 docs ~126k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
+  (EN: 19 docs ~141k chars; PL: 18 docs ~133k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
 - **Special documents (outside the numbered list):** `intro.md` (manifesto, route `#intro`) and the
   brief view (`#brief`) — routed separately, not present in the `CHAPTERS` array.
 - **Smoke test:** `python test.py` (PL↔EN parity, dead links, `content.js` freshness, consistency of

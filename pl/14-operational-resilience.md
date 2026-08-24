@@ -28,8 +28,10 @@ Scraper/ETL „zbierz wszystko → zapisz raz" traci 100% pracy przy każdym cra
 
 - **Checkpoint zrobionych jednostek** (plik/tabela z URL-ami/ID) — restart wznawia od miejsca, nie od zera.
 - **Zapis co N**, nie na końcu — crash kosztuje ostatni batch, nie cały run.
-- **Długi run odpalaj z realnego terminala**, nie z tła sesji Claude. Tło agenta to **nietrwały
-  runner** — teardown hosta sesji ubija proces w połowie (to nie anti-bot, to znikający runner).
+- **Dopasuj runner do czasu życia zadania.** Tło agenta jest trwałe *w obrębie* sesji — przeżywa tury i
+  raportuje, gdy skończy, więc korzystaj z niego (→ [16](16-driving-claude.md)) — ale umiera *razem* z sesją:
+  teardown hosta sesji ubija proces w połowie (to nie anti-bot, to znikający runner). Cokolwiek ma przeżyć
+  rozmowę, idzie do **procesu odpiętego (detached) albo schedulera OS** (→ § 7), nigdy do tła sesji.
 - Idempotencja całości (→ [04](04-scripts-and-databases.md)): wznowiony job nie dubluje już zapisanych danych.
 
 ## 3. Zewnętrzne źródła traktuj jak wrogie
@@ -81,6 +83,27 @@ deployu, zanim user napisze maila. „Weryfikuj, nie deklaruj" (→ [03](03-test
 Zacznij malutko: logi z poziomami + health check + jeden ping uptime łapią większość wartości. Rozwijaj
 dopiero, gdy realny incydent pokaże lukę (zapisz lekcję w runbooku → [05](05-git-and-deployments.md)).
 
+## 7. Zadania cykliczne: pilnuj wyniku, nie runnera
+
+Nocny job to ta część proda, która pada **cicho z założenia** — nikt nie patrzy o 4 rano, a awaria wygląda
+dokładnie jak spokojna noc. Trzy reguły, każda opłacona incydentem:
+
+- **Watchdog mierzy dane, nie job.** Kod wyjścia 0, log, który urósł, „26 scraperów, 0 błędów" — każde z
+  nich może być prawdą, gdy dane stoją zamrożone. Zamiast tego sprawdzaj **wiek najświeższego rekordu per
+  źródło** (`MAX(updated_at)` grupowane po sklepie/feedzie/tenancie). To przeżywa job, który się odpalił i
+  nic nie pobrał, ingest, który padł po udanym pobraniu, i źródło dodane za miesiąc — czego żaden check
+  skanujący logi nie przeżyje. W projekcie referencyjnym zielony nocny raport chodził trzy dni obok
+  **44% zamrożonego katalogu**: raport nie kłamał, po prostu nic nie wiedział o drugiej ścieżce danych.
+- **Zielony raport pokrywa tylko to, o czym wie.** Gdy część pipeline'u chodzi gdzie indziej — inna maszyna,
+  inny harmonogram, krok ręczny — *milczenie* głównego raportu o tym nie jest dobrą wiadomością. Albo każda
+  ścieżka kończy się własnym dowodem, albo jeden watchdog widzi je wszystkie.
+- **Config schedulera to produkcja i żyje poza repo.** Tamten incydent nie był bugiem kodu: zadanie
+  zaplanowane miało wyłączone „uruchom jak najszybciej po przegapionym starcie" i warunek „nie startuj na
+  baterii", więc śpiący laptop znaczył pominiętą noc, której nigdy nie ponowiono. Żaden test, review ani
+  `git log` by tego nie złapał. Wpisz do runbooka ustawienia, które mają znaczenie (retry-po-przegapieniu,
+  warunki zasilania/sieci, konto, na którym chodzi, katalog roboczy → [05](05-git-and-deployments.md))
+  i re-sprawdzaj je po każdej zmianie OS, sprzętu czy konta.
+
 ## Anty-wzorce
 - 🚫 **Brak globalnego łapacza błędów** — jeden zły request restartuje serwis dla wszystkich.
 - 🚫 **Scraper bez checkpointów** odpalany z tła sesji — crash = run od zera, znikający runner = wieczna porażka.
@@ -89,6 +112,8 @@ dopiero, gdy realny incydent pokaże lukę (zapisz lekcję w runbooku → [05](0
 - 🚫 **Płatne API bez kwoty** — niespodziewany rachunek i otwarty wektor nadużyć.
 - 🚫 **Sesje w pamięci procesu** — każdy deploy wylogowuje wszystkich (→ [05](05-git-and-deployments.md)).
 - 🚫 **Brak logów/alertów** — o awarii proda dowiadujesz się od usera, nie od systemu; „działa" bez sposobu, by to wiedzieć.
+- 🚫 **Job cykliczny pilnowany własnym kodem wyjścia** — melduje sukces przez tydzień, gdy dane stoją w miejscu.
+- 🚫 **Ustawienia schedulera, których nikt nie zapisał** — run jest „zautomatyzowany" aż do nocy, gdy cicho nie jest.
 - 🚫 **Sekrety/PII w logach** — log drain staje się wyciekiem.
 
 ## Dla nowych projektów

@@ -14,6 +14,17 @@
   nie DoS** — agresywny scraper to problem prawny i etyczny (→ [09](09-law-and-protecting-the-creator.md)).
 - **Parsuj odpornie.** Selektory padają przy redesignie — **waliduj kształt** wyniku, nie tylko status
   (klasyczne „200 + strona błędu", → [14](14-operational-resilience.md)). Drift selektora → alarm, nie ciche zera.
+- **Strona odpowiada dwoma głosami i mogą się nie zgadzać.** `robots.txt` to *polityka* właściciela; tarcza
+  antybotowa (WAF, managed challenge) to *maszyneria*, która nie czyta Twoich intencji. Gdy polityka pozwala
+  na odczyt, a tarcza i tak blokuje, uczciwym ruchem jest **przedstawić się prawdziwie i zapytać
+  właściciela** — nie szukać obejścia maszyny. W projekcie referencyjnym `robots.txt` sklepu mówił `Allow: /`
+  z `search=yes`, a nowy challenge Cloudflare zwracał 403 na każde żądanie z każdej sieci; odpowiedzią był
+  opisowy User-Agent plus pisemna prośba o allowlistę oraz stała zasada, że jeśli żądanie pada, źródło
+  wypada z produktu. **Eskalacja obejścia, gdy polityka jest po Twojej stronie, i tak kończy w tym samym
+  miejscu: operator, który blokuje Cię celowo.**
+- **Odróżnij blokadę adresu od tarczy.** 403 z serwera, ale 200 z innej sieci = zablokowany jest *IP*
+  (przenieś pobór i jedź dalej). 403 z **każdej** sieci = tarcza jest sednem; przenoszenie poboru to praca na
+  marne. Jeden `curl` z każdej strony odpowiada na to, zanim cokolwiek zbudujesz.
 - **Normalizuj u wejścia.** Dane z sieci są brudne: fuzzy-match i dedup do **słowników lookup**, slug,
   jedno źródło prawdy (→ [11](11-data-model-and-normalization.md)). Surowiec wpada, czysty rekord zostaje.
 - **Inkrementalnie.** Pobieraj **deltę** (co się zmieniło od ostatniego razu), nie cały katalog co noc —

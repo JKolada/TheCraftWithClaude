@@ -78,6 +78,16 @@ as a regression guard so the bug doesn't come back.
 > → threshold test; fixed bug → regression test. "I'll add tests later" = a sin (later never
 > comes). → [00](00-commandments.md), [08](08-stack-and-technologies.md)
 
+### A guard is proven by the incident, not by the fixture
+
+A check written *after* an outage must be **replayed against that outage's real data** before you trust
+it. Fixtures are written by the same head that wrote the bug, so they inherit its blind spot: in the
+reference project a data-freshness check passed nine green unit tests and then **failed to flag the very
+outage it was written for** — the comparison was `>` where it needed `>=`, and the frozen sources sat
+exactly on the threshold. A guard that lets its own reference case through is worse than no guard: it
+converts an open question into false calm. Point it at production (or a snapshot), confirm it **fires**,
+and only then freeze the boundary in a fixture — with an explicit test on the boundary itself.
+
 - **Test the contract, not the implementation** — otherwise a refactor crumbles tests with no real regression.
 - **Keep the suite fast and deterministic** — a slow or flaky suite stops getting run;
   isolate I/O, set seeds, `--runInBand` on a shared port/DB.

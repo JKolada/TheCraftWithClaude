@@ -1,5 +1,18 @@
 # CLAUDE.md — Rzemiosło (The Craft — Kolada Build)
 
+> ## ⚠️ [KOPIA WENDOROWANA — TO NIE JEST KONSTYTUCJA TEGO PROJEKTU]
+>
+> Czytasz plik z paczki doktryny wpiętej w projekt-gospodarza jako `docs/rules/`. **Konstytucją
+> gospodarza jest jego własny `CLAUDE.md` w rootcie — to jego czytaj i to on ma pierwszeństwo.**
+> Ten plik opisuje **repo doktryny** (`ClaudeBuildCodex`), a nie projekt, w którym siedzi.
+>
+> Dlatego opisane niżej kroki **w kopii wendorowanej najczęściej nie mają zastosowania** —
+> `test.py`, katalog `pl/` i `docs/plans/` zwykle w niej nie jadą (w tej kopii ich nie ma).
+> Podróżuje wyłącznie **treść**: `00`–`16` + `intro.md` + `AI_README.md`.
+>
+> Poprawiasz regułę, pracując w projekcie-gospodarzu? Zrób to tutaj, a potem **przenieś zmianę
+> do kanonu** (`ClaudeBuildCodex`, wraz z tłumaczeniem `pl/`) — inaczej kanon cicho się rozjedzie.
+
 > Konstytucja tego repozytorium. Instrukcje tutaj **mają pierwszeństwo** przed domyślnym
 > zachowaniem agenta. Czytane co sesję — utrzymuj je aktualne (Przykazanie I).
 

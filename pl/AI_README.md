@@ -150,7 +150,7 @@ Jeden plik, bez zależności build. Mechanika:
 - 17 rozdziałów (`00`–`16`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
   Rdzeń: 9 plików (00–08). Pogłębienie: 8 (09–16).
 - `index.html`: 1 plik; runtime z CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 dok. ~141 tys. znaków; PL: 18 dok. ~126 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
+  (EN: 19 dok. ~141 tys. znaków; PL: 18 dok. ~133 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
 - **Dokumenty specjalne (poza numerowaną listą):** `intro.md` (manifest, route `#intro`) i widok
   briefu (`#brief`) — routowane osobno, nie ma ich w tablicy `CHAPTERS`.
 - **Smoke test:** `python test.py` (parytet PL↔EN, martwe linki, świeżość `content.js`, spójność

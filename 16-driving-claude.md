@@ -26,6 +26,21 @@ Match the model to the job — it's a cost/quality dial, not a default:
   migration that can lose data. If a cheap model loops or stalls, **escalate**; if a strong one is idle on
   rote work, **drop down**. Measure by outcome, not by habit.
 
+## Plan mode — settle the approach before a single file changes
+
+For work that is ambiguous, wide, or expensive to undo, **put the agent in plan mode first**: it reads,
+investigates and comes back with a plan **without touching the tree**. You approve it, redirect it, or
+throw it out — for the price of reading, not of a revert. It's Commandment X (plan → iterate → review)
+with a mechanical guarantee behind it, instead of a promise the agent may forget three tool calls in.
+
+- **Reach for it** when the shape of the work is still open (which approach, which records, which
+  tables), when the blast radius is wide (a migration, a rename across the tree, anything touching URLs
+  or redirects), or when you want the **investigation** and not yet the edit.
+- **Skip it** for a bounded fix you'd wave through anyway — planning a one-line change is ceremony.
+- **The plan is the review artifact.** It names the files, the trade-off, and **how the result will be
+  verified**; a "plan" that can't say how you'd know it worked isn't one yet (→ [03](03-testing-and-verification.md)).
+- Pairs with autopilot below: **plan mode for deciding, autopilot for executing** what you decided.
+
 ## Autopilot — the preferred default
 
 **Prefer running on autopilot** (autonomous / auto-accept) for low-risk, well-scoped work. It's faster and
@@ -59,11 +74,19 @@ raw file dumps.
   passes where control flow should be code, not model-driven. A **single agent** for a focused lookup.
 - **Cost-aware:** fan-out burns tokens. Reach for it when breadth, parallelism, or independent verification
   genuinely helps — not for a one-line fix.
+- **Give a concurrent session its own tree.** Two sessions in one checkout share one index and one working
+  tree: they stage each other's files, sweep half-finished edits into commits, and the symptoms read like
+  a haunting — a branch you never switched to, someone else's files in `git status`, your edits gone. Run
+  the second session in an isolated **`git worktree`** cut from the remote branch. The cost is a directory;
+  the alternative is two writers fighting over one index (→ [05](05-git-and-deployments.md)).
 
 ## Anti-patterns
 - 🚫 **Top-tier model for `git status`; a cheap model for a data-losing migration.** Wrong dial both ways.
 - 🚫 **Hand-confirming every safe edit** instead of autopilot within set guardrails — slow, and it trains you to rubber-stamp.
-- 🚫 **Blocking the session** on a long job you could have backgrounded.
+- 🚫 **Blocking the session** on a long job you could have backgrounded — or leaving a job that must
+  outlive the session *in* the session background (→ [14](14-operational-resilience.md) § 2).
+- 🚫 **Diving into a wide or irreversible change without plan mode** — you review the diff instead of the decision.
+- 🚫 **Two concurrent sessions in one checkout** — shared index, mutual clobbering, edits that "disappear".
 - 🚫 **One serial agent for embarrassingly parallel work** — or a 12-agent workflow for a trivial change.
 - 🚫 **A custom skill for something done once** — that's just overhead (→ [02](02-skills-and-refactoring.md)).
 

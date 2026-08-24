@@ -14,6 +14,17 @@
   **data, not a DoS** — an aggressive scraper is a legal and ethical problem (→ [09](09-law-and-protecting-the-creator.md)).
 - **Parse defensively.** Selectors break on redesigns — **validate the shape** of the result, not just the
   status (the classic "200 + error page," → [14](14-operational-resilience.md)). Selector drift → an alert, not silent zeros.
+- **A site answers twice, and the answers can disagree.** `robots.txt` is the owner's *policy*; the bot
+  shield (WAF, managed challenge) is *machinery* that cannot read your intent. When the policy permits
+  the read and the shield still blocks it, the honest move is to **identify yourself truthfully and ask
+  the owner** — not to look for a way around the machine. In the reference project a shop's `robots.txt`
+  said `Allow: /` with `search=yes` while its new Cloudflare challenge returned 403 to every request from
+  every network; the answer was a descriptive User-Agent plus a written allowlist request, and the
+  standing rule that if the request fails, the source leaves the product. **Escalating evasion once the
+  policy is on your side still ends in the same place: an operator who blocks you deliberately.**
+- **Tell an address block from a shield.** 403 from the server but 200 from another network = the *IP*
+  is blocked (relocate the fetch and keep going). 403 from **every** network = the shield is the point;
+  moving the fetch is wasted work. One `curl` from each side answers this before you build anything.
 - **Normalize at the entry point.** Web data is dirty: fuzzy-match and dedup against **lookup tables**,
   slug, one source of truth (→ [11](11-data-model-and-normalization.md)). Raw material goes in, a clean record stays.
 - **Incrementally.** Fetch the **delta** (what changed since last time), not the whole catalog every night —

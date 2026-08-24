@@ -78,6 +78,16 @@ regresja, żeby błąd nie wrócił.
 > → test progu; naprawiony bug → test regresji. „Dodam testy później" = grzech (koniec nie
 > nadchodzi). → [00](00-commandments.md), [08](08-stack-and-technologies.md)
 
+### Guard dowodzi incydent, nie fixture
+
+Check napisany *po* awarii musi zostać **odtworzony na realnych danych tej awarii**, zanim mu zaufasz.
+Fixture pisze ta sama głowa, która napisała buga, więc dziedziczy jej martwe pole: w projekcie referencyjnym
+check świeżości danych przeszedł dziewięć zielonych testów jednostkowych, po czym **nie wykrył tej właśnie
+awarii, dla której powstał** — porównanie było `>` tam, gdzie miało być `>=`, a zamrożone źródła stały
+dokładnie na progu. Guard, który przepuszcza własny przypadek referencyjny, jest gorszy niż jego brak:
+zamienia otwarte pytanie w fałszywy spokój. Wyceluj go w produkcję (albo snapshot), potwierdź, że **odpala**,
+i dopiero wtedy zamroź próg w fixture — z jawnym testem na samym progu.
+
 - **Testuj kontrakt, nie implementację** — inaczej refactor kruszy testy bez realnej regresji.
 - **Suite szybki i deterministyczny** — wolny lub migający suite przestaje być uruchamiany;
   izoluj I/O, ustaw seedy, `--runInBand` przy współdzielonym porcie/DB.

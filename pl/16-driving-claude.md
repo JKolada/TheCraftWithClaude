@@ -27,6 +27,21 @@ Dopasuj model do roboty — to pokrętło koszt/jakość, nie domyślny ustawion
   oszczędzaj na migracji, która może zgubić dane. Gdy tani model się zapętla — **eskaluj**; gdy mocny
   marnuje się na rutynie — **zejdź niżej**. Mierz wynikiem, nie nawykiem.
 
+## Plan mode — ustal podejście, zanim zmieni się choć jeden plik
+
+Do pracy niejasnej, szerokiej albo drogiej w cofnięciu **najpierw wrzuć agenta w plan mode**: czyta, bada i
+wraca z planem **bez tykania drzewa**. Zatwierdzasz, przekierowujesz albo wyrzucasz — za cenę czytania, nie
+rewertu. To Przykazanie X (plan → iteruj → review) z mechaniczną gwarancją za plecami, zamiast obietnicy,
+którą agent może zapomnieć trzy wywołania później.
+
+- **Sięgaj po nie**, gdy kształt pracy jest jeszcze otwarty (które podejście, które rekordy, które tabele),
+  gdy promień rażenia jest szeroki (migracja, rename po całym drzewie, cokolwiek tykającego URL-e czy
+  redirecty), albo gdy chcesz **badania**, a jeszcze nie edycji.
+- **Odpuść je** przy ograniczonym fixie, który i tak byś przepuścił — planowanie zmiany na jedną linię to ceremonia.
+- **Plan jest artefaktem review.** Nazywa pliki, tradeoff i **jak wynik zostanie zweryfikowany**; „plan",
+  który nie umie powiedzieć, skąd byś wiedział, że działa, nie jest jeszcze planem (→ [03](03-testing-and-verification.md)).
+- Łączy się z autopilotem niżej: **plan mode do decydowania, autopilot do wykonania** tego, co zdecydowałeś.
+
 ## Autopilot — preferowany domyślny tryb
 
 **Najlepiej działaj na autopilocie** (autonomicznie / auto-accept) przy pracy niskiego ryzyka i dobrze
@@ -61,11 +76,18 @@ nie surowe zrzuty plików.
   agent** do skupionego wyszukania.
 - **Świadomy kosztu:** fan-out pali tokeny. Sięgaj po niego, gdy szerokość, równoległość albo niezależna
   weryfikacja realnie pomaga — nie do poprawki na jedną linię.
+- **Daj równoległej sesji własne drzewo.** Dwie sesje w jednym checkoucie dzielą jeden index i jedno drzewo
+  robocze: stageują sobie nawzajem pliki, wmiatają pół-gotowe edycje do commitów, a objawy czyta się jak
+  nawiedzenie — gałąź, na którą nigdy nie przełączyłeś, cudze pliki w `git status`, Twoje edycje zniknęły.
+  Odpal drugą sesję w izolowanym **`git worktree`** wyciętym z gałęzi zdalnej. Kosztem jest katalog;
+  alternatywą — dwóch piszących bijących się o jeden index (→ [05](05-git-and-deployments.md)).
 
 ## Anty-wzorce
 - 🚫 **Top-tier do `git status`; tani model do migracji gubiącej dane.** Złe pokrętło w obie strony.
 - 🚫 **Ręczne potwierdzanie każdej bezpiecznej edycji** zamiast autopilota w ustawionych barierach — wolno i uczy przyklepywania.
-- 🚫 **Blokowanie sesji** długim jobem, który mógł iść w tle.
+- 🚫 **Blokowanie sesji** długim jobem, który mógł iść w tle — albo zostawienie w tle sesji joba, który ma ją przeżyć (→ [14](14-operational-resilience.md) § 2).
+- 🚫 **Wejście w szeroką lub nieodwracalną zmianę bez plan mode** — recenzujesz diff zamiast decyzji.
+- 🚫 **Dwie równoległe sesje w jednym checkoucie** — wspólny index, wzajemne nadpisywanie, edycje, które „znikają".
 - 🚫 **Jeden szeregowy agent do pracy idealnie równoległej** — albo workflow na 12 agentów do trywialnej zmiany.
 - 🚫 **Własny skill na coś robionego raz** — to tylko narzut (→ [02](02-skills-and-refactoring.md)).
 
