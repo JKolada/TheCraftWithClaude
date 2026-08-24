@@ -56,8 +56,8 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | `01-documentation-and-ai-readme.md` | Trzy warstwy docs: CLAUDE.md / AI_README / docs. Kiedy aktualizować. |
 | `02-skills-and-refactoring.md` | Kiedy zbudować skill/slash-command; dyscyplina refaktoringu; SOLID (z feature flags i rozdziel-warstwy). |
 | `03-testing-and-verification.md` | Piramida testów, „weryfikuj, nie deklaruj", smoke. |
-| `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotencja, migracje forward-only, backupy. |
-| `05-git-and-deployments.md` | Szukaj w git, taguj deploy, swap bazy z zachowaniem kont. Najgęstszy rozdział. |
+| `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotencja, migracje forward-only, backupy; ścieżki absolutne między narzędziami; przećwicz masową mutację na kopii proda. |
+| `05-git-and-deployments.md` | Szukaj w git, koordynuj równoległe sesje, taguj deploy, przećwicz na preprodzie (dev→preprod→prod), swap bazy z zachowaniem kont. Najgęstszy rozdział. |
 | `06-collaboration-and-memory.md` | Plan→iteruj→review, pamięć, potwierdzaj nieodwracalne, raportuj uczciwie. |
 | `07-new-project-day-0.md` | Checklista „Dzień 0": brief produktowy (język, funkcje, monetyzacja, UX, animacje, marketing) + setup repo. |
 | `08-stack-and-technologies.md` | Uniwersalny stack: Python, bazy, web/API, Docker, serwery (Hetzner) + TDD jako twardy rdzeń. |
@@ -65,10 +65,10 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | `10-seo-and-translations.md` | hreflang, JSON-LD, E-E-A-T/YMYL, parytet językowy jako test. |
 | `11-data-model-and-normalization.md` | Słowniki lookup, slug zamiast ID, active-row, świadoma denormalizacja. |
 | `12-flexibility-and-scalability.md` | Rozdziel warstwy, feature flags, scale-to-zero vs always-on, nie over-engineeruj. |
-| `13-performance-frontend-and-sql.md` | Mierz najpierw, indeksy + partial index, brak N+1, streaming czatu, CWV. |
-| `14-operational-resilience.md` | Crash-proof runtime, wznawialne joby, zawodne API (backoff/rotacja), limity providera + poczta, kwoty kosztów. |
+| `13-performance-frontend-and-sql.md` | Mierz najpierw, indeksy + partial index, brak N+1, streaming czatu, CWV, mobilny viewport (dvh/visualViewport). |
+| `14-operational-resilience.md` | Crash-proof runtime, wznawialne joby, zawodne API (backoff/rotacja), limity providera + poczta, kwoty kosztów, cykliczne joby pilnowane świeżością danych. |
 | `15-scraping-ai-and-chatbots.md` | Skuteczny scraping (oficjalne źródło, walidacja kształtu, delta), AI-API do konkretnych zadań (kontrakt/cache/kwoty), konfigurowalne+ugruntowane chatboty. |
-| `16-driving-claude.md` | Prowadzenie Claude Code: skille/slash-komendy, dobór modelu, autopilot (preferowany), praca w tle, agentowe workflow/subagenci. |
+| `16-driving-claude.md` | Prowadzenie Claude Code: skille/slash-komendy, plan mode, dobór modelu, autopilot (preferowany), praca w tle, agentowe workflow/subagenci, izolowany git worktree na sesję. |
 
 Rozdziały dzielą się na **rdzeń** (`00`–`08`) i **pogłębienie** (`09`–`16`). Każdy = jedno
 przykazanie/temat, zwarty, zakończony antywzorcami.
@@ -150,7 +150,7 @@ Jeden plik, bez zależności build. Mechanika:
 - 17 rozdziałów (`00`–`16`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
   Rdzeń: 9 plików (00–08). Pogłębienie: 8 (09–16).
 - `index.html`: 1 plik; runtime z CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 dok. ~110 tys. znaków; PL: 18 dok. ~102 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
+  (EN: 19 dok. ~141 tys. znaków; PL: 18 dok. ~126 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
 - **Dokumenty specjalne (poza numerowaną listą):** `intro.md` (manifest, route `#intro`) i widok
   briefu (`#brief`) — routowane osobno, nie ma ich w tablicy `CHAPTERS`.
 - **Smoke test:** `python test.py` (parytet PL↔EN, martwe linki, świeżość `content.js`, spójność

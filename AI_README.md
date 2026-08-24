@@ -1,5 +1,14 @@
 # AI_README — The Craft directory map
 
+> ## ⚠️ Vendored into a host project? Then this is a **rules pack, not the host's constitution**
+>
+> If you found this file under a host project's `docs/rules/`, read that project's **root
+> `CLAUDE.md`** first — it is in charge. Here, only the **content** travels: `00`–`16` + `intro.md`
+> + this map. The repo mechanics described below (`build.py`, `test.py`, `pl/`, `content.js`,
+> `index.html`, `CHAPTERS`) belong to the doctrine repo `ClaudeBuildCodex` and are usually absent
+> from a vendored copy. **Don't read all seventeen chapters** — grep the
+> **"Topic index → file"** section below and read only the chapter you need.
+
 > Directory map for the next session / another agent. Read it **before** touching any files here.
 > Repo constitution: [CLAUDE.md](CLAUDE.md). Quality test for this file: after reading it, can you
 > safely change anything in this directory without scanning every file?
@@ -56,8 +65,8 @@ Direction for the EN version and per-language packaging → [docs/plans/0001-i18
 | `01-documentation-and-ai-readme.md` | Three layers of docs: CLAUDE.md / AI_README / docs. When to update them. |
 | `02-skills-and-refactoring.md` | When to build a skill/slash-command; refactoring discipline; SOLID (with feature flags and separate-the-layers). |
 | `03-testing-and-verification.md` | Test pyramid, "verify, don't declare", smoke. |
-| `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotency, forward-only migrations, backups. |
-| `05-git-and-deployments.md` | Search in git, tag deploys, swap the database while preserving accounts. The densest chapter. |
+| `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotency, forward-only migrations, backups; absolute paths across tools; rehearse a bulk mutation on a prod copy. |
+| `05-git-and-deployments.md` | Search in git, coordinate parallel sessions, tag deploys, rehearse on preprod (dev→preprod→prod), swap the database while preserving accounts. The densest chapter. |
 | `06-collaboration-and-memory.md` | Plan→iterate→review, memory, confirm the irreversible, report honestly. |
 | `07-new-project-day-0.md` | "Day 0" checklist: product brief (language, features, monetization, UX, animations, marketing) + repo setup. |
 | `08-stack-and-technologies.md` | Universal stack: Python, databases, web/API, Docker, servers (Hetzner) + TDD as the hard core. |
@@ -65,10 +74,10 @@ Direction for the EN version and per-language packaging → [docs/plans/0001-i18
 | `10-seo-and-translations.md` | hreflang, JSON-LD, E-E-A-T/YMYL, language parity as a test. |
 | `11-data-model-and-normalization.md` | Lookup dictionaries, slug instead of ID, active-row, deliberate denormalization. |
 | `12-flexibility-and-scalability.md` | Separate the layers, feature flags, scale-to-zero vs always-on, don't over-engineer. |
-| `13-performance-frontend-and-sql.md` | Measure first, indexes + partial index, no N+1, chat streaming, CWV. |
-| `14-operational-resilience.md` | Crash-proof runtime, resumable jobs, unreliable APIs (backoff/rotation), provider limits + email, cost quotas. |
+| `13-performance-frontend-and-sql.md` | Measure first, indexes + partial index, no N+1, chat streaming, CWV, mobile viewport (dvh/visualViewport). |
+| `14-operational-resilience.md` | Crash-proof runtime, resumable jobs, unreliable APIs (backoff/rotation), provider limits + email, cost quotas, recurring jobs watched by data freshness. |
 | `15-scraping-ai-and-chatbots.md` | Effective scraping (official source, shape validation, delta), AI APIs for specific tasks (contract/cache/quotas), configurable+grounded chatbots. |
-| `16-driving-claude.md` | Operating Claude Code: skills/slash-commands, picking the model, autopilot (preferred), background jobs, agentic workflows/subagents. |
+| `16-driving-claude.md` | Operating Claude Code: skills/slash-commands, plan mode, picking the model, autopilot (preferred), background jobs, agentic workflows/subagents, isolated worktree per session. |
 
 The chapters split into a **core** (`00`–`08`) and a **deep dive** (`09`–`16`). Each = one
 commandment/topic, terse, ending with anti-patterns.
@@ -85,7 +94,7 @@ commandment/topic, terse, ending with anti-patterns.
 - **`00-commandments.md`** — commandments, decalogue, ten commandments, seven deadly sins, golden rule, altitude, doctrine core.
 - **`01-documentation-and-ai-readme.md`** — documentation, AI_README, CLAUDE.md, docs, /docs, plans, grep, keyword index, context economy, reader, documentation.html, regeneration, folder structure.
 - **`02-skills-and-refactoring.md`** — skill, slash-command, /run, /add-migration, automation, hook, refactoring, prior-art, reuse, backward-compat, shim, SOLID, single responsibility, open/closed, dependency inversion, /simplify, /code-review.
-- **`03-testing-and-verification.md`** — test, testing, TDD, test-first, test pyramid, unit, integration, e2e, Playwright, pytest, Jest, smoke test, verify don't declare, regression, CI.
+- **`03-testing-and-verification.md`** — test, testing, TDD, test-first, test pyramid, unit, integration, e2e, Playwright, pytest, Jest, smoke test, verify don't declare, regression, CI, guard, watchdog, replay the incident, boundary test, off-by-one, false calm.
 - **`04-scripts-and-databases.md`** — script, mutation, dry-run, --execute, idempotency, migration, forward-only, backup, restore, retention, seed, backfill, database, absolute path, path portability, /tmp mismatch, tool boundary, Git Bash vs Python path, rehearse mutation on prod copy, snapshot, integrity_check, foreign_key_check.
 - **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, deployment, tag, rollback, database swap, accounts, slug, maintenance window, nginx, pm2, sessions, FK order, integrity_check, orphans, .gitignore, CRLF, issue, issues, GitHub Issues, unit of work, branch, branching, trunk-based, feature branch, short-lived branch, PR, pull request, review, code review, teamwork, parallel sessions, concurrent AI sessions, solo developer, single developer, unpushed commits, verify pushed before deploy, origin vs local, boot-check before reload, cherry-pick 3-way merge trap, merge sweeps other session's work, preprod, staging, dev/preprod/prod, three environments, rehearse deploy, dress rehearsal, rehearse migration, anonymised refresh, ACME bypass, SITE_URL override, env-overridable.
 - **`06-collaboration-and-memory.md`** — collaboration, plan iterate review, memory, confirm irreversible, report honestly, feedback, change summary, widget, next actions, native language.
@@ -96,9 +105,9 @@ commandment/topic, terse, ending with anti-patterns.
 - **`11-data-model-and-normalization.md`** — data model, normalization, denormalization, lookup table, controlled vocabulary, slug, slug not ID, active-row, expired_at, partial index, junction, M:N, foreign key, ERD, schema.
 - **`12-flexibility-and-scalability.md`** — flexibility, scalability, separate layers, boundaries, feature flag, ship dark, ramp, scale-to-zero, always-on, cold start, cache, invalidation, over-engineering, ADR.
 - **`13-performance-frontend-and-sql.md`** — performance, measure first, Lighthouse, Core Web Vitals, CWV, LCP, CLS, INP, index, partial index, EXPLAIN QUERY PLAN, N+1, SELECT *, WAL, WebP, cache busting, lazy load, streaming, SSE, pagination, mobile, viewport, dvh, 100vh, visualViewport, on-screen keyboard, safe-area, flex-basis, responsive, device emulator, getBoundingClientRect, device-profile test.
-- **`14-operational-resilience.md`** — resilience, runtime, crash, unhandledRejection, uncaughtException, restart loop, retry, backoff, timeout, 429, rate limit, rotation, User-Agent, resumable, checkpoint, scraper, long jobs, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, email, quota, cost, abuse, sessions, MemoryStore.
+- **`14-operational-resilience.md`** — resilience, runtime, crash, unhandledRejection, uncaughtException, restart loop, retry, backoff, timeout, 429, rate limit, rotation, User-Agent, resumable, checkpoint, scraper, long jobs, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, email, quota, cost, abuse, sessions, MemoryStore, recurring job, nightly, cron, scheduler, scheduled task, watchdog, data freshness, stale data, silent failure, runner lifetime, detached process.
 - **`15-scraping-ai-and-chatbots.md`** — scraping, scraper, crawler, robots.txt, selector, parsing, BeautifulSoup, requests, fuzzy match, rapidfuzz, dedup, delta, incremental, AI API, LLM, model, JSON schema, tool use, output contract, cache, quota, chatbot, assistant, system prompt, grounding, RAG, prompt injection, hallucination, eval, golden set, disclaimer.
-- **`16-driving-claude.md`** — Claude Code, skill, slash-command, slash, /run, /run-tests, hook, model, model switch, autopilot, auto-accept, autonomous, background, run_in_background, long jobs, agentic, subagent, workflow, fan-out, parallel, orchestration, guardrails.
+- **`16-driving-claude.md`** — Claude Code, skill, slash-command, slash, /run, /run-tests, hook, model, model switch, autopilot, auto-accept, autonomous, plan mode, planning, approve the plan, background, run_in_background, long jobs, agentic, subagent, workflow, fan-out, parallel, orchestration, guardrails, git worktree, concurrent sessions, shared checkout.
 
 ## `index.html` architecture (contract)
 
@@ -151,7 +160,7 @@ A single file, no build dependencies. Mechanics:
 - 17 chapters (`00`–`16`) + `README.md`, in **two languages** (EN root = base + PL `pl/`).
   Core: 9 files (00–08). Deep dive: 8 (09–16).
 - `index.html`: 1 file; runtime from a CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 docs ~110k chars; PL: 18 docs ~102k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
+  (EN: 19 docs ~141k chars; PL: 18 docs ~126k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
 - **Special documents (outside the numbered list):** `intro.md` (manifesto, route `#intro`) and the
   brief view (`#brief`) — routed separately, not present in the `CHAPTERS` array.
 - **Smoke test:** `python test.py` (PL↔EN parity, dead links, `content.js` freshness, consistency of
