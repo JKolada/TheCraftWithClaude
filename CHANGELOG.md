@@ -11,7 +11,7 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
-## 1.0.1 — 2026-07-10
+## 1.0.2 — 2026-07-10
 
 Lekcje z pracy w projekcie referencyjnym, wpisane do istniejących rozdziałów (bez zmiany listy rozdziałów —
 stąd PATCH), w obu językach (EN kanon + PL). Rdzeń: doktryna jest pisana pod **jednego developera z AI**,
