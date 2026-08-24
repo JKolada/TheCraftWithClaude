@@ -7,6 +7,10 @@ Wszystkie istotne zmiany doktryny **Rzemiosło — The Craft (Kolada Build)**. W
 Zasada: jedno źródło prawdy. `version` w [craft.json](craft.json) zawsze odpowiada najwyższemu
 wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Przykazanie VIII.
 
+> **Wspólna oś wersji z witryną Rzemiosło Web.** Rdzeń reguł i witryna dzielą numerację, więc numer
+> **pominięty tutaj oznacza wydanie po stronie witryny** — np. `1.0.1` należało do Web, dlatego rdzeń
+> idzie `1.0.0 → 1.0.2`. Luka jest zamierzona, nie brakiem.
+
 > **MAJOR** — przebudowa/usunięcie reguł lub rozdziału (zmiana niekompatybilna z dotychczasowym
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
