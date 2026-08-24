@@ -8,14 +8,14 @@ Zasada: jedno źródło prawdy. `version` w [craft.json](craft.json) zawsze odpo
 wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Przykazanie VIII.
 
 > **Wspólna oś wersji z witryną Rzemiosło Web.** Rdzeń reguł i witryna dzielą numerację, więc numer
-> **pominięty tutaj oznacza wydanie po stronie witryny** — np. `1.0.1` należało do Web, dlatego rdzeń
-> idzie `1.0.0 → 1.0.2`. Luka jest zamierzona, nie brakiem.
+> **pominięty tutaj oznacza wydanie po stronie witryny** — `1.0.1` i `1.0.2` należały do Web, dlatego
+> rdzeń idzie `1.0.0 → 1.0.3`. Luki są zamierzone, nie brakiem.
 
 > **MAJOR** — przebudowa/usunięcie reguł lub rozdziału (zmiana niekompatybilna z dotychczasowym
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
-## 1.0.2 — 2026-07-10
+## 1.0.3 — 2026-07-10
 
 Lekcje z pracy w projekcie referencyjnym, wpisane do istniejących rozdziałów (bez zmiany listy rozdziałów —
 stąd PATCH), w obu językach (EN kanon + PL). Rdzeń: doktryna jest pisana pod **jednego developera z AI**,
@@ -55,6 +55,11 @@ wymuszają dyscyplinę koordynacji.
 - **[06] Mapa uprawnień — jedna tabela, trzy kolumny** (wolno / zapytaj / nigdy). Granica całej doktryny
   w jednym miejscu, zamiast rozsypki po `00`, `05`, `06` i `16`; lewa kolumna celowo szeroka (to ona czyni
   autopilota bezpiecznym), środkowa per-akcja, prawa nienegocjowalna.
+- **[06] Przekazanie stanu, gdy urywa się kontekst.** Długa sesja nie kończy się — zostaje podsumowana,
+  a podsumowanie gubi **dlaczego** i **pół-gotowy stan w drzewie**. Dowoź w commitach, nie w rozmowie;
+  decyzję zapisz w chwili podjęcia; trwałe fakty do `memory/`; `git status` **jest** przekazaniem dla
+  następcy; przy zbliżającym się suficie dowoź, nie zaczynaj. Test: czy następna sesja podniosłaby to
+  z samego repo, bez tej rozmowy?
 - **[00] Odstępstwo od reguły — i podłoga, która się nie rusza.** Doktryna to default, nie klatka:
   odstępuj **na głos** (nazwij regułę, uzasadnij, zaproponuj zamiennik), ciche pominięcie to grzech;
   precedencja `CLAUDE.md` gospodarza > `docs/rules` > defaulty agenta; reguła wciąż nadpisywana to bug

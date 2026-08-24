@@ -58,7 +58,7 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | `03-testing-and-verification.md` | Piramida testów, „weryfikuj, nie deklaruj", smoke. |
 | `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotencja, migracje forward-only, backupy; ścieżki absolutne między narzędziami; przećwicz masową mutację na kopii proda. |
 | `05-git-and-deployments.md` | Szukaj w git, cofanie/odzyskiwanie utraconej pracy, koordynuj równoległe sesje, taguj deploy, przećwicz na preprodzie (dev→preprod→prod), swap bazy z zachowaniem kont. Najgęstszy rozdział. |
-| `06-collaboration-and-memory.md` | Plan→iteruj→review, pamięć, mapa uprawnień (wolno/zapytaj/nigdy), potwierdzaj nieodwracalne, raportuj uczciwie. |
+| `06-collaboration-and-memory.md` | Plan→iteruj→review, pamięć, mapa uprawnień (wolno/zapytaj/nigdy), potwierdzaj nieodwracalne, raportuj uczciwie, przekazanie stanu przy urwaniu kontekstu. |
 | `07-new-project-day-0.md` | Checklista „Dzień 0": brief produktowy (język, funkcje, monetyzacja, UX, animacje, marketing) + setup repo. |
 | `08-stack-and-technologies.md` | Uniwersalny stack: Python, bazy, web/API, Docker, serwery (Hetzner) + TDD jako twardy rdzeń. |
 | `09-law-and-protecting-the-creator.md` | Regulamin, polityka prywatności, disclaimery jako ochrona twórcy / JDG. |
@@ -87,7 +87,7 @@ przykazanie/temat, zwarty, zakończony antywzorcami.
 - **`03-testing-and-verification.md`** — test, testowanie, TDD, test-first, piramida testów, unit, integration, e2e, Playwright, pytest, Jest, smoke test, weryfikuj nie deklaruj, regresja, CI.
 - **`04-scripts-and-databases.md`** — skrypt, mutacja, dry-run, --execute, idempotencja, migracja, forward-only, backup, restore, retencja, seed, backfill, baza danych, ścieżka absolutna, przenośność ścieżek, /tmp niezgodność, granica narzędzi, Git Bash vs Python ścieżka, przećwicz mutację na kopii proda, snapshot, integrity_check, foreign_key_check.
 - **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, wdrożenie, tag, rollback, swap bazy, konta, slug, okno maintenance, nginx, pm2, sesje, kolejność FK, integrity_check, sieroty, .gitignore, CRLF, issue, issues, GitHub Issues, jednostka pracy, gałąź, gałęzie, branching, trunk-based, krótka gałąź, PR, pull request, review, recenzja, praca zespołowa, równoległe sesje, wiele sesji AI, solo developer, pojedynczy developer, niewypchnięte commity, sprawdź push przed deployem, origin vs lokalne, boot-check przed reloadem, pułapka cherry-pick 3-way merge, merge wmiata pracę innej sesji, preprod, staging, dev/preprod/prod, trzy środowiska, próba generalna deployu, przećwicz migrację, zanonimizowany refresh, ACME bypass, SITE_URL override, env-overridable, cofanie, odzyskiwanie utraconej pracy, reflog, git restore, reset --soft, ORIG_HEAD, odzyskanie skasowanej gałęzi, przywrócenie pliku ze starego commita, stash, punkt zapisu, straciłem commity, git straszy.
-- **`06-collaboration-and-memory.md`** — współpraca, plan iteruj review, pamięć, potwierdzaj nieodwracalne, raportuj uczciwie, feedback, podsumowanie zmian, widget, następne działania, język natywny, mapa uprawnień, tabela uprawnień, co mi wolno, wolno/zapytaj/nigdy, granica, trwała autoryzacja, zgoda per-akcja.
+- **`06-collaboration-and-memory.md`** — współpraca, plan iteruj review, pamięć, potwierdzaj nieodwracalne, raportuj uczciwie, feedback, podsumowanie zmian, widget, następne działania, język natywny, mapa uprawnień, tabela uprawnień, co mi wolno, wolno/zapytaj/nigdy, granica, trwała autoryzacja, zgoda per-akcja, przekazanie stanu, urywa się kontekst, kompaktowanie, podsumowana sesja, długa sesja, wznowienie, podjęcie zadania, stan w drzewie.
 - **`07-new-project-day-0.md`** — nowy projekt, Dzień 0, checklista, brief, brief produktowy, monetyzacja, onboarding, setup, wpięcie The Craft, docs/rules, submodule, poziom techniczny, języki programisty, znane technologie, runbook.
 - **`08-stack-and-technologies.md`** — stack, technologie, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolit, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
 - **`09-law-and-protecting-the-creator.md`** — prawo, regulamin, polityka prywatności, RODO, zgody, cookie, disclaimer, JDG, bramka wieku, 18+, retencja danych, prawa użytkownika, usunięcie konta, ochrona twórcy.
@@ -150,7 +150,7 @@ Jeden plik, bez zależności build. Mechanika:
 - 17 rozdziałów (`00`–`16`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
   Rdzeń: 9 plików (00–08). Pogłębienie: 8 (09–16).
 - `index.html`: 1 plik; runtime z CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 dok. ~148 tys. znaków; PL: 18 dok. ~140 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
+  (EN: 19 dok. ~150 tys. znaków; PL: 18 dok. ~142 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
 - **Dokumenty specjalne (poza numerowaną listą):** `intro.md` (manifest, route `#intro`) i widok
   briefu (`#brief`) — routowane osobno, nie ma ich w tablicy `CHAPTERS`.
 - **Smoke test:** `python test.py` (parytet PL↔EN, martwe linki, świeżość `content.js`, spójność

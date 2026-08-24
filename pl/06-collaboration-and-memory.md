@@ -84,6 +84,31 @@ dopasowany do użytkownika** (jego poziom techniczny → [07](07-new-project-day
 Dobierz głębię do odbiorcy: techniczny → hashe, liczby testów, ścieżki plików; nietechniczny → proste
 „co się zmieniło + co dalej". Widgety i inne powierzchnie Claude Code do tego → [16](16-driving-claude.md).
 
+## Przekazanie stanu, gdy urywa się kontekst w połowie zadania
+
+Długa sesja się nie kończy — zostaje **podsumowana i kontynuowana**, a to, czego nie zapisałeś, jest właśnie
+tym, co ginie przy ściskaniu. Podsumowanie utrzyma *co się stało*; niezawodnie gubi **dlaczego wybrałeś to,
+a nie tamto**, oraz **pół-gotowy stan w drzewie.** Nie traktuj więc okna kontekstu jak pamięci: traktuj je
+jak tablicę, którą w każdej chwili mogą Ci zetrzeć.
+
+- **Dowoź pracę w commitach, nie w rozmowie.** Commit przeżyje kompaktowanie; „prawie skończona" edycja
+  w drzewie, której uzasadnienie siedzi wyłącznie na czacie — nie. I wraca jako sierota, nad którą głowi się
+  *następna* sesja (→ [05](05-git-and-deployments.md)). Małe, częste commity to strategia kontekstowa,
+  nie tylko higiena (Przykazanie IX).
+- **Decyzję zapisz tam, gdzie mieszka, w chwili jej podjęcia** — `CLAUDE.md`, ADR, `docs/plans/`,
+  `AI_README` (→ [01](01-documentation-and-ai-readme.md)). „Udokumentuję na końcu" zakłada, że ten koniec
+  *nastąpi*, a Ty wciąż będziesz miał kontekst. Często nie nastąpi.
+- **Trwałe fakty idą do `memory/`, nie w scrollback** — poziom i język użytkownika, ograniczenie biznesowe,
+  schemat wersjonowania, „próbowaliśmy X, padło przez Y" (zob. *Pamięć* wyżej).
+- **Zostaw drzewo czytelne.** Przed długim mieleniem: żadnego pół-nałożonego refaktoru bez notki, nic
+  zastageowanego i zapomnianego. Stan `git status` **jest** przekazaniem dla Twojego następcy.
+- **Gdy czujesz zbliżający się sufit — dowoź, nie zaczynaj.** Domknij bieżącą jednostkę (commit +
+  podsumowanie wyżej), dopiero potem otwieraj następną — zamiast zostawiać dwie rzeczy w połowie.
+
+> **Test:** gdyby ta sesja zniknęła w tej sekundzie, czy następna podniosłaby ją z samego repo — commity,
+> docsy, `git status`, `memory/` — bez dostępu do tej rozmowy? Jeśli nie, brakujący element należy do pliku
+> i należy tam **teraz**. To Przykazanie I zastosowane do siebie, nie do czytelnika.
+
 ## Anty-wzorce
 - 🚫 Skalowanie przed review.
 - 🚫 Survey opcji zamiast rekomendacji.

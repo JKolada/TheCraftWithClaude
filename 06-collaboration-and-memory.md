@@ -85,6 +85,31 @@ to the user** (their technical level → [07](07-new-project-day-0.md)), so they
 Adapt the depth to the reader: technical → hashes, test counts, file paths; non-technical → plain
 "what changed + what's next". Widgets and other Claude-Code surfaces for this → [16](16-driving-claude.md).
 
+## Handoff when the context runs out mid-task
+
+A long session doesn't end — it gets **summarized and continued**, and everything not written down is
+what gets lost in the squeeze. The summary keeps *what happened*; it reliably drops **why you chose this
+over that**, and **the half-finished state in the tree.** So don't treat the context window as memory:
+treat it as a whiteboard you may be wiped off at any moment.
+
+- **Land work in commits, not in the conversation.** A commit survives a compaction; an "almost done" edit
+  in the tree with the reasoning only in chat does not — and it comes back as an orphan for the *next*
+  session to puzzle over (→ [05](05-git-and-deployments.md)). Small, frequent commits are a context
+  strategy, not just hygiene (Commandment IX).
+- **Write the decision where it lives, the moment it's made** — `CLAUDE.md`, the ADR, `docs/plans/`,
+  `AI_README` (→ [01](01-documentation-and-ai-readme.md)). "I'll document it at the end" assumes there
+  will *be* an end with you still holding the context. Often there isn't.
+- **Durable facts go to `memory/`, not into the scrollback** — the user's level and language, the business
+  constraint, the version scheme, the "we tried X, it failed because Y" (see *Memory* above).
+- **Leave the tree readable.** Before a long grind: no half-applied refactor without a note, nothing staged
+  and forgotten. The state of `git status` **is** the handoff to your successor.
+- **When you feel the ceiling coming, land rather than start.** Close the current unit (commit + summary
+  above), then open the next one — instead of leaving two things half-done.
+
+> **The test:** if this session vanished right now, could the next one pick it up from the repo alone —
+> commits, docs, `git status`, `memory/` — with no access to this conversation? If not, the missing piece
+> belongs in a file, and it belongs there *now*. It's Commandment I applied to yourself, not to the reader.
+
 ## Anti-patterns
 - 🚫 Scaling before review.
 - 🚫 A survey of options instead of a recommendation.
