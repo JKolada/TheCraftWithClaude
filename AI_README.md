@@ -61,13 +61,13 @@ Direction for the EN version and per-language packaging → [docs/plans/0001-i18
 | `README.md` | Entry point for a human: chapter list + "how to read it". |
 | `craft.json` | **Release version** (`version` + `released`) + brand names (`name`/`name_short`/`name_en`). The source of the stamp for the Rzemiosło Web site. |
 | `CHANGELOG.md` | Rzemiosło release history (semver, date = publication day). |
-| `00-commandments.md` | **Decalogue** — 10 commandments, 7 sins, the golden rule of altitude. The core. |
+| `00-commandments.md` | **Decalogue** — 10 commandments, 7 sins, the golden rule of altitude, how to depart from a rule. The core. |
 | `01-documentation-and-ai-readme.md` | Three layers of docs: CLAUDE.md / AI_README / docs. When to update them. |
 | `02-skills-and-refactoring.md` | When to build a skill/slash-command; refactoring discipline; SOLID (with feature flags and separate-the-layers). |
 | `03-testing-and-verification.md` | Test pyramid, "verify, don't declare", smoke. |
 | `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotency, forward-only migrations, backups; absolute paths across tools; rehearse a bulk mutation on a prod copy. |
-| `05-git-and-deployments.md` | Search in git, coordinate parallel sessions, tag deploys, rehearse on preprod (dev→preprod→prod), swap the database while preserving accounts. The densest chapter. |
-| `06-collaboration-and-memory.md` | Plan→iterate→review, memory, confirm the irreversible, report honestly. |
+| `05-git-and-deployments.md` | Search in git, undo/recover lost work, coordinate parallel sessions, tag deploys, rehearse on preprod (dev→preprod→prod), swap the database while preserving accounts. The densest chapter. |
+| `06-collaboration-and-memory.md` | Plan→iterate→review, memory, the permission map (free/ask/never), confirm the irreversible, report honestly. |
 | `07-new-project-day-0.md` | "Day 0" checklist: product brief (language, features, monetization, UX, animations, marketing) + repo setup. |
 | `08-stack-and-technologies.md` | Universal stack: Python, databases, web/API, Docker, servers (Hetzner) + TDD as the hard core. |
 | `09-law-and-protecting-the-creator.md` | Terms, privacy policy, disclaimers as protection for the creator / sole proprietorship. |
@@ -91,13 +91,13 @@ commandment/topic, terse, ending with anti-patterns.
 > `AI_README.md` and keywords in that language). If the user's native language is available there, read
 > that copy — the file slug is shared across all languages.
 
-- **`00-commandments.md`** — commandments, decalogue, ten commandments, seven deadly sins, golden rule, altitude, doctrine core.
+- **`00-commandments.md`** — commandments, decalogue, ten commandments, seven deadly sins, golden rule, altitude, doctrine core, rule zero, bootstrap, departing from a rule, deviation, exception, precedence, rule conflict, the floor, non-negotiable.
 - **`01-documentation-and-ai-readme.md`** — documentation, AI_README, CLAUDE.md, docs, /docs, plans, grep, keyword index, context economy, reader, documentation.html, regeneration, folder structure.
 - **`02-skills-and-refactoring.md`** — skill, slash-command, /run, /add-migration, automation, hook, refactoring, prior-art, reuse, backward-compat, shim, SOLID, single responsibility, open/closed, dependency inversion, /simplify, /code-review.
 - **`03-testing-and-verification.md`** — test, testing, TDD, test-first, test pyramid, unit, integration, e2e, Playwright, pytest, Jest, smoke test, verify don't declare, regression, CI, guard, watchdog, replay the incident, boundary test, off-by-one, false calm.
 - **`04-scripts-and-databases.md`** — script, mutation, dry-run, --execute, idempotency, migration, forward-only, backup, restore, retention, seed, backfill, database, absolute path, path portability, /tmp mismatch, tool boundary, Git Bash vs Python path, rehearse mutation on prod copy, snapshot, integrity_check, foreign_key_check.
-- **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, deployment, tag, rollback, database swap, accounts, slug, maintenance window, nginx, pm2, sessions, FK order, integrity_check, orphans, .gitignore, CRLF, issue, issues, GitHub Issues, unit of work, branch, branching, trunk-based, feature branch, short-lived branch, PR, pull request, review, code review, teamwork, parallel sessions, concurrent AI sessions, solo developer, single developer, unpushed commits, verify pushed before deploy, origin vs local, boot-check before reload, cherry-pick 3-way merge trap, merge sweeps other session's work, preprod, staging, dev/preprod/prod, three environments, rehearse deploy, dress rehearsal, rehearse migration, anonymised refresh, ACME bypass, SITE_URL override, env-overridable.
-- **`06-collaboration-and-memory.md`** — collaboration, plan iterate review, memory, confirm irreversible, report honestly, feedback, change summary, widget, next actions, native language.
+- **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, deployment, tag, rollback, database swap, accounts, slug, maintenance window, nginx, pm2, sessions, FK order, integrity_check, orphans, .gitignore, CRLF, issue, issues, GitHub Issues, unit of work, branch, branching, trunk-based, feature branch, short-lived branch, PR, pull request, review, code review, teamwork, parallel sessions, concurrent AI sessions, solo developer, single developer, unpushed commits, verify pushed before deploy, origin vs local, boot-check before reload, cherry-pick 3-way merge trap, merge sweeps other session's work, preprod, staging, dev/preprod/prod, three environments, rehearse deploy, dress rehearsal, rehearse migration, anonymised refresh, ACME bypass, SITE_URL override, env-overridable, undo, recover lost work, reflog, git restore, reset --soft, ORIG_HEAD, recover deleted branch, restore a file from an old commit, stash, save point, I lost my commits, git is scary.
+- **`06-collaboration-and-memory.md`** — collaboration, plan iterate review, memory, confirm irreversible, report honestly, feedback, change summary, widget, next actions, native language, permission map, permissions table, what may I do, free/ask/never, boundary, standing authorization, per-action consent.
 - **`07-new-project-day-0.md`** — new project, Day 0, checklist, brief, product brief, monetization, onboarding, setup, wire The Craft, docs/rules, submodule, technical level, languages spoken, technologies known, runbook.
 - **`08-stack-and-technologies.md`** — stack, technologies, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolith, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
 - **`09-law-and-protecting-the-creator.md`** — law, terms of service, ToS, privacy policy, GDPR, consent, cookie, disclaimer, sole proprietorship, age gate, 18+, data retention, user rights, account deletion, protecting the creator.
@@ -160,7 +160,7 @@ A single file, no build dependencies. Mechanics:
 - 17 chapters (`00`–`16`) + `README.md`, in **two languages** (EN root = base + PL `pl/`).
   Core: 9 files (00–08). Deep dive: 8 (09–16).
 - `index.html`: 1 file; runtime from a CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 docs ~141k chars; PL: 18 docs ~133k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
+  (EN: 19 docs ~148k chars; PL: 18 docs ~140k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
 - **Special documents (outside the numbered list):** `intro.md` (manifesto, route `#intro`) and the
   brief view (`#brief`) — routed separately, not present in the `CHAPTERS` array.
 - **Smoke test:** `python test.py` (PL↔EN parity, dead links, `content.js` freshness, consistency of

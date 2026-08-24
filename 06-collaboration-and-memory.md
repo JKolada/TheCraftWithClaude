@@ -30,6 +30,30 @@ standing authorization or an explicit "do it without asking":
   you didn't create it — report, don't delete.
 - Publishing to an external service = content may get indexed/cached, even after deletion.
 
+### The permission map — one table, three columns
+
+The whole doctrine's boundary in one place, so neither side has to reconstruct it from six chapters.
+This is what the user approves once, on Day 0, and what the agent reads every session:
+
+| ✅ Free — just do it | ⏸️ Ask, wait for a "yes" | ⛔ Never — whoever asks |
+|---|---|---|
+| Read/grep anything in the repo | Deploy to prod, in any form (→ [05](05-git-and-deployments.md)) | Invent legal/identity data — tax ID, address, company name (→ [09](09-law-and-protecting-the-creator.md)) |
+| Run tests, linters, builds | Push/publish to a remote | Declare a practice the code doesn't implement (→ [09](09-law-and-protecting-the-creator.md)) |
+| Commit locally, often, small (→ [00](00-commandments.md) IX) | Migration or DB swap on prod (→ [04](04-scripts-and-databases.md)) | Commit secrets (→ [08](08-stack-and-technologies.md)) |
+| Create/delete **your own** branches | Send mail/messages to real people | Delete a backup that is somebody's rollback (→ [04](04-scripts-and-databases.md)) |
+| Run any script in **dry-run** (→ [00](00-commandments.md) IV) | Delete/overwrite what you didn't create | Weaken a test or guard to make it go green (→ [03](03-testing-and-verification.md)) |
+| Write/update docs, `AI_README`, plans | Add a paid service or dependency (→ [14](14-operational-resilience.md)) | Report "it works" without proof (→ [00](00-commandments.md) III) |
+| Refactor inside the agreed scope | Change scheduler/cron or server config (→ [14](14-operational-resilience.md)) | Sweep another session's uncommitted work into a commit (→ [05](05-git-and-deployments.md)) |
+| Long jobs in the background, locally (→ [16](16-driving-claude.md)) | Touch real user data (→ [00](00-commandments.md) VII) | Deploy a migration with no backup taken (→ [00](00-commandments.md) V) |
+
+- **The left column is deliberately wide — that's the point.** A doctrine that only restricts produces an
+  agent asking permission to run tests, which trains the user to rubber-stamp. Autopilot is safe *because*
+  the middle and right columns are explicit (→ [16](16-driving-claude.md)).
+- **The middle column is per-action and per-session.** A yes there is spent on that action; it doesn't
+  become standing authorization.
+- **The right column doesn't move.** It isn't a default to be weighed — it's the floor. "The user asked me
+  to" is not an argument there; say why, and offer the honest alternative.
+
 ## Memory (cross-session)
 
 The agent's file-based memory (`memory/`) holds what **can't be read from the code/git**:

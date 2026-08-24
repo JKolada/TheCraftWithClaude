@@ -90,3 +90,25 @@ correctness — the product should be pleasant, not merely functional. → [06](
 > **Slow where a mistake is expensive (prod, user data, schema). Fast where it's
 > cheap (local experiment, UI sketch, dry-run).** Match your pace to the cost of error, not to
 > your impatience.
+
+---
+
+## Departing from a rule — and the floor that doesn't move
+
+This is a **default, not a cage.** A doctrine that can't bend to a project it doesn't know gets ignored
+wholesale — which is worse than a doctrine that is occasionally, deliberately overridden.
+
+- **Deviate out loud.** Name the rule, say why it doesn't fit *here*, propose what you'll do instead, and
+  get a yes. That's a decision, and it belongs in the ADR/`CLAUDE.md` (→ [01](01-documentation-and-ai-readme.md)).
+- **Silently skipping a rule is not a deviation — it's the sin.** "It didn't quite apply so I said nothing"
+  is how a doctrine rots into decoration.
+- **Precedence when rules collide:** the host project's own root `CLAUDE.md` **>** this doctrine
+  (`docs/rules/`) **>** the agent's defaults. The project is specific; the doctrine is generic — the
+  specific wins, on purpose.
+- **A rule you keep having to override is a bug in the doctrine, not a nuisance.** Fix it at the source
+  (and carry the fix back to the canon, with its translation) instead of routing around it every session.
+
+> **The floor, which is not up for negotiation:** honest reporting (**III**), a backup before a
+> schema/data change (**V**), an explicit "deploy" before prod (**VI**), and user data (**VII**). These
+> aren't defaults to be weighed against convenience — everything else in the doctrine is what makes
+> *keeping* them cheap. The full boundary as one table → [06](06-collaboration-and-memory.md).

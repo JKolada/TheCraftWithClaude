@@ -47,6 +47,18 @@ wymuszają dyscyplinę koordynacji.
 - **[13] Mobile: viewport to ruchomy cel.** `100dvh` zamiast `100vh` (kolejność deklaracji), elementy nad
   klawiaturą kotwiczone do **`visualViewport`**, `flex-basis` z wiersza staje się wysokością w kolumnie,
   emulator kłamie → mierz geometrię DOM / testuj na profilu urządzenia. + nowe antywzorce.
+- **[05] Cofanie: najprawdopodobniej tego nie straciłeś.** Sekcja ratunkowa dla osób niebiegłych w gicie —
+  sześć typowych panik i droga powrotna dla każdej (`restore`, `reset --soft`, `reflog`, `ORIG_HEAD`,
+  przywrócenie pliku ze starego commita), `reflog` jako przycisk cofania repo oraz **trzy jedyne komendy,
+  które realnie niszczą pracę** — i to wyłącznie niezacommitowaną. Reguła spinająca: commituj wcześnie,
+  bo destrukcyjne komendy gita nie mają dry-run.
+- **[06] Mapa uprawnień — jedna tabela, trzy kolumny** (wolno / zapytaj / nigdy). Granica całej doktryny
+  w jednym miejscu, zamiast rozsypki po `00`, `05`, `06` i `16`; lewa kolumna celowo szeroka (to ona czyni
+  autopilota bezpiecznym), środkowa per-akcja, prawa nienegocjowalna.
+- **[00] Odstępstwo od reguły — i podłoga, która się nie rusza.** Doktryna to default, nie klatka:
+  odstępuj **na głos** (nazwij regułę, uzasadnij, zaproponuj zamiennik), ciche pominięcie to grzech;
+  precedencja `CLAUDE.md` gospodarza > `docs/rules` > defaulty agenta; reguła wciąż nadpisywana to bug
+  doktryny do naprawienia w kanonie. Podłoga: **III, V, VI, VII**.
 
 ### Zmienione
 - **[00] Reguła zerowa** — „przeczytaj każdy plik" → „przeczytaj Dekalog, resztę grepuj po indeksie

@@ -90,3 +90,25 @@ poprawnością — produkt ma być przyjemny, nie tylko działający. → [06](0
 > **Wolno tam, gdzie błąd jest drogi (prod, dane userów, schemat). Szybko tam, gdzie jest
 > tani (lokalny eksperyment, szkic UI, dry-run).** Tempo dobieraj do kosztu pomyłki, nie do
 > niecierpliwości.
+
+---
+
+## Odstępstwo od reguły — i podłoga, która się nie rusza
+
+To jest **default, nie klatka.** Doktryna, która nie potrafi się ugiąć pod projekt, którego nie zna,
+zostaje zignorowana w całości — a to gorsze niż doktryna czasem, świadomie nadpisana.
+
+- **Odstępuj na głos.** Nazwij regułę, powiedz, czemu *tutaj* nie pasuje, zaproponuj, co zrobisz zamiast,
+  i uzyskaj „tak". To jest decyzja i należy do ADR/`CLAUDE.md` (→ [01](01-documentation-and-ai-readme.md)).
+- **Ciche pominięcie reguły to nie odstępstwo — to grzech.** „Jakoś nie pasowało, więc nic nie powiedziałem"
+  to sposób, w jaki doktryna gnije do roli dekoracji.
+- **Precedencja przy konflikcie reguł:** własny root `CLAUDE.md` projektu-gospodarza **>** ta doktryna
+  (`docs/rules/`) **>** defaulty agenta. Projekt jest konkretny, doktryna generyczna — konkret wygrywa,
+  celowo.
+- **Reguła, którą wciąż musisz nadpisywać, to bug doktryny, nie uciążliwość.** Napraw ją u źródła
+  (i przenieś poprawkę do kanonu, wraz z tłumaczeniem), zamiast omijać ją co sesję.
+
+> **Podłoga, która nie podlega negocjacji:** uczciwy raport (**III**), backup przed zmianą schematu/danych
+> (**V**), jawne „wdrażaj" przed prodem (**VI**) i dane użytkowników (**VII**). To nie są defaulty do
+> ważenia z wygodą — cała reszta doktryny istnieje po to, żeby *trzymanie* ich było tanie. Pełna granica
+> jako jedna tabela → [06](06-collaboration-and-memory.md).

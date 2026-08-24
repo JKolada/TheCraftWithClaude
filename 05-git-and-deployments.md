@@ -33,6 +33,39 @@ already?", a column/flag of unknown origin, dating a regression, and before ever
 - Messages in English, descriptive (what + why), `fixes #N`/`refs #N` to the issue.
 - Link the PR/issue with the full URL, not "PR #123".
 
+## Undo: you probably didn't lose it
+
+> Most of git's reputation for being scary comes from one misunderstanding: people think a mistake is
+> permanent. **It almost never is.** Everything you ever committed is recoverable, and git remembers
+> every position your branch has held — for about 90 days, whether or not you kept a branch pointing at it.
+> You don't need fluency to be safe here; you need to know which of six situations you're in.
+
+**The one rule that makes all of this work: commit early, commit often.** A commit is free, private
+until you push, and it is your save point. The corollary is the real danger below: *uncommitted* work is
+the only thing that can truly vanish.
+
+| The panic | What actually happened | The way back |
+|---|---|---|
+| "I wrecked this file, haven't committed" | Only the working copy changed | `git restore <file>` — back to the last commit |
+| "I want to undo my last commit but keep the work" | The commit is just a pointer | `git reset --soft HEAD~1` — changes return to staging |
+| "I committed on the wrong branch" | The commit exists, in the wrong place | `git branch <right-branch>` here, then `git reset --hard HEAD~1` on the wrong one |
+| "I deleted a branch / my commits are gone" | Nothing is gone; the *label* is gone | `git reflog` → find the hash → `git branch <name> <hash>` |
+| "The merge went wrong" (not pushed) | The pre-merge position is recorded | `git reset --hard ORIG_HEAD` |
+| "I need one file as it was last Tuesday" | History holds every version | `git show <commit>:<path>` to view · `git restore --source=<commit> -- <path>` to bring it back |
+
+- **`git reflog` is the undo button for the repository.** It lists every position `HEAD` has held, newest
+  first, with a hash for each. Almost every "I lost my work" ends here: find the moment before the mistake,
+  point a branch at it. Learn this one command and the rest stop being frightening.
+- **Look at an old state without changing anything:** `git checkout <deploy-tag>` puts you in a detached
+  view of exactly what was live then; `git switch -` brings you back. Nothing is modified by looking.
+- **Before anything that scares you, take a save point.** `git stash` (park uncommitted work) or simply
+  commit on a scratch branch. Git's destructive commands have **no dry-run** (→ [04](04-scripts-and-databases.md),
+  Commandment IV) — committing first *is* the dry-run.
+
+> **The three commands that actually destroy work** — and they only destroy what you never committed:
+> `git reset --hard`, `git checkout .` / `git restore .`, and `git clean -fd`. Nothing else on this page
+> loses anything. If you commit before experimenting, none of them can hurt you.
+
 ## Coordinating parallel work: issues and simple branches
 
 > **This doctrine is written for a project run by ONE developer with AI — not an enterprise team.** But

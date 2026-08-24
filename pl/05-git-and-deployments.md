@@ -33,6 +33,40 @@ kolumnie/fladze nieznanego pochodzenia, datowaniu regresji, przed każdym refakt
 - Wiadomości po angielsku, opisowe (co + dlaczego), `fixes #N`/`refs #N` do issue.
 - Linkuj PR/issue pełnym URL-em, nie „PR #123".
 
+## Cofanie: najprawdopodobniej tego nie straciłeś
+
+> Opinia, że git jest straszny, bierze się z jednego nieporozumienia: ludzie myślą, że pomyłka jest
+> nieodwracalna. **Prawie nigdy nie jest.** Wszystko, co kiedykolwiek zacommitowałeś, da się odzyskać, a git
+> pamięta **każdą** pozycję, na której stała Twoja gałąź — przez jakieś 90 dni, niezależnie od tego, czy
+> została na nią wskazująca gałąź. Nie potrzebujesz tu biegłości; potrzebujesz wiedzieć, w której z sześciu
+> sytuacji jesteś.
+
+**Jedna reguła, na której to wszystko stoi: commituj wcześnie i często.** Commit jest darmowy, prywatny aż
+do pushu i jest Twoim punktem zapisu. Wniosek odwrotny to jedyne realne niebezpieczeństwo niżej: *niezacommitowana*
+praca to jedyna rzecz, która naprawdę może zniknąć.
+
+| Panika | Co się naprawdę stało | Droga powrotna |
+|---|---|---|
+| „Rozwaliłem plik, nie commitowałem" | Zmieniła się tylko kopia robocza | `git restore <plik>` — wraca stan z ostatniego commita |
+| „Chcę cofnąć ostatni commit, ale zostawić pracę" | Commit to tylko wskaźnik | `git reset --soft HEAD~1` — zmiany wracają do poczekalni |
+| „Zacommitowałem na złej gałęzi" | Commit istnieje, tylko nie tam | `git branch <właściwa>` tutaj, potem `git reset --hard HEAD~1` na tej złej |
+| „Skasowałem gałąź / commity zniknęły" | Nic nie zniknęło; zniknęła *etykieta* | `git reflog` → znajdź hash → `git branch <nazwa> <hash>` |
+| „Merge poszedł źle" (niewypchnięty) | Pozycja sprzed merge'a jest zapisana | `git reset --hard ORIG_HEAD` |
+| „Potrzebuję pliku w wersji z wtorku" | Historia trzyma każdą wersję | `git show <commit>:<ścieżka>` żeby zobaczyć · `git restore --source=<commit> -- <ścieżka>` żeby przywrócić |
+
+- **`git reflog` to przycisk cofania dla całego repo.** Wypisuje każdą pozycję, na której stał `HEAD`, od
+  najnowszej, z hashem przy każdej. Prawie każde „straciłem pracę" kończy się tutaj: znajdź moment sprzed
+  pomyłki i ustaw na nim gałąź. Naucz się tej jednej komendy, a reszta przestanie straszyć.
+- **Zajrzyj w stary stan, niczego nie zmieniając:** `git checkout <deploy-tag>` pokazuje dokładnie to, co
+  było wtedy live; `git switch -` wraca. Samo patrzenie niczego nie modyfikuje.
+- **Przed czymkolwiek, co Cię przeraża, zrób punkt zapisu.** `git stash` (odłóż niezacommitowane) albo po
+  prostu commit na gałęzi-brudnopisie. Destrukcyjne komendy gita **nie mają dry-run** (→ [04](04-scripts-and-databases.md),
+  Przykazanie IV) — wcześniejszy commit *jest* tym dry-runem.
+
+> **Trzy komendy, które realnie niszczą pracę** — i niszczą wyłącznie to, czego nigdy nie zacommitowałeś:
+> `git reset --hard`, `git checkout .` / `git restore .` oraz `git clean -fd`. Nic innego z tej strony niczego
+> nie gubi. Jeśli commitujesz przed eksperymentem, żadna z nich Cię nie skrzywdzi.
+
 ## Koordynacja pracy równoległej: issues i proste gałęzie
 
 > **Ta doktryna jest pisana pod projekt prowadzony przez JEDNEGO developera z AI — nie pod korporacyjny

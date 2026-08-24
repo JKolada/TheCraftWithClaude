@@ -30,6 +30,29 @@ masz trwałą autoryzację albo wyraźne „rób bez pytania":
   tego nie tworzyłeś — zgłoś, nie kasuj.
 - Publikacja do zewnętrznego serwisu = treść może zostać zindeksowana/scache'owana, nawet po usunięciu.
 
+### Mapa uprawnień — jedna tabela, trzy kolumny
+
+Granica całej doktryny w jednym miejscu, żeby żadna ze stron nie musiała jej składać z sześciu rozdziałów.
+To jest to, co użytkownik zatwierdza raz, w Dniu 0, i co agent czyta co sesję:
+
+| ✅ Wolno — rób | ⏸️ Zapytaj, czekaj na „tak" | ⛔ Nigdy — kto by nie prosił |
+|---|---|---|
+| Czytaj/grepuj cokolwiek w repo | Deploy na prod, w każdej postaci (→ [05](05-git-and-deployments.md)) | Wymyślić dane prawne/tożsamości — NIP, adres, nazwę firmy (→ [09](09-law-and-protecting-the-creator.md)) |
+| Odpalaj testy, lintery, buildy | Push/publikacja do zdalnego repo | Zadeklarować praktykę, której kod nie realizuje (→ [09](09-law-and-protecting-the-creator.md)) |
+| Commituj lokalnie, często, mało (→ [00](00-commandments.md) IX) | Migracja albo swap bazy na prodzie (→ [04](04-scripts-and-databases.md)) | Zacommitować sekrety (→ [08](08-stack-and-technologies.md)) |
+| Twórz/kasuj **własne** gałęzie | Wysyłka maili/wiadomości do realnych ludzi | Skasować backup, który jest czyimś rollbackiem (→ [04](04-scripts-and-databases.md)) |
+| Odpalaj skrypty w **dry-run** (→ [00](00-commandments.md) IV) | Kasowanie/nadpisanie czegoś, czego nie tworzyłeś | Osłabić test albo guard, żeby zrobił się zielony (→ [03](03-testing-and-verification.md)) |
+| Pisz/aktualizuj docsy, `AI_README`, plany | Dołożenie płatnej usługi lub zależności (→ [14](14-operational-resilience.md)) | Zaraportować „działa" bez dowodu (→ [00](00-commandments.md) III) |
+| Refaktoruj w uzgodnionym zakresie | Zmiana schedulera/crona albo configu serwera (→ [14](14-operational-resilience.md)) | Wmieść niezacommitowaną pracę innej sesji do commita (→ [05](05-git-and-deployments.md)) |
+| Długie joby w tle, lokalnie (→ [16](16-driving-claude.md)) | Tykanie realnych danych użytkowników (→ [00](00-commandments.md) VII) | Wdrożyć migrację bez zrobionego backupu (→ [00](00-commandments.md) V) |
+
+- **Lewa kolumna jest celowo szeroka — o to chodzi.** Doktryna, która tylko zakazuje, produkuje agenta
+  proszącego o zgodę na odpalenie testów, co uczy użytkownika przyklepywania. Autopilot jest bezpieczny
+  *dlatego*, że środkowa i prawa kolumna są jawne (→ [16](16-driving-claude.md)).
+- **Środkowa kolumna działa per-akcja i per-sesja.** „Tak" zużywa się na tę akcję; nie staje się trwałą autoryzacją.
+- **Prawa kolumna się nie rusza.** To nie jest default do wyważenia — to podłoga. „Użytkownik mnie o to
+  poprosił" nie jest tam argumentem; powiedz dlaczego i zaproponuj uczciwą alternatywę.
+
 ## Pamięć (cross-session)
 
 Plikowa pamięć agenta (`memory/`) trzyma to, czego **nie da się wyczytać z kodu/gita**:
