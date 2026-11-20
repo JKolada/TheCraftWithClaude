@@ -1,89 +1,42 @@
 # 15 — Scraping, API AI i konfigurowalne chatboty
 
-> Pozyskiwanie danych z sieci i delegowanie zadań do AI to dziś rdzeń wielu produktów. Rób to
-> **skutecznie, tanio i z kontraktem** — nie magią. Warstwę operacyjną (timeouty, backoff, rotacja,
-> kwoty, wznawialność) trzyma → [14](14-operational-resilience.md); ten rozdział jest o tym, **jak
-> używać tych mocy jako funkcji produktu**: skąd brać dane, jak delegować zadania do AI i jak zbudować
-> asystenta, którym da się sterować bez deployu.
+> Dane z sieci i AI jako funkcje produktu — skutecznie, tanio i **na kontrakcie**. Warstwa operacyjna
+> (timeouty, backoff, kwoty, wznawialność) → [14](14-operational-resilience.md).
 
-## Skuteczny scraping — dane z sieci
+## Scraping
 
-- **Najpierw oficjalne źródło.** API, feed, eksport, sitemap — scraping HTML to **ostateczność**, nie
-  pierwszy ruch. Oficjalny kontrakt nie pęka przy każdym redesignie strony.
-- **Szanuj źródło.** Respektuj `robots.txt`/ToS, rozsądny throttle, identyfikuj się. Cel to **dane,
-  nie DoS** — agresywny scraper to problem prawny i etyczny (→ [09](09-law-and-protecting-the-creator.md)).
-- **Parsuj odpornie.** Selektory padają przy redesignie — **waliduj kształt** wyniku, nie tylko status
-  (klasyczne „200 + strona błędu", → [14](14-operational-resilience.md)). Drift selektora → alarm, nie ciche zera.
-- **Strona odpowiada dwoma głosami i mogą się nie zgadzać.** `robots.txt` to *polityka* właściciela; tarcza
-  antybotowa (WAF, managed challenge) to *maszyneria*, która nie czyta Twoich intencji. Gdy polityka pozwala
-  na odczyt, a tarcza i tak blokuje, uczciwym ruchem jest **przedstawić się prawdziwie i zapytać
-  właściciela** — nie szukać obejścia maszyny. W projekcie referencyjnym `robots.txt` sklepu mówił `Allow: /`
-  z `search=yes`, a nowy challenge Cloudflare zwracał 403 na każde żądanie z każdej sieci; odpowiedzią był
-  opisowy User-Agent plus pisemna prośba o allowlistę oraz stała zasada, że jeśli żądanie pada, źródło
-  wypada z produktu. **Eskalacja obejścia, gdy polityka jest po Twojej stronie, i tak kończy w tym samym
-  miejscu: operator, który blokuje Cię celowo.**
-- **Odróżnij blokadę adresu od tarczy.** 403 z serwera, ale 200 z innej sieci = zablokowany jest *IP*
-  (przenieś pobór i jedź dalej). 403 z **każdej** sieci = tarcza jest sednem; przenoszenie poboru to praca na
-  marne. Jeden `curl` z każdej strony odpowiada na to, zanim cokolwiek zbudujesz.
-- **Normalizuj u wejścia.** Dane z sieci są brudne: fuzzy-match i dedup do **słowników lookup**, slug,
-  jedno źródło prawdy (→ [11](11-data-model-and-normalization.md)). Surowiec wpada, czysty rekord zostaje.
-- **Inkrementalnie.** Pobieraj **deltę** (co się zmieniło od ostatniego razu), nie cały katalog co noc —
-  taniej, szybciej, mniej obciąża źródło. Checkpoint i wznawialność → [14](14-operational-resilience.md).
-- **Idempotentne loadery.** Ponowny import tych samych danych nie tworzy duplikatów (→ [04](04-scripts-and-databases.md)).
+1. **Najpierw oficjalne źródło** (API, feed, eksport, sitemap); scraping HTML to ostateczność.
+2. **Szanuj źródło:** `robots.txt`/regulamin, rozsądny throttle, prawdziwy User-Agent (→ [09](09-law-and-protecting-the-creator.md)).
+3. **Strona odpowiada dwa razy — polityką i maszynerią.** Gdy `robots.txt` pozwala na odczyt, a tarcza
+   antybotowa blokuje, przedstaw się i **zapytaj właściciela**; nigdy nie buduj obejścia tarczy. Jeśli prośba
+   nie przejdzie, źródło wypada z produktu.
+4. **Odróżnij blokadę IP od tarczy, zanim cokolwiek zbudujesz:** 403 tutaj, a 200 z innej sieci = zablokowany
+   adres (przenieś pobieranie); 403 z każdej sieci = tarcza jest sednem.
+5. **Waliduj kształt wyniku**, nie status — dryf selektora podnosi alarm, nigdy ciche zera.
+6. **Normalizuj u wejścia** względem tabel lookup (→ [11](11-data-model-and-normalization.md)); pobieraj
+   **deltę**, nie cały katalog; loadery są idempotentne (→ [04](04-scripts-and-databases.md)).
 
-### Anty-wzorce
-- 🚫 **Scraping zamiast API**, które istnieje — kruchość bez powodu.
-- 🚫 **Selektor bez walidacji kształtu** — cicha awaria zalewa bazę śmieciem/zerami.
-- 🚫 **Pełny re-scrape codziennie** zamiast delty — marnotrawstwo i ryzyko bana.
-- 🚫 **Brak throttle/identyfikacji** — DoS dla źródła, problem prawny dla Ciebie.
+## API AI
 
-## API AI do konkretnych zadań — nie do wszystkiego
+7. **LLM tylko tam, gdzie deterministyczny kod nie daje rady** (ekstrakcja z nieustrukturyzowanego tekstu,
+   klasyfikacja, streszczenia) — nigdy do tego, co zrobi regex, SQL albo funkcja.
+8. **Wymuś kontrakt wyjścia:** JSON schema / tool use, walidacja, ponowienie przy niezgodności. Wyjście LLM to niezaufane wejście.
+9. **Cache dla identycznych wejść; kwota na każde płatne wywołanie; wzbogacaj offline w batchu
+   z checkpointami**, a nie na żywo w żądaniu usera. Mierz koszt i latencję per zadanie.
 
-- **LLM tam, gdzie kod deterministyczny nie da rady:** ekstrakcja z nieustrukturyzowanego tekstu,
-  klasyfikacja, podsumowanie, normalizacja opisów, generowanie treści. **Nie** do tego, co zrobi
-  `regex`, `SQL` czy zwykła funkcja — to drożej, wolniej i mniej pewnie.
-- **Dobierz model do zadania.** Tani/szybki do prostych (klasyfikacja, ekstrakcja), mocny do złożonego
-  rozumowania. Claude jako default (→ [08](08-stack-and-technologies.md)). **Mierz koszt i latencję**, nie zgaduj.
-- **Wymuś kontrakt wyjścia.** Struktura (JSON schema / tool use), **walidacja** i retry przy niezgodności —
-  nie parsuj prozy na nadzieję. Wyjście LLM traktuj jak niezaufane wejście (→ niżej, guardrails).
-- **Cache + idempotencja.** Te same wejścia → zapisany wynik; nie wołaj LLM w pętli po tym, co się nie
-  zmienia. Drogie wywołania to koszt i latencja (→ [13](13-performance-frontend-and-sql.md)).
-- **Kwoty i budżet.** Limit per user/endpoint, monitoring kosztu, twarda kwota na płatnym API (→ [14](14-operational-resilience.md)).
-- **Batch, gdy nie trzeba realtime.** Wzbogacanie danych offline w pipelinie z checkpointem (→ [14](14-operational-resilience.md))
-  bije wołanie LLM na żywo w żądaniu użytkownika.
+## Chatboty
 
-### Anty-wzorce
-- 🚫 **LLM do tego, co zrobi `regex`/`SQL`** — koszt i niepewność tam, gdzie wystarczy kod.
-- 🚫 **Brak kontraktu wyjścia** — parsujesz wolną prozę i modlisz się o format.
-- 🚫 **Brak cache** drogich wywołań — rachunek rośnie liniowo z ruchem.
-- 🚫 **Ślepe zaufanie do wyjścia** jako kodu/SQL/HTML — wektor wstrzyknięcia.
+10. **Persona, zakres i reguły to konfiguracja** (wersjonowane dane), nie kod — strojone bez deployu.
+11. **Ugruntowane w Twoich danych, ze źródłem**; bezpieczne „nie wiem" zamiast zmyślania.
+12. **Treść usera i z sieci to dane, nigdy instrukcje** (prompt injection): żadnej akcji ze skutkami bez
+    potwierdzenia, żadnego wycieku system promptu ani sekretów.
+13. **Złoty zestaw pytań chodzi jak testy** przy każdej zmianie promptu.
+14. **Disclaimer i podstawa prawna dla przechowywanych rozmów** (→ [09](09-law-and-protecting-the-creator.md)).
 
-## Konfigurowalne chatboty — asystent jako funkcja
-
-- **Persona i zasady = konfiguracja, nie kod.** System prompt, zakres, ton, granice trzymaj jako
-  **dane** (plik/baza), wersjonowane w git — iterujesz asystenta bez deployu. „Zaszyty" prompt w kodzie
-  to martwa konfiguracja.
-- **Grounding obowiązkowy.** Asystent odpowiada z **Twoich danych** (kontekst z bazy / RAG), nie z pamięci
-  modelu. Cytuj źródło (→ [11](11-data-model-and-normalization.md)). Halucynacja na cenie/fakcie = bug, nie „cecha AI".
-- **Zdefiniuj zakres i odmowę.** Co asystent **robi** i czego **nie robi**; bezpieczne „nie wiem"/„to poza
-  moim zakresem" zamiast zmyślania. Pewność siebie modelu ≠ poprawność.
-- **Streaming UX.** Odpowiedź token-by-token (SSE), historia rozmowy, jasne limity (→ [13](13-performance-frontend-and-sql.md), [14](14-operational-resilience.md)).
-- **Bezpieczeństwo (prompt injection).** Treść użytkownika i dane z sieci to **dane, nie instrukcje**.
-  Nie wykonuj akcji side-effect z czatu bez potwierdzenia, nie wyciekaj sekretów ani promptu systemowego (→ [09](09-law-and-protecting-the-creator.md)).
-- **Eval jak testy.** Golden set pytań kontrolnych; zmiana promptu → przepuść przez niego i mierz
-  regresje (→ [03](03-testing-and-verification.md)). Prompt bez evala dryfuje po cichu.
-- **Prawo.** Disclaimer („to nie porada specjalistyczna"), RODO przy zapisie rozmów i danych (→ [09](09-law-and-protecting-the-creator.md)).
-
-### Anty-wzorce
-- 🚫 **Persona zaszyta w kodzie** — każda zmiana tonu to deploy zamiast edycji konfigu.
-- 🚫 **Brak groundingu** — asystent „pewnie" zmyśla fakty/ceny.
-- 🚫 **Brak limitu/kwoty** — czat to otwarty rachunek i wektor nadużyć (→ [14](14-operational-resilience.md)).
-- 🚫 **Akcje z czatu bez potwierdzenia** — model wykonuje nieodwracalne na słowo użytkownika.
-- 🚫 **Traktowanie treści użytkownika jako instrukcji** — prompt injection wycieka prompt/sekrety.
-
-## Dla nowych projektów
-Jeśli produkt żyje z danych z sieci: zacznij od **oficjalnego źródła**, dołóż walidację kształtu i
-idempotentny loader **zanim** zbierzesz pierwszy tysiąc rekordów. Jeśli używasz AI: **kontrakt wyjścia
-i cache od pierwszego wywołania**, kwota od pierwszego użytkownika. Asystenta projektuj jako
-**konfigurowalny i ugruntowany** od początku — system prompt jako dane, golden set jako test (→ [03](03-testing-and-verification.md)),
-limit jako reguła (→ [14](14-operational-resilience.md)). Reszta dorasta z projektem.
+## Antywzorce
+- 🚫 Scraping, gdy istnieje API; pełny re-scrape co noc.
+- 🚫 Obchodzenie tarczy antybotowej, którą postawił właściciel.
+- 🚫 Parsowanie wolnej prozy i nadzieja na format.
+- 🚫 Brak cache'u i kwoty na płatnych wywołaniach.
+- 🚫 Persona wbita w kod; nieugruntowany asystent.
+- 🚫 Akcja na podstawie wiadomości z czatu bez potwierdzenia.

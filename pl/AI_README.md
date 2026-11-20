@@ -40,10 +40,12 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | Plik | Po co to |
 |------|----------|
 | `index.html` | **Minimalny czytnik lokalny/dev** (podgląd treści dla autora/agenta) — NIE publiczna witryna. Strona główna (dekalog + karty) + widok rozdziału + brief + przełącznik języka EN/PL (domyślnie EN). |
-| `intro.md` | **Manifest** — „Czym jest The Craft" + artykuł „dlaczego warto". Dokument specjalny (poza numerowaną listą), routowany jako `#intro`; jest też `pl/intro.md`. |
-| `00`–`17` (root) | **Treść EN — kanoniczna, baza, źródło prawdy.** Slugi/numery = stabilne kotwice, wspólne dla wszystkich języków. |
-| `pl/` | **Treść PL** — równoległy zestaw `00-*.md`…`16-*.md` (te same nazwy plików, treść po polsku). Tłumaczenie EN. |
-| `docs/` | Plany i decyzje meta repo (nie treść doktryny): `docs/AI_README.md`, `docs/plans/`. |
+| `intro.md` | **Krótkie wprowadzenie** — czym jest The Craft, dla kogo, jak zacząć (długa forma jest na stronie). Poza numerowaną listą, routowany jako `#intro`; jest też `pl/intro.md`. |
+| `00`–`19` (root) | **Treść EN — kanoniczna, baza, źródło prawdy.** Slugi/numery = stabilne kotwice, wspólne dla wszystkich języków. |
+| `pl/` | **Treść PL** — te same numerowane rozdziały (te same nazwy plików, treść po polsku). Tłumaczenie EN. |
+| `guards/` | **Gotowi strażnicy testowi** z rozdziału 17: `ai_readme_guard.py` (strażnik indeksu) i `code_language_guard.py` (zapadka). Szablony kopiowane do `tests/` projektu — celowo bez nazwy `test_*.py`, żeby pytest gospodarza nie zbierał ich z `docs/rules/`. Jadą w paczce. |
+| `add_chapter.py` | **Dodaje rozdział i wpina go wszędzie** (`NN-slug.md` + szkielet `pl/`, `README`, oba `AI_README`, `CHAPTERS`/`CH_EN`, `chapters` w `craft.json`), potem `build.py` + `test.py`. Domyślnie dry-run, `--execute` zapisuje. **Nigdy nie rusza wersji ani CHANGELOG** — numer wydania nadaje autor (wspólna oś z Web). Narzędzie repo, nie jedzie w paczce. |
+ Plany i decyzje meta repo (nie treść doktryny): `docs/AI_README.md`, `docs/plans/`. |
 | `content.js` | **Generowany** snapshot `.md` osadzony w JS — pozwala renderować treść po `file://`. Nie edytuj ręcznie. |
 | `build.py` | Skrypt buildu: łączy pliki `.md` → `content.js`. Uruchom po edycji treści (`python build.py`). |
 | `test.py` | **Smoke test** (czysty Python): parytet PL↔EN, martwe linki, świeżość `content.js`, spójność `CHAPTERS`/tabel/`craft.json`, oraz **statyczna nawigacja `index.html`** (linki `href="#…"`, `data-i18n`↔`UI`, `data-bf-label`↔`BRIEF_FIELDS`). `python test.py`. |
@@ -53,25 +55,27 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | `craft.json` | **Wersja wydania** (`version` + `released`) + nazwy marki (`name`/`name_short`/`name_en`). Źródło stempla dla witryny Rzemiosło Web. |
 | `CHANGELOG.md` | Historia wydań Rzemiosła (semver, data = dzień publikacji). |
 | `00-commandments.md` | **Dekalog** — 10 przykazań, 7 grzechów, złota zasada altytudy, jak odstąpić od reguły. Rdzeń. |
-| `01-documentation-and-ai-readme.md` | Trzy warstwy docs: CLAUDE.md / AI_README / docs. Kiedy aktualizować. |
-| `02-skills-and-refactoring.md` | Kiedy zbudować skill/slash-command; dyscyplina refaktoringu; SOLID (z feature flags i rozdziel-warstwy). |
-| `03-testing-and-verification.md` | Piramida testów, „weryfikuj, nie deklaruj", smoke. |
+| `01-documentation-and-ai-readme.md` | Trzy warstwy (CLAUDE.md / AI_README / docs) wg czytelnika; indeks grep; docs = tylko bieżący stan; żywe plany. |
+| `02-skills-and-refactoring.md` | Kiedy zbudować skill (a kiedy hook); dyscyplina refaktoringu; SOLID proporcjonalnie. |
+| `03-testing-and-verification.md` | Każda zmiana zachowania niesie test; dowód zamiast deklaracji; smoke z markerami; uczciwy raport; guard dowodzi incydent. |
 | `04-scripts-and-databases.md` | Dry-run/`--execute`, idempotencja, migracje forward-only, backupy; ścieżki absolutne między narzędziami; przećwicz masową mutację na kopii proda. |
-| `05-git-and-deployments.md` | Szukaj w git, cofanie/odzyskiwanie utraconej pracy, koordynuj równoległe sesje, taguj deploy, przećwicz na preprodzie (dev→preprod→prod), swap bazy z zachowaniem kont. Najgęstszy rozdział. |
-| `06-collaboration-and-memory.md` | Plan→iteruj→review, pamięć, mapa uprawnień (wolno/zapytaj/nigdy), potwierdzaj nieodwracalne, raportuj uczciwie, przekazanie stanu przy urwaniu kontekstu. |
-| `07-new-project-day-0.md` | Checklista „Dzień 0": brief produktowy (język, funkcje, monetyzacja, UX, animacje, marketing) + setup repo. |
-| `08-stack-and-technologies.md` | Uniwersalny stack: Python, bazy, web/API, Docker, serwery (Hetzner) + TDD jako twardy rdzeń. |
-| `09-law-and-protecting-the-creator.md` | Regulamin, polityka prywatności, disclaimery jako ochrona twórcy / JDG. |
-| `10-seo-and-translations.md` | hreflang, JSON-LD, E-E-A-T/YMYL, parytet językowy jako test. |
+| `05-git-and-deployments.md` | Szukanie w historii, cofanie/odzyskiwanie pracy, równoległe sesje i drabina branchowania, polityka deployu (origin, boot-check, tagi, changelog). |
+| `06-collaboration-and-memory.md` | Plan→szkic→skala, mapa uprawnień (wolno/zapytaj/nigdy), język usera, wbudowana pamięć, podsumowanie zmian, przekazanie stanu przy urwaniu kontekstu. |
+| `07-new-project-day-0.md` | Jedyna checklista: wpięcie The Craft (zwykły wskaźnik w CLAUDE.md/AGENTS.md), brief → `project-brief.md`, kroki Dnia 0, szkielet `CLAUDE.md`. |
+| `08-stack-and-technologies.md` | Domyślny stack (Python, SQLite, HTML z serwera, monolit na jednym VPS, Lucide) i kiedy od niego odejść — z ADR. |
+| `09-law-and-protecting-the-creator.md` | Nigdy nie wymyślaj danych prawnych ani nie deklaruj niezrealizowanych praktyk; zawartość regulaminu/polityki; zgoda przed trackerami; indeks bezpieczeństwa. |
+| `10-seo-and-translations.md` | hreflang + x-default, kompletność języków jako test, strażnicy jakości stron programatycznych, YMYL/E-E-A-T, przegląd wrażliwych tłumaczeń, RTL. |
 | `11-data-model-and-normalization.md` | Słowniki lookup, slug zamiast ID, active-row, świadoma denormalizacja. |
 | `12-flexibility-and-scalability.md` | Rozdziel warstwy, feature flags, scale-to-zero vs always-on, nie over-engineeruj. |
 | `13-performance-frontend-and-sql.md` | Mierz najpierw, indeksy + partial index, brak N+1, streaming czatu, CWV, mobilny viewport (dvh/visualViewport). |
-| `14-operational-resilience.md` | Crash-proof runtime, wznawialne joby, zawodne API (backoff/rotacja), limity providera + poczta, kwoty kosztów, cykliczne joby pilnowane świeżością danych. |
+| `14-operational-resilience.md` | Runtime odporny na crash, wznawialne joby, czas życia runnera, wrogie źródła zewnętrzne, limity providera (SMTP), kwoty, observability, strażnicy zadań cyklicznych, config schedulera. |
 | `15-scraping-ai-and-chatbots.md` | Skuteczny scraping (oficjalne źródło, walidacja kształtu, delta), AI-API do konkretnych zadań (kontrakt/cache/kwoty), konfigurowalne+ugruntowane chatboty. |
-| `16-driving-claude.md` | Prowadzenie Claude Code: skille/slash-komendy, plan mode, dobór modelu, autopilot (preferowany), praca w tle, agentowe workflow/subagenci, izolowany git worktree na sesję. |
-| `17-language-and-guards.md` | Kod po angielsku, zawsze (identyfikatory, **nazwy testów**, baza, CLI, klucze); proza w języku projektu zadeklarowanym raz w `CLAUDE.md`; strażnik indeksu `AI_README` (każdy moduł wymieniony, sufit 20 kB) i strażnik języka kodu jako **zapadka** z baselinem per plik; jak wprowadzić dowolną regułę do starego kodu. |
+| `16-driving-claude.md` | Polityka projektu wobec agenta: kiedy plan mode jest obowiązkowy, autopilot w mapie uprawnień, model wg stawki, tło vs odpięte, subagenci, worktree na sesję. |
+| `17-language-and-guards.md` | Kod po angielsku (także nazwy testów), proza w języku projektu; po angielsku w prozie zostają tylko nazwy drukowane przez narzędzie; dwaj strażnicy w `guards/`; zapadka. |
+| `18-release-rehearsal.md` | dev → preprod → prod: ćwicz migracje i deploy na wiernej, zanonimizowanej kopii proda. |
+| `19-database-swap-runbook.md` | Podmiana bazy proda z zachowaniem żywych kont: każda tabela z FK, slug nie ID, żywy prod jako źródło, okno maintenance, smoke. |
 
-Rozdziały dzielą się na **rdzeń** (`00`–`08`) i **pogłębienie** (`09`–`17`). Każdy = jedno
+Rozdziały dzielą się na **rdzeń** (`00`–`08`) i **pogłębienie** (`09`–`19`). Każdy = jedno
 przykazanie/temat, zwarty, zakończony antywzorcami.
 
 ## Indeks tematów → plik (grep-friendly)
@@ -83,23 +87,25 @@ przykazanie/temat, zwarty, zakończony antywzorcami.
 > slug pliku jest wspólny dla wszystkich języków. Inne języki: w analogicznych podfolderach.
 
 - **`00-commandments.md`** — przykazania, dekalog, 10 przykazań, siedem grzechów głównych, złota zasada, altytuda, rdzeń doktryny, zasada zerowa, bootstrap, odstępstwo od reguły, wyjątek, precedencja, konflikt reguł, podłoga, nienegocjowalne.
-- **`01-documentation-and-ai-readme.md`** — dokumentacja, AI_README, CLAUDE.md, docs, /docs, plany, grep, indeks słów kluczowych, oszczędność kontekstu, czytnik, documentation.html, regeneracja, struktura folderów.
+- **`01-documentation-and-ai-readme.md`** — dokumentacja, AI_README, CLAUDE.md, README, docs, /docs, plany, docs/plans, grep, indeks słów kluczowych, oszczędność kontekstu, jeden plik jeden temat, tylko bieżący stan, artefakt generowany, struktura folderów.
 - **`02-skills-and-refactoring.md`** — skill, slash-komenda, /run, /add-migration, automatyzacja, hook, refaktoring, prior-art, reuse, backward-compat, shim, SOLID, single responsibility, open/closed, dependency inversion, /simplify, /code-review.
 - **`03-testing-and-verification.md`** — test, testowanie, TDD, test-first, piramida testów, unit, integration, e2e, Playwright, pytest, Jest, smoke test, weryfikuj nie deklaruj, regresja, CI.
 - **`04-scripts-and-databases.md`** — skrypt, mutacja, dry-run, --execute, idempotencja, migracja, forward-only, backup, restore, retencja, seed, backfill, baza danych, ścieżka absolutna, przenośność ścieżek, /tmp niezgodność, granica narzędzi, Git Bash vs Python ścieżka, przećwicz mutację na kopii proda, snapshot, integrity_check, foreign_key_check.
-- **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, deploy, wdrożenie, tag, rollback, swap bazy, konta, slug, okno maintenance, nginx, pm2, sesje, kolejność FK, integrity_check, sieroty, .gitignore, CRLF, issue, issues, GitHub Issues, jednostka pracy, gałąź, gałęzie, branching, trunk-based, krótka gałąź, PR, pull request, review, recenzja, praca zespołowa, równoległe sesje, wiele sesji AI, solo developer, pojedynczy developer, niewypchnięte commity, sprawdź push przed deployem, origin vs lokalne, boot-check przed reloadem, pułapka cherry-pick 3-way merge, merge wmiata pracę innej sesji, preprod, staging, dev/preprod/prod, trzy środowiska, próba generalna deployu, przećwicz migrację, zanonimizowany refresh, ACME bypass, SITE_URL override, env-overridable, cofanie, odzyskiwanie utraconej pracy, reflog, git restore, reset --soft, ORIG_HEAD, odzyskanie skasowanej gałęzi, przywrócenie pliku ze starego commita, stash, punkt zapisu, straciłem commity, git straszy.
+- **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, historia, .gitignore, CRLF, sieroty, niezacommitowana praca, opis commita, cofanie, odzyskiwanie utraconej pracy, reflog, git restore, reset --soft, ORIG_HEAD, odzyskanie skasowanej gałęzi, przywrócenie pliku ze starego commita, stash, punkt zapisu, straciłem commity, git straszy, issue, issues, GitHub Issues, gałąź, branching, drabina branchowania, trunk-based, feature branch, develop, PR, pull request, review, równoległe sesje, wiele sesji AI, solo developer, cherry-pick, merge wmiata pracę innej sesji, deploy, wdrożenie, polityka deployu, nigdy auto-deploy, origin vs lokalne, niewypchnięte commity, boot-check przed reloadem, okno maintenance, zero-downtime, tag deployu, rollback, changelog, runbook, lekcje z incydentów, nocny backup.
 - **`06-collaboration-and-memory.md`** — współpraca, plan iteruj review, pamięć, potwierdzaj nieodwracalne, raportuj uczciwie, feedback, podsumowanie zmian, widget, następne działania, język natywny, mapa uprawnień, tabela uprawnień, co mi wolno, wolno/zapytaj/nigdy, granica, trwała autoryzacja, zgoda per-akcja, przekazanie stanu, urywa się kontekst, kompaktowanie, podsumowana sesja, długa sesja, wznowienie, podjęcie zadania, stan w drzewie.
-- **`07-new-project-day-0.md`** — nowy projekt, Dzień 0, checklista, brief, brief produktowy, monetyzacja, onboarding, setup, wpięcie The Craft, docs/rules, submodule, poziom techniczny, języki programisty, znane technologie, runbook.
+- **`07-new-project-day-0.md`** — nowy projekt, Dzień 0, checklista, brief, brief produktowy, project-brief.md, monetyzacja, onboarding, setup, wpięcie The Craft, docs/rules, submodule, wskaźnik, AGENTS.md, szkielet CLAUDE.md, poziom techniczny, języki usera, znane technologie, polityka językowa, minimalny Dzień 0.
 - **`08-stack-and-technologies.md`** — stack, technologie, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolit, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
-- **`09-law-and-protecting-the-creator.md`** — prawo, regulamin, polityka prywatności, RODO, zgody, cookie, disclaimer, JDG, bramka wieku, 18+, retencja danych, prawa użytkownika, usunięcie konta, ochrona twórcy.
+- **`09-law-and-protecting-the-creator.md`** — prawo, regulamin, polityka prywatności, RODO, zgody, cookie, trackery, disclaimer, jurysdykcja, prawo właściwe, JDG, placeholder, wymyślony NIP, bramka wieku, 18+, retencja danych, prawa użytkownika, usunięcie konta, ochrona twórcy, checklista bezpieczeństwa, IDOR, autoryzacja.
 - **`10-seo-and-translations.md`** — SEO, hreflang, JSON-LD, schema, canonical, sitemap, meta, OG, Open Graph, E-E-A-T, YMYL, programmatic SEO, tłumaczenia, i18n, l10n, parytet językowy, RTL, lokalizacja.
 - **`11-data-model-and-normalization.md`** — model danych, normalizacja, denormalizacja, słownik lookup, controlled vocabulary, slug, slug zamiast ID, active-row, expired_at, partial index, junction, M:N, klucz obcy, ERD, schemat.
 - **`12-flexibility-and-scalability.md`** — elastyczność, skalowalność, rozdziel warstwy, granice, feature flag, ship dark, ramp, scale-to-zero, always-on, cold start, cache, inwalidacja, over-engineering, ADR.
 - **`13-performance-frontend-and-sql.md`** — wydajność, mierz najpierw, Lighthouse, Core Web Vitals, CWV, LCP, CLS, INP, indeks, partial index, EXPLAIN QUERY PLAN, N+1, SELECT *, WAL, WebP, cache busting, lazy load, streaming, SSE, paginacja, mobile, viewport, dvh, 100vh, visualViewport, klawiatura ekranowa, safe-area, flex-basis, responsywność, emulator urządzenia, getBoundingClientRect, test profilu urządzenia.
 - **`14-operational-resilience.md`** — odporność, runtime, crash, unhandledRejection, uncaughtException, pętla restartów, retry, backoff, timeout, 429, rate limit, rotacja, User-Agent, wznawialne, checkpoint, scraper, długie joby, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, poczta, kwota, koszt, abuse, sesje, MemoryStore.
 - **`15-scraping-ai-and-chatbots.md`** — scraping, scraper, crawler, robots.txt, selektor, parsing, BeautifulSoup, requests, fuzzy match, rapidfuzz, dedup, delta, incremental, AI API, LLM, model, JSON schema, tool use, kontrakt wyjścia, cache, kwota, chatbot, asystent, system prompt, grounding, RAG, prompt injection, halucynacja, eval, golden set, disclaimer.
-- **`16-driving-claude.md`** — Claude Code, skill, skille, slash-komenda, slash, /run, /run-tests, hook, model, przełączanie modeli, autopilot, auto-accept, autonomiczny, tło, background, run_in_background, długie zadania, agentowe, subagent, workflow, fan-out, równolegle, orkiestracja, bariery.
-- **`17-language-and-guards.md`** — język, angielski, język kodu, język prozy, nazewnictwo, identyfikatory, nazwy testów, nazewnictwo testów, polskie identyfikatory, dwujęzyczność, język mieszany, język docstringów, język komentarzy, polityka językowa CLAUDE.md, strażnik, strażnicy, egzekwowanie reguł, strażnik AI_README, strażnik indeksu, każdy moduł w indeksie, sufit rozmiaru, 20 kB, strażnik języka kodu, zapadka, ratchet, baseline, zamrożenie liczby, zaciśnięcie baseline'u, wyjątek datowany, wpięcie w Dniu 0.
+- **`16-driving-claude.md`** — Claude Code, plan mode, planowanie, autopilot, auto-accept, autonomia, mapa uprawnień, wybór modelu, model wg stawki, tło, odpięty proces, długie joby, subagent, fan-out, równolegle, adwersarialna weryfikacja, git worktree, równoległe sesje, wspólny checkout, skill, hook.
+- **`17-language-and-guards.md`** — język, angielski, język kodu, język prozy, nazewnictwo, identyfikatory, nazwy testów, nazewnictwo testów, polskie identyfikatory, dwujęzyczność, język mieszany, język docstringów, język komentarzy, polityka językowa CLAUDE.md, wdrożenie, terminy techniczne w prozie, nazwy drukowane przez narzędzie, strażnik, strażnicy, guards/, egzekwowanie reguł, strażnik AI_README, strażnik indeksu, każdy moduł w indeksie, sufit rozmiaru, 20 kB, strażnik języka kodu, zapadka, ratchet, baseline, --write-baseline, wyjątek datowany, wpięcie w Dniu 0.
+- **`18-release-rehearsal.md`** — preprod, staging, dev/preprod/prod, trzy środowiska, próba generalna deployu, przećwicz migrację, zanonimizowany refresh, basic-auth, noindex, ACME bypass, SITE_URL override, env-overridable, klucz deployowy
+- **`19-database-swap-runbook.md`** — swap bazy, podmiana bazy proda, zachowanie kont, tabele użytkownika, kolejność FK, remap po slugu, żywy prod jako źródło, okno maintenance, pm2 stop, backup przed swapem, integrity_check, foreign_key_check, sessions.db, gitignorowane assety, rsync, smoke po swapie, runbook, lekcje z incydentów
 
 ## Architektura `index.html` (kontrakt)
 
@@ -134,10 +140,13 @@ Jeden plik, bez zależności build. Mechanika:
   działało po sklonowaniu repo.
 - **`marked` ładowany z CDN** — bez sieci render nie zadziała (jest miękki fallback do `<pre>`).
 - **`index.html` NIE zawiera treści rozdziałów** — czyta `.md`/`content.js`. Nie wklejaj treści do HTML.
-- **Dodajesz/zmieniasz rozdział → zsynchronizuj wszystkie miejsca + build:** `CHAPTERS`/`CH_EN` (index.html),
-  tabela w `README.md`, oba `AI_README` (indeks plików, indeks tematów, liczby), liczba w regule zero `00`,
-  `chapters` w `craft.json`; potem `python build.py` + `python test.py`. Rozjazd = martwy wpis (gorszy niż brak).
-- **Parytet EN↔PL:** zmiana reguły w `00`–`17` (EN, kanon) wymaga aktualizacji odpowiednika w `pl/` (ta sama
+- **Nowy rozdział → `python add_chapter.py NN slug --title-en … --title-pl … --desc-en … --desc-pl … --keywords-en … --keywords-pl …`**
+  (dry-run; `--execute` zapisuje) — wpina wszystkie miejsca naraz i odpala `build.py` + `test.py`. Dokłada tylko
+  kolejny numer; wersji nigdy nie zmienia. Ręczna edycja jednego miejsca = martwy wpis; `test.py` go złapie.
+- **Format rozdziału:** jednolinijkowy wstęp (które przykazanie), **Reguły** (numerowane, w trybie
+  rozkazującym, jedna linia + dlaczego), **Antywzorce**. Bez wykładów i bez zakończeń „W praktyce" —
+  wyjaśnienia są na stronie, jedyna checklista to `07`.
+- **Parytet EN↔PL:** zmiana reguły w dowolnym rozdziale (EN, kanon) wymaga aktualizacji odpowiednika w `pl/` (ta sama
   lista, te same nazwy plików). PL to **tłumaczenie**, nie osobna doktryna. `content.js` trzyma oba języki.
 - **Nazwy plików = stabilne kotwice** (`#NN-nazwa`, cele linków względnych), **wspólne dla EN i PL**.
   Nie lokalizujemy nazw plików — tylko treść w środku. Nie zmieniaj bez powodu.
@@ -150,11 +159,11 @@ Jeden plik, bez zależności build. Mechanika:
 
 ## Liczby
 
-- 18 rozdziałów (`00`–`17`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
-  Rdzeń: 9 plików (00–08). Pogłębienie: 9 (09–17).
+- 20 rozdziałów (`00`–`19`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
+  Rdzeń: 9 plików (00–08). Pogłębienie: 11 (09–19).
 - `index.html`: 1 plik; runtime z CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 20 dok. ~160 tys. znaków; PL: 19 dok. ~152 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
-- **Dokumenty specjalne (poza numerowaną listą):** `intro.md` (manifest, route `#intro`) i widok
+  (EN: 22 dok. ~66 tys. znaków; PL: 21 dok. ~61 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
+- **Dokumenty specjalne (poza numerowaną listą):** `intro.md` (krótkie wprowadzenie, route `#intro`) i widok
   briefu (`#brief`) — routowane osobno, nie ma ich w tablicy `CHAPTERS`.
 - **Smoke test:** `python test.py` (parytet PL↔EN, martwe linki, świeżość `content.js`, spójność
   `CHAPTERS`/tabel/`craft.json`, statyczna nawigacja `index.html`: linki `href="#…"` + `data-i18n`↔`UI`

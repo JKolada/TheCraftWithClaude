@@ -1,77 +1,23 @@
 # Czym jest Rzemiosło — The Craft
 
-> **Rzemiosło (The Craft) to sztuka stawiania aplikacji end-to-end z Claude — takich, które
-> są skalowalne, utrzymywalne i łatwe do dalszego rozwoju, migracji i zmiany przez całe życie
-> projektu.** Nie framework, nie biblioteka — **doktryna współpracy człowiek + agent**: zwarty
-> zestaw reguł, przykazań i antywzorców, dzięki którym kod zostaje zrozumiały dla następnej sesji,
-> testowalny, bezpieczny w zmianie i godny zaufania — od pierwszego commita po prod z żywymi
-> użytkownikami.
-
-## W jednym akapicie
-
-Większość projektów budowanych z AI nie rozsypuje się dlatego, że agent nie umie pisać kodu —
-rozsypuje się dlatego, że **nikt nie ustalił zasad**. The Craft to właśnie te zasady: dołączasz je
-do projektu jako `docs/rules/`, a Claude od **Dnia 0** wie „jak my to robimy". Efekt to aplikacja
-o **ekstremalnie elastycznej strukturze plików i technologii** — zaczynasz prosto (jeden serwer,
-jedna baza), a struktura jest z góry gotowa na wzrost: rozdzielone warstwy, feature flags, migracje
-forward-only, slug zamiast ID. Rozwijasz, migrujesz i skalujesz **bez przepisywania od zera**. Wszystko
-z **poszanowaniem prywatności osobistej i prawa** (RODO/GDPR, zgody, ochrona twórcy) wpisanym od
-początku, nie doklejonym na końcu.
+> **Zestaw twardych reguł budowania i prowadzenia aplikacji end-to-end z Claude** — żeby projekt
+> vibe-codingowy został zrozumiały, testowalny, bezpieczny w zmianie i godny zaufania, od pierwszego commita
+> po prod z realnymi userami. Nie framework, nie biblioteka: doktryna, którą agent czyta i której przestrzega.
 
 ## Dla kogo to jest
 
-**Pojedynczy developer** — solowy twórca albo jednoosobowy warsztat — budujący i prowadzący realną
-aplikację **indywidualnie, z AI jako parą**: nie korporacyjny zespół z dedykowanym ops, QA i recenzentami.
-Pisane pod tę skalę — jedna głowa, jeden serwer, jeden deploy, który ogarniasz w myślach. **„Solo" nie
-znaczy jednak „jeden piszący":** rutynowo odpalasz **kilka sesji Claude naraz** na tym samym repo (fix
-w jednej, feature w drugiej), a to już jest sytuacja wielu piszących. Dlatego reguły koordynacji tutaj
-(issues, krótkie gałęzie, dyscyplina push/pull, „nie wypuszczaj tego, czego nie zamierzałeś") istnieją dla
-**równoległych sesji agenta** — zarabiają na siebie w chwili, gdy druga sesja jest otwarta, długo przed
-pojawieniem się jakiegokolwiek ludzkiego współpracownika (→ [05](05-git-and-deployments.md), [06](06-collaboration-and-memory.md)).
+Dla **pojedynczego developera**, który buduje realną aplikację **z AI jako parą** — nie dla korporacyjnego
+zespołu z osobnym ops i QA. „Solo" to i tak wielu piszących: odpalisz **kilka sesji Claude** na jednym repo,
+więc reguły koordynacji (issues, krótkie gałęzie, dyscyplina push/pull) liczą się od drugiej sesji
+(→ [05](05-git-and-deployments.md)).
 
-## Co dostajesz
+## Jak zacząć
 
-- **Kod, który czyta się jak proza** — dopasowany do otoczenia, łatwy w review przez człowieka *i* agenta.
-- **Historia git jako pamięć projektu** — szukasz, zanim napiszesz; nic nie wymyślasz od nowa.
-- **Weryfikację zamiast deklaracji** — „działa" znaczy dowód: smoke test, kod HTTP, liczby, screenshot.
-- **Bezpieczeństwo zmian** — dry-run domyślnie, backup przed każdą migracją, prod święty, dane userów nienaruszalne.
-- **Elastyczność i skalowalność** — monolit na jednym VPS jako prosty default, z jawną ścieżką wzrostu (SQLite → PostgreSQL, VPS → serverless), gdy metryka tego wymusi.
-- **Spokój prawny** — regulamin, polityka prywatności i disclaimery jako zbroja twórcy, nie refleksja po fakcie.
+1. Zainstaluj **Claude Code** (desktop albo CLI).
+2. Wypełnij [brief](index.html#brief) — pyta o to, co zmienia architekturę: języki, MVP, monetyzację, ton.
+3. Dołącz The Craft do projektu jako `docs/rules/` i zacznij od [Dnia 0](07-new-project-day-0.md).
 
----
+Niczego nie musisz pamiętać — reguły czyta agent. Jeśli czytasz jeden plik, czytaj [Dekalog](00-commandments.md).
 
-# Dlaczego warto spróbować napisać aplikację z The Craft
-
-**Bo różnica nie jest w tym, *czy* agent napisze kod — tylko w tym, *jak* będzie wyglądał Twój
-projekt za trzy miesiące.** Bez zasad każda sesja z agentem dokłada trochę chaosu: niespójny styl,
-dokumentacja, która kłamie, migracja bez backupu, deploy „bo gotowe". Po kwartale masz aplikację,
-której boisz się dotknąć. The Craft odwraca tę trajektorię: **każda zmiana zostawia projekt
-czytelniejszym, nie gorszym.**
-
-**Zaczynasz szybko, a nie tanim kosztem.** Jeden serwer, prosty stack, monolit — coś, co ogarniasz
-w głowie: jeden deploy, jeden log, jeden backup, jeden rollback. To nie jest „prymitywne" — to jest
-**tanie w utrzymaniu**. A gdy naprawdę przyjdzie skala, struktura już na nią czeka: warstwy są
-rozdzielone, klucze stabilne, migracje jednokierunkowe. Rozwój i migracja przestają być
-przepisywaniem — stają się dokładaniem.
-
-**Człowiek i agent grają do jednej bramki.** Plan → iteruj → review. Agent nie zgaduje — wykonuje
-sprawdzony przepis, szuka w historii, raportuje uczciwie (z błędami, nie tylko z sukcesami). Ty
-zostajesz architektem decyzji, nie korektorem chaosu. To współpraca, w której **zaufanie buduje się
-na dowodzie**, a nie na optymizmie.
-
-**Prywatność i prawo masz z głowy od Dnia 0.** RODO/GDPR, zgody, retencja, ochrona twórcy — wpisane
-jako polityki w konstytucję projektu, zanim pojawi się pierwszy realny użytkownik. Żadnych nocnych
-poprawek „bo ktoś poprosił o usunięcie konta".
-
-**Najlepsze: to jest reużywalne.** The Craft nie jest „pod jeden projekt". Dołączasz go jako
-`docs/rules/` do **każdej** nowej aplikacji, wypełniasz [brief](index.html#brief) i ruszasz — a każdy
-kolejny projekt korzysta z lekcji poprzedniego.
-
-**Nie musisz nawet czytać całego Dekalogu na start.** Najszybsze wejście: zainstaluj **Claude Desktop /
-Claude Code**, wypełnij [brief](index.html#brief), dołącz The Craft jako `docs/rules/` — i jedziesz.
-Agent czyta reguły, więc nie musisz ich pamiętać; doktryna po prostu działa w tle.
-
-> **Spróbuj raz.** Weź następny pomysł, dołącz The Craft, zacznij od [Dnia 0](07-new-project-day-0.md)
-> i zbuduj go jak rzemieślnik — wolno tam, gdzie błąd jest drogi; szybko tam, gdzie jest tani.
-> Zobaczysz różnicę nie pierwszego dnia, ale **trzeciego miesiąca** — gdy aplikacja wciąż jest
-> przyjemna do rozwijania. Zacznij od [Dekalogu](00-commandments.md): cała doktryna na jednym ekranie.
+Te strony są celowo zwięzłe. **Wyjaśnienia, przykłady i historie stojące za każdą regułą:**
+[thecraft.jakub.solutions](https://thecraft.jakub.solutions).

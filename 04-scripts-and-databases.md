@@ -1,101 +1,36 @@
-# 04 — Scripts and Databases
+# 04 — Scripts and databases
 
-> Commandments IV and V: *Dry-run is the default; the backup is your rollback mechanism.*
+> Commandments IV and V: *dry-run is the default; the backup is the rollback.*
 
-## Scripts — the rules
+## Scripts
 
-### 1. Dry-run is the default
-Every script that **changes data** runs as `--dry-run` by default and prints the plan:
-what, how many rows, where. A deliberate `--execute` turns on the mutation. This has saved the
-reference project more than once — you see "4 OK, 0 skipped" before anything is written.
-
-```
-python -m scripts.x.do_thing            # dry-run: shows the plan
-python -m scripts.x.do_thing --execute  # writes
-```
-
-### 2. Idempotency
-A script run twice should yield the same state, not a doubled one. Write migrations and content loaders
-so that `INSERT OR IGNORE` / `UPSERT` make a re-run safe (in the reference project the content
-loaders from an external database are explicitly idempotent, and that's a deploy requirement).
-
-### 3. Organize by pipeline stage
-Group scripts by phase (`setup/`, `normalize/`, `enrich/`, `validate/`, `images/`,
-`dedup/`, `orchestration/`). Leave **compatibility shims** when you move files.
-Compose them into **composable pipelines** (`post-scrape`, `full`) — but **keep
-catalog-mutating operations OUT of the automatic pipeline** (run dedup/merge by hand:
-dry-run → review → `--execute`).
-
-### 4. Log what you did NOT do
-If a script truncates scope (top-N, sampling, skipped rows) — **print it**. A silent
-truncation reads as "I covered everything" when you didn't.
-
-### 5. Record the environment in the docs
-The interpreter, the variables (`PYTHONIOENCODING=utf-8` on Windows), where to get the venv. The agent
-doesn't guess the path to Python — it reads it from `CLAUDE.md`.
-
-### 6. Absolute paths when a value crosses a tool boundary
-A file path is **not portable between tools.** Git Bash resolves `/tmp` to the MSYS temp dir; Python on
-Windows resolves the *same* `/tmp` to `<cwd-drive>:\tmp`; PowerShell to yet another place. Hand a
-relative — or rooted-but-driveless — path from one tool to another and each reads/writes a **different
-file**: a migration script silently churning an empty DB while your 200 MB copy sits untouched in the
-shell's temp dir. Whenever a path (or any value) passes shell → interpreter → app, make it an
-**absolute, fully-qualified path** (`Z:/work/x.db`, not `/tmp/x.db`), or resolve it once and pass the
-resolved form. When a "did nothing" result surprises you, print `os.path.abspath(p)` / `pwd -W` and
-compare — it's usually two tools disagreeing about where a relative path points.
+1. **Dry-run by default.** A data-changing script prints the plan (what, how many rows, where); a deliberate
+   `--execute` writes.
+2. **Idempotent.** Running it twice yields the same state (`INSERT OR IGNORE` / `UPSERT`).
+3. **Print what you did *not* do** — truncation, sampling, skipped rows. Silence reads as "covered everything".
+4. **Catalog-mutating operations stay out of automatic pipelines** (dedup, merge): dry-run → review → `--execute` by hand.
+5. **The environment is written in `CLAUDE.md`** — interpreter, variables, venv. The agent doesn't guess.
+6. **Absolute paths when a value crosses tools.** `/tmp` means one place to Git Bash, another to Python on
+   Windows, a third to PowerShell — each tool then reads a *different file*. Pass fully-qualified paths; when
+   a run "did nothing", print `os.path.abspath(p)` / `pwd -W` and compare.
 
 ## Databases and migrations
 
-### Migrations are forward-only
-No down-migrations. One numbered file = one step forward. **Rolling back a schema =
-restoring the backup**, not a reverse migration. Therefore:
-
-### Back up BEFORE every schema/data change on prod
-```bash
-sqlite3 data/app.db ".backup backups/pre-deploy-$(date +%F_%H%M%S).db"
-```
-This isn't caution — it's the *undo mechanism*. Keep a retention window (e.g. 14 days) and name the
-snapshots legibly (`pre-deploy-*`, `pre-swap-*`, `replaced-prod-*`).
-
-### Additive > destructive
-`ADD COLUMN` is backward-compatible (old code still works). **Never DROP/RENAME a
-column in the same migration where running old code still uses it** — split the destructive
-change into a later deploy, once nothing reads the column anymore.
-
-### Integrity after the fact
-After every data operation: `PRAGMA integrity_check` + `PRAGMA foreign_key_check` +
-count the rows. Distinguish **pre-existing noise** (orphaned staging rows present both before and after)
-from a **regression** (new violations that weren't there before). In the reference project the merged DB
-had *fewer* violations than the local one — a signal that the migration cleaned up rather than broke things.
-
-### "Active row" model instead of overwriting
-A pattern from prices: instead of an in-place UPDATE, **expire** the old row (`expired_at`) and insert
-a new one; a partial unique index enforces "one active per key". History is preserved and the audit trail
-comes for free. Consider this model anywhere history has value.
-
-### Make a transfer snapshot with `.backup` / `VACUUM INTO`, not `cp` on a live file
-A live SQLite with WAL copied via `cp` can be inconsistent. `.backup` (online-safe) or
-`VACUUM INTO` give a consistent, defragmented copy. **Never SCP a live `.db`.**
-
-### Rehearse a bulk/irreversible data mutation on a fresh prod COPY — not just a dry-run
-A dry-run prints the *plan*; it can't prove the *outcome* or surface conflicts that live only in real
-data — e.g. a merge tool that mis-reads a **stale expired row** as a conflict and deletes the wrong
-*active* one, or a snapshot whose IDs drifted since the plan was written. Before a bulk
-merge/dedup/mass-update on prod: `.backup` prod → run the operation on the **copy** → check the result
-(row counts, `integrity_check`, and spot-check the tricky cases). A same-ID prod snapshot lets you
-rehearse the *exact* run before touching the live data — much cheaper than a rollback. This is the data
-sibling of "rehearse the deploy on preprod" (→ [05](05-git-and-deployments.md)).
+1. **Forward-only migrations.** No down-migrations; rolling back the schema = restoring the backup.
+2. **Back up before every schema/data change on prod**, with a timestamp and a retention window:
+   `sqlite3 data/app.db ".backup backups/pre-deploy-$(date +%F_%H%M%S).db"`
+3. **Snapshot with `.backup` / `VACUUM INTO`, never `cp`/`scp` of a live database** — WAL makes the copy inconsistent.
+4. **Additive before destructive.** `ADD COLUMN` is safe; `DROP`/`RENAME` waits for a later deploy, once no
+   running code reads the column.
+5. **Check integrity after every data operation:** `integrity_check`, `foreign_key_check`, row counts. Tell
+   pre-existing noise (present before and after) from a regression (new violations).
+6. **Rehearse a bulk or irreversible mutation on a fresh prod copy** — a dry-run shows the plan, not the
+   outcome. `.backup` prod → run on the copy → check counts, integrity and the tricky cases → then prod.
+   The deploy-level sibling of this rule → [18](18-release-rehearsal.md).
 
 ## Anti-patterns
 - 🚫 A mutating script without `--dry-run`.
-- 🚫 A deploy with a migration but no backup "because it's additive".
-- 🚫 DROPping a column used by running code.
-- 🚫 `cp app.db` with the server running → an inconsistent snapshot.
-- 🚫 Wiring a catalog-mutating operation into the automatic pipeline.
-
-## In practice
-- Relational database → forward-only migrations + a backup before each one.
-- **A pipeline processing sensitive data** (e.g. anonymization / distilling submissions) = a separate,
-  idempotent script with dry-run; the contract: raw data in, **PII-free data** out,
-  with a test that re-identification is impossible. Keep it OUT of the user-facing path. →
-  [09](09-law-and-protecting-the-creator.md), [11](11-data-model-and-normalization.md)
+- 🚫 A migration deployed without a backup "because it's additive".
+- 🚫 Dropping a column running code still reads.
+- 🚫 `cp app.db` while the server runs.
+- 🚫 A catalog-mutating step wired into the automatic pipeline.

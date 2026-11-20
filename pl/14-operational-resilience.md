@@ -1,123 +1,40 @@
 # 14 — Odporność operacyjna i zewnętrzne zależności
 
-> Przykazania III, V, VI w warstwie runtime: *prod żyje w zawodnym świecie*. Sieć rwie,
-> provider blokuje porty, scraper pada w połowie, płatne API kosztuje przy każdym żądaniu.
-> Doktryna z rozdziałów 03–05 dba o **kod i wdrożenie**; ten rozdział o tym, co dzieje się
-> **po** — gdy realni użytkownicy i niezależne systemy uderzają w działający serwis.
+> Przykazania III, V, VI w runtime: prod żyje w zawodnym świecie. Najgorsze bugi nie krzyczą — zawieszają,
+> wylogowują wszystkich albo drenują budżet. Prawie każdą regułę tutaj opłacił incydent.
 
-Te lekcje są drogo opłacone: prawie każda to incydent na prodzie, nie teoria. Wspólny mianownik —
-**najgorsze bugi nie krzyczą, tylko cicho zawieszają, wylogowują albo drenują budżet.**
+## Reguły
 
-## 1. Jeden zły request nie może położyć procesu
+1. **Jeden zły request degraduje ten request, nie usługę:** łapacze na poziomie procesu dla nieobsłużonych
+   rejection/wyjątków, trasy async przekazujące błędy dalej, handler 500 bez wycieku stack trace'a. Broń się
+   przed realnymi danymi z brzegu (konto OAuth bez hasła, `null` tam, gdzie zakładasz string).
+2. **Długie zadania są wznawialne:** checkpoint skończonych jednostek, zapis co N, idempotencja całości —
+   crash kosztuje ostatni batch, nie cały przebieg.
+3. **Dopasuj runner do czasu życia zadania:** tło agenta przeżywa tury, ale umiera z sesją; wszystko, co
+   ma przeżyć rozmowę, chodzi jako **proces odpięty albo zadanie schedulera systemu**.
+4. **Zewnętrzne źródła są wrogie:** timeout na każde wywołanie, retry z wykładniczym backoffem i limitem
+   prób, i **waliduj odpowiedź, nie status** — „200 + strona błędu" to porażka.
+5. **Sieć providera psuje działający kod dopiero na prodzie:** np. wychodzący SMTP 465 zablokowany → 587 +
+   STARTTLS z twardymi timeoutami połączenia/powitania. „Wysłane" ≠ dostarczone: zweryfikowana domena nadawcy
+   (SPF/DKIM) i realna wysyłka testowa. Sprawdzaj u providera, nie lokalnie.
+6. **Każdy płatny zasób stoi za twardą kwotą** — per user i tier, egzekwowaną po stronie serwera, z jasnym
+   komunikatem i datą resetu podaną z góry.
+7. **Wiedz, że prod żyje:** logi strukturalne z poziomami (bez sekretów, bez pełnych PII), `/healthz`,
+   zewnętrzny ping uptime, alerty na to, co boli (skoki 5xx, nieudane płatności/maile, job, który nie
+   ruszył), błędy kierowane tam, gdzie je zobaczysz.
+8. **Zadania cykliczne: pilnuj wyniku, nie runnera.** Sprawdzaj **wiek najświeższego rekordu per źródło**
+   (`MAX(updated_at)` grupowane po źródle), nie kod wyjścia — zielony raport chodził kiedyś trzy dni obok
+   44% zamrożonych danych. Raport pokrywa tylko ścieżki, o których wie.
+9. **Ustawienia schedulera to produkcja i żyją poza repo** (ponowienie po przegapionym starcie, warunki
+   zasilania i sieci, konto, katalog roboczy) — wpisz je do runbooka i sprawdzaj po każdej zmianie systemu,
+   sprzętu albo konta.
+10. **Każdy incydent staje się datowaną, numerowaną lekcją w runbooku** (→ [05](05-git-and-deployments.md)).
 
-Niezłapany `throw`/rejection w handlerze async potrafi ubić **cały** serwer (Node/Express:
-rejection → exit procesu → pętla restartów pm2). Zbuduj siatkę na poziomie procesu:
-
-- **Globalne łapacze**: `process.on('unhandledRejection')` i `'uncaughtException')` — logują i
-  kontrolowanie kończą, nie zostawiają zombie-procesu.
-- **Wrapper async-route** przekazujący błąd do `next(err)` zamiast gubić go w niezłapanym promise.
-- **Middleware 500**, który **nie wycieka stack trace** użytkownikowi (→ [09](09-law-and-protecting-the-creator.md)).
-- **Defensywa na danych z brzegu**: konto OAuth bez hasła, pole `null` tam gdzie kod zakłada string —
-  to realne wejścia, gdy wpuścisz prawdziwych userów (często ujawnia się **po swapie bazy**, → [05](05-git-and-deployments.md)).
-
-> Reguła: *throw w jednym żądaniu degraduje to żądanie, nie serwis.* Otestuj regresyjnie (→ [03](03-testing-and-verification.md)).
-
-## 2. Długie zadania: wznawialne i odpięte od sesji agenta
-
-Scraper/ETL „zbierz wszystko → zapisz raz" traci 100% pracy przy każdym crashu. Pisz **batchami**:
-
-- **Checkpoint zrobionych jednostek** (plik/tabela z URL-ami/ID) — restart wznawia od miejsca, nie od zera.
-- **Zapis co N**, nie na końcu — crash kosztuje ostatni batch, nie cały run.
-- **Dopasuj runner do czasu życia zadania.** Tło agenta jest trwałe *w obrębie* sesji — przeżywa tury i
-  raportuje, gdy skończy, więc korzystaj z niego (→ [16](16-driving-claude.md)) — ale umiera *razem* z sesją:
-  teardown hosta sesji ubija proces w połowie (to nie anti-bot, to znikający runner). Cokolwiek ma przeżyć
-  rozmowę, idzie do **procesu odpiętego (detached) albo schedulera OS** (→ § 7), nigdy do tła sesji.
-- Idempotencja całości (→ [04](04-scripts-and-databases.md)): wznowiony job nie dubluje już zapisanych danych.
-
-## 3. Zewnętrzne źródła traktuj jak wrogie
-
-Cudze API i strony rwą połączenia, rate-limitują (429), zwracają 200 z HTML-em błędu. Zakładaj zawodność:
-
-- **Timeout na każde wywołanie** — bez niego socket wisi w nieskończoność (cichy zawis, nie błąd).
-- **Retry z exponential backoff** (np. 10/20/30 s), z górnym limitem prób.
-- **Rotacja sesji i User-Agent** przy masowym I/O — nowe `Session` (świeże TCP/cookies) co batch,
-  UA z puli realnych przeglądarek (część hostów rwie po ~kilkuset żądaniach z jednej sesji).
-- **Waliduj odpowiedź, nie status** — „200 + strona błędu" to porażka; sprawdź kształt danych.
-
-## 4. Infrastruktura providera narzuca limity — weryfikuj end-to-end
-
-Hosting ma własne reguły sieciowe, które kładą „działający" kod dopiero na prodzie:
-
-- **Porty bywają blokowane.** Np. wyjściowy SMTP 465 potrafi być zamknięty → użyj **587 + STARTTLS**.
-  `secure:true` na zablokowanym porcie **zawiesza każdą wysyłkę** aż do timeoutu — ustaw twarde
-  connection/greeting timeouts, żeby błąd był głośny.
-- **Deliverability poczty to nie „wysłałem".** Zweryfikowana domena nadawcy (SPF/DKIM), realne
-  wysłanie testowe, opt-in zgodny z RODO (→ [09](09-law-and-protecting-the-creator.md)). E-mail, który
-  „wyszedł", a wylądował w spamie/nigdzie, to bug.
-- **Sprawdź to na prodzie/stagingu providera**, nie lokalnie — lokalna sieć nie ma tych blokad (→ [03](03-testing-and-verification.md)).
-
-## 5. Każdy płatny zasób za twardą kwotą
-
-Endpoint wołający płatne API (LLM, geokodowanie, e-mail) bez limitu to otwarty rachunek i wektor nadużyć:
-
-- **Kwota per użytkownik** (okno miesięczne/dobowe) z **jasnym komunikatem** i **datą resetu z góry**.
-- **Różnicuj per tier** (free vs premium), egzekwuj po stronie serwera.
-- **Rate-limit + nagłówki bezpieczeństwa** (helmet/limiter) jako stały element stacku (→ [08](08-stack-and-technologies.md)).
-- Powiąż z prawem i regulaminem: limit i jego komunikacja to też ochrona przed abuse (→ [09](09-law-and-protecting-the-creator.md)).
-
-## 6. Wiedz, że prod żyje — observability
-
-Powyższe obrony chronią proda przed śmiercią; **observability mówi Ci, że żyje** — *po* zamknięciu okna
-deployu, zanim user napisze maila. „Weryfikuj, nie deklaruj" (→ [03](03-testing-and-verification.md)) zastosowane do działającego systemu:
-
-- **Logi strukturalne z poziomami.** `error` / `warn` / `info` (nie `print` wszędzie). Błędy niosą kontekst
-  (request id, user, co padło) — ale **nigdy sekretów ani pełnego PII**. Grepujesz logi o 2 w nocy; zrób je grepowalne.
-- **Endpoint zdrowia.** `/healthz` zwracający 200 + tani check (baza osiągalna, wersja) — dla load balancera
-  i monitora uptime. **Zewnętrzny ping uptime** powie Ci o awarii zanim powie klient.
-- **Alertuj na to, co boli**, nie na szum: skoki 5xx, nieudane płatności/maile, job który nie wystartował,
-  drift selektora / „200 + strona błędu" (→ § 3). Jeden działający alert bije sto dashboardów.
-- **Kilka realnych metryk** zamiast vanity: error rate, p95 latency, głębokość kolejki, dzienny koszt płatnych
-  API (→ § 5). Mierz, zanim optymalizujesz (→ [13](13-performance-frontend-and-sql.md)).
-- **Błędy → tam, gdzie je zobaczysz** (log drain / error tracker), nie tylko stdout, który ucieka.
-
-Zacznij malutko: logi z poziomami + health check + jeden ping uptime łapią większość wartości. Rozwijaj
-dopiero, gdy realny incydent pokaże lukę (zapisz lekcję w runbooku → [05](05-git-and-deployments.md)).
-
-## 7. Zadania cykliczne: pilnuj wyniku, nie runnera
-
-Nocny job to ta część proda, która pada **cicho z założenia** — nikt nie patrzy o 4 rano, a awaria wygląda
-dokładnie jak spokojna noc. Trzy reguły, każda opłacona incydentem:
-
-- **Watchdog mierzy dane, nie job.** Kod wyjścia 0, log, który urósł, „26 scraperów, 0 błędów" — każde z
-  nich może być prawdą, gdy dane stoją zamrożone. Zamiast tego sprawdzaj **wiek najświeższego rekordu per
-  źródło** (`MAX(updated_at)` grupowane po sklepie/feedzie/tenancie). To przeżywa job, który się odpalił i
-  nic nie pobrał, ingest, który padł po udanym pobraniu, i źródło dodane za miesiąc — czego żaden check
-  skanujący logi nie przeżyje. W projekcie referencyjnym zielony nocny raport chodził trzy dni obok
-  **44% zamrożonego katalogu**: raport nie kłamał, po prostu nic nie wiedział o drugiej ścieżce danych.
-- **Zielony raport pokrywa tylko to, o czym wie.** Gdy część pipeline'u chodzi gdzie indziej — inna maszyna,
-  inny harmonogram, krok ręczny — *milczenie* głównego raportu o tym nie jest dobrą wiadomością. Albo każda
-  ścieżka kończy się własnym dowodem, albo jeden watchdog widzi je wszystkie.
-- **Config schedulera to produkcja i żyje poza repo.** Tamten incydent nie był bugiem kodu: zadanie
-  zaplanowane miało wyłączone „uruchom jak najszybciej po przegapionym starcie" i warunek „nie startuj na
-  baterii", więc śpiący laptop znaczył pominiętą noc, której nigdy nie ponowiono. Żaden test, review ani
-  `git log` by tego nie złapał. Wpisz do runbooka ustawienia, które mają znaczenie (retry-po-przegapieniu,
-  warunki zasilania/sieci, konto, na którym chodzi, katalog roboczy → [05](05-git-and-deployments.md))
-  i re-sprawdzaj je po każdej zmianie OS, sprzętu czy konta.
-
-## Anty-wzorce
-- 🚫 **Brak globalnego łapacza błędów** — jeden zły request restartuje serwis dla wszystkich.
-- 🚫 **Scraper bez checkpointów** odpalany z tła sesji — crash = run od zera, znikający runner = wieczna porażka.
-- 🚫 **Zewnętrzne wywołanie bez timeoutu i backoffu** — cichy zawis albo ban po serii 429.
-- 🚫 **„Wysłałem maila" ≠ dostarczyłem** — brak weryfikacji portu/domeny/dostarczalności.
-- 🚫 **Płatne API bez kwoty** — niespodziewany rachunek i otwarty wektor nadużyć.
-- 🚫 **Sesje w pamięci procesu** — każdy deploy wylogowuje wszystkich (→ [05](05-git-and-deployments.md)).
-- 🚫 **Brak logów/alertów** — o awarii proda dowiadujesz się od usera, nie od systemu; „działa" bez sposobu, by to wiedzieć.
-- 🚫 **Job cykliczny pilnowany własnym kodem wyjścia** — melduje sukces przez tydzień, gdy dane stoją w miejscu.
-- 🚫 **Ustawienia schedulera, których nikt nie zapisał** — run jest „zautomatyzowany" aż do nocy, gdy cicho nie jest.
-- 🚫 **Sekrety/PII w logach** — log drain staje się wyciekiem.
-
-## Dla nowych projektów
-Wpisz do Dnia 0 (→ [07](07-new-project-day-0.md)) **zanim** pojawi się pierwszy realny user:
-globalny error-handler + 500 bez wycieku, timeouty i backoff na każdym zewnętrznym I/O, kwoty na
-płatnych endpointach, trwały store sesji w osobnym pliku. To tańsze teraz niż jako incydent o 2 w nocy.
-Każdy incydent prod → wpis w runbooku z datą i ponumerowaną lekcją (→ [05](05-git-and-deployments.md), [06](06-collaboration-and-memory.md)).
+## Antywzorce
+- 🚫 Brak globalnego łapacza — jeden zły request restartuje usługę wszystkim.
+- 🚫 Długi scraper bez checkpointów, odpalony z tła sesji.
+- 🚫 Zewnętrzne wywołanie bez timeoutu i backoffu.
+- 🚫 Płatne API bez kwoty.
+- 🚫 Sesje w pamięci procesu — każdy deploy wylogowuje wszystkich.
+- 🚫 Zadanie cykliczne pilnowane własnym kodem wyjścia.
+- 🚫 Sekrety albo PII w logach.

@@ -1,125 +1,40 @@
 # 14 — Operational resilience and external dependencies
 
-> Commandments III, V, VI at the runtime layer: *prod lives in an unreliable world*. The network
-> drops, the provider blocks ports, the scraper dies halfway, a paid API costs on every request.
-> The doctrine in chapters 03–05 covers **code and deployment**; this chapter is about what
-> happens **after** — when real users and independent systems hit a running service.
+> Commandments III, V, VI at runtime: prod lives in an unreliable world. The worst bugs don't shout — they
+> hang, log everyone out, or drain the budget. Almost every rule here was paid for by an incident.
 
-These lessons were paid for dearly: nearly every one is a prod incident, not theory. The common
-denominator — **the worst bugs don't shout, they quietly hang, log out, or drain the budget.**
+## Rules
 
-## 1. One bad request must not take down the process
-
-An uncaught `throw`/rejection in an async handler can kill the **entire** server (Node/Express:
-rejection → process exit → pm2 restart loop). Build a net at the process level:
-
-- **Global catchers**: `process.on('unhandledRejection')` and `'uncaughtException')` — they log and
-  shut down in a controlled way, leaving no zombie process.
-- **An async-route wrapper** that passes the error to `next(err)` instead of losing it in an uncaught promise.
-- **500 middleware** that **doesn't leak the stack trace** to the user (→ [09](09-law-and-protecting-the-creator.md)).
-- **Defense on edge data**: an OAuth account with no password, a `null` field where the code assumes a string —
-  these are real inputs once you let real users in (often surfaces **after a database swap**, → [05](05-git-and-deployments.md)).
-
-> Rule: *a throw in one request degrades that request, not the service.* Test it for regressions (→ [03](03-testing-and-verification.md)).
-
-## 2. Long jobs: resumable and detached from the agent session
-
-A "collect everything → save once" scraper/ETL loses 100% of its work on every crash. Write in **batches**:
-
-- **Checkpoint completed units** (a file/table of URLs/IDs) — a restart resumes from where it left off, not from scratch.
-- **Save every N**, not at the end — a crash costs the last batch, not the whole run.
-- **Match the runner to the job's lifetime.** The agent's background is durable *within* the session —
-  it survives turns and reports back when it finishes, so use it (→ [16](16-driving-claude.md)) — but it
-  dies *with* the session: tearing down the session host kills the process halfway (it's not anti-bot,
-  it's a vanishing runner). Anything that must outlive the conversation goes to a **detached process or
-  the OS scheduler** (→ § 7), never to the session background.
-- End-to-end idempotency (→ [04](04-scripts-and-databases.md)): a resumed job doesn't duplicate already-saved data.
-
-## 3. Treat external sources as hostile
-
-Other people's APIs and pages drop connections, rate-limit (429), return 200 with an error page. Assume they're unreliable:
-
-- **A timeout on every call** — without it the socket hangs forever (a silent freeze, not an error).
-- **Retry with exponential backoff** (e.g. 10/20/30 s), with an upper bound on attempts.
-- **Rotate session and User-Agent** under heavy I/O — a fresh `Session` (new TCP/cookies) per batch,
-  a UA from a pool of real browsers (some hosts drop you after a few hundred requests from one session).
-- **Validate the response, not the status** — a "200 + error page" is a failure; check the shape of the data.
-
-## 4. The provider's infrastructure imposes limits — verify end-to-end
-
-Hosting has its own network rules that break "working" code only in prod:
-
-- **Ports can be blocked.** E.g. outbound SMTP 465 may be closed → use **587 + STARTTLS**.
-  `secure:true` on a blocked port **hangs every send** until timeout — set hard
-  connection/greeting timeouts so the error is loud.
-- **Mail deliverability isn't "I sent it."** A verified sender domain (SPF/DKIM), a real
-  test send, GDPR-compliant opt-in (→ [09](09-law-and-protecting-the-creator.md)). An email that
-  "went out" but landed in spam/nowhere is a bug.
-- **Check this on the provider's prod/staging**, not locally — your local network doesn't have these blocks (→ [03](03-testing-and-verification.md)).
-
-## 5. Every paid resource behind a hard quota
-
-An endpoint calling a paid API (LLM, geocoding, email) with no limit is an open tab and an abuse vector:
-
-- **A quota per user** (monthly/daily window) with a **clear message** and a **reset date up front**.
-- **Differentiate per tier** (free vs premium), enforce it server-side.
-- **Rate-limit + security headers** (helmet/limiter) as a permanent part of the stack (→ [08](08-stack-and-technologies.md)).
-- Tie it to the law and the terms of service: a limit and how you communicate it are also protection against abuse (→ [09](09-law-and-protecting-the-creator.md)).
-
-## 6. Know prod is healthy — observability
-
-The defenses above keep prod from dying; **observability tells you it's alive** — *after* the deploy window
-closes, before a user emails you. "Verify, don't declare" (→ [03](03-testing-and-verification.md)) applied to a running system:
-
-- **Structured logs with levels.** `error` / `warn` / `info` (not `print` everywhere). Errors carry context
-  (request id, user, what failed) — but **never secrets or full PII**. You grep logs at 2 a.m.; make them greppable.
-- **A health endpoint.** `/healthz` returning 200 + a cheap check (DB reachable, version) — for the load
-  balancer and an uptime monitor. **An external uptime ping** tells you it's down before the customer does.
-- **Alert on what hurts**, not on noise: spikes in 5xx, failed payments/emails, a job that didn't run, the
-  selector-drift / "200 + error page" case (→ § 3). One actionable alert beats a hundred dashboards.
-- **A few real metrics** over vanity: error rate, p95 latency, queue depth, daily cost of paid APIs (→ § 5).
-  Measure before you optimize (→ [13](13-performance-frontend-and-sql.md)).
-- **Errors → a place you'll see them** (a log drain / error tracker), not just stdout that scrolls away.
-
-Start tiny: logs with levels + a health check + one uptime ping covers most of the value. Grow only when a
-real incident shows the gap (capture the lesson in the runbook → [05](05-git-and-deployments.md)).
-
-## 7. Recurring jobs: watch the result, not the runner
-
-A nightly job is the part of prod that fails **silently by design** — nobody is watching at 4 a.m., and
-a failure looks exactly like a quiet night. Three rules, each paid for with an incident:
-
-- **The watchdog measures the data, not the job.** Exit code 0, a log file that grew, "26 scrapers, 0
-  errors" — every one of those can be true while the data is frozen. Assert on the **age of the freshest
-  record per source** (`MAX(updated_at)` grouped by shop/feed/tenant) instead. That survives a job that
-  ran and fetched nothing, an ingest that failed after a successful fetch, and a source added next month —
-  none of which a log-scraping check survives. In the reference project a green nightly report ran for
-  three days beside **44% of the catalogue frozen**: the report wasn't lying, it simply knew nothing
-  about the second data path.
-- **A green report only covers what it knows about.** When part of the pipeline runs elsewhere — another
-  machine, another schedule, a manual step — the main report's *silence* about it is not good news.
-  Either every path ends in its own evidence, or one watchdog sees them all.
-- **Scheduler config is production, and it lives outside the repo.** That incident wasn't a code bug: the
-  scheduled task had "run as soon as possible after a missed start" switched off and a "don't start on
-  battery" condition, so a sleeping laptop meant a skipped night that was never retried. No test, review
-  or `git log` could have caught it. Write the settings that matter into the runbook (retry-on-miss,
-  power/network conditions, the account it runs as, the working directory → [05](05-git-and-deployments.md))
-  and re-check them after every OS, hardware or account change.
+1. **One bad request degrades that request, not the service:** process-level catchers for unhandled
+   rejections/exceptions, async routes that forward errors, a 500 handler that leaks no stack trace. Defend
+   against real edge data (an OAuth account without a password, `null` where a string is assumed).
+2. **Long jobs are resumable:** checkpoint completed units, save every N, idempotent end-to-end — a crash
+   costs the last batch, not the run.
+3. **Match the runner to the job's lifetime:** the agent's background survives turns but dies with the
+   session; anything that must outlive the conversation runs as a **detached process or OS-scheduled task**.
+4. **External sources are hostile:** a timeout on every call, retry with exponential backoff and a cap, and
+   **validate the response, not the status** — "200 + an error page" is a failure.
+5. **The provider's network breaks working code only in prod:** e.g. outbound SMTP 465 blocked → use 587 +
+   STARTTLS with hard connect/greeting timeouts. "Sent" ≠ delivered: verified sender domain (SPF/DKIM) and a
+   real test send. Verify on the provider, not locally.
+6. **Every paid resource sits behind a hard quota** — per user and tier, enforced server-side, with a clear
+   message and the reset date shown up front.
+7. **Know prod is alive:** structured logs with levels (no secrets, no full PII), `/healthz`, an external
+   uptime ping, alerts on what hurts (5xx spikes, failed payments/mail, a job that didn't run), errors routed
+   somewhere you'll see them.
+8. **Recurring jobs: watch the result, not the runner.** Assert on the **age of the freshest record per
+   source** (`MAX(updated_at)` grouped by source), not on an exit code — a green report once ran for three
+   days beside 44% of the data frozen. A report covers only the paths it knows about.
+9. **Scheduler settings are production and live outside the repo** (retry after a missed start, power and
+   network conditions, account, working directory) — write them into the runbook and re-check after any OS,
+   hardware or account change.
+10. **Every incident becomes a dated, numbered lesson in the runbook** (→ [05](05-git-and-deployments.md)).
 
 ## Anti-patterns
-- 🚫 **No global error catcher** — one bad request restarts the service for everyone.
-- 🚫 **A scraper with no checkpoints** run from the session background — crash = run from scratch, vanishing runner = perpetual failure.
-- 🚫 **An external call with no timeout and backoff** — a silent freeze or a ban after a string of 429s.
-- 🚫 **"I sent the email" ≠ I delivered it** — no verification of port/domain/deliverability.
-- 🚫 **A paid API with no quota** — a surprise bill and an open abuse vector.
-- 🚫 **Sessions in process memory** — every deploy logs everyone out (→ [05](05-git-and-deployments.md)).
-- 🚫 **No logs/alerts** — you find out prod is down from the user, not the system; "it works" with no way to know.
-- 🚫 **A recurring job watched by its own exit code** — it reports success for a week while the data stands still.
-- 🚫 **Scheduler settings nobody wrote down** — the run is "automated" right up to the night it silently isn't.
-- 🚫 **Secrets/PII in logs** — the log drain becomes the breach.
-
-## For new projects
-Add to Day 0 (→ [07](07-new-project-day-0.md)) **before** the first real user shows up:
-a global error handler + a 500 with no leak, timeouts and backoff on every external I/O, quotas on
-paid endpoints, a durable session store in a separate file. It's cheaper now than as a 2 a.m. incident.
-Every prod incident → an entry in the runbook with a date and a numbered lesson (→ [05](05-git-and-deployments.md), [06](06-collaboration-and-memory.md)).
+- 🚫 No global error catcher — one bad request restarts the service for everyone.
+- 🚫 A long scraper without checkpoints, run from the session background.
+- 🚫 An external call without timeout and backoff.
+- 🚫 A paid API without a quota.
+- 🚫 Sessions in process memory — every deploy logs everyone out.
+- 🚫 A recurring job watched by its own exit code.
+- 🚫 Secrets or PII in logs.

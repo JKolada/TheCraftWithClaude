@@ -8,7 +8,7 @@
 >
 > Dlatego opisane niżej kroki **w kopii wendorowanej najczęściej nie mają zastosowania** —
 > `test.py`, katalog `pl/` i `docs/plans/` zwykle w niej nie jadą (w tej kopii ich nie ma).
-> Podróżuje wyłącznie **treść**: `00`–`17` + `intro.md` + `AI_README.md`.
+> Podróżuje wyłącznie **treść**: numerowane rozdziały + `intro.md` + `AI_README.md` + `guards/`.
 >
 > Poprawiasz regułę, pracując w projekcie-gospodarzu? Zrób to tutaj, a potem **przenieś zmianę
 > do kanonu** (`ClaudeBuildCodex`, wraz z tłumaczeniem `pl/`) — inaczej kanon cicho się rozjedzie.
@@ -35,7 +35,7 @@ Paleta (fiolet→cyan) i typografia (Playfair Display + Outfit) spójne z marką
 
 ## To repo = zestaw reguł; prezentacja = The Craft Web
 
-**To repozytorium jest TYLKO kanonicznym, zwartym rdzeniem reguł** (techniczna forma, po polsku) —
+**To repozytorium jest TYLKO kanonicznym, zwartym rdzeniem reguł** (techniczna, zwięzła forma; EN baza + PL tłumaczenie) —
 źródło prawdy, dołączane do projektów jako `docs/rules/`. **Nie jest produktem prezentacyjnym.**
 `index.html` tutaj to **minimalny czytnik lokalny/dev**, nie publiczna witryna.
 
@@ -44,7 +44,7 @@ repo — odpowiada za publiczną stronę, **edycje** (rejestr podania) i **wersj
 
 - **Edycje** (ten sam rdzeń, inny rejestr): **TECHNICZNA** (to repo) → **BIZ-TECH** (pomost) → **BIZNESOWA**
   (nietechniczna). To warstwa podania, którą **buduje Web**, nie treść trzymana tutaj.
-- **Języki**: **EN (kanon, root) + PL (`pl/`)** — równoległy zestaw `00-*.md`…`15-*.md` o tych samych
+- **Języki**: **EN (kanon, root) + PL (`pl/`)** — równoległy zestaw numerowanych rozdziałów o tych samych
   nazwach plików (PL = tłumaczenie, nie osobna doktryna). **Angielski jest bazą** (domyślny w czytniku).
   Pisz reguły **przekładalnie**; zmiana reguły w EN pociąga aktualizację PL (parytet → [10](10-seo-and-translations.md)).
   Czytnik ma pełny **przełącznik EN/PL**. Paczki `docs/rules/<lang>/` per język montuje Web z treści tego repo.
@@ -56,16 +56,16 @@ Tu, w rdzeniu: **nie dodawaj badge'y edycji ani marketingu** (to warstwa Web). K
 
 | Warstwa | Tech | Lokalizacja |
 |---------|------|-------------|
-| Treść (źródło prawdy) | Markdown, ręcznie pisany (EN root = baza + PL `pl/`) | `00-*.md` … `15-*.md`, `intro.md`, `README.md` |
+| Treść (źródło prawdy) | Markdown, ręcznie pisany (EN root = baza + PL `pl/`) | `NN-*.md` (00–19), `intro.md`, `README.md` |
 | Przeglądarka treści | Jeden statyczny plik, SPA | `index.html` |
 | Render markdown | `marked` z CDN (jsdelivr), hash-routing | inline w `index.html` |
 | Snapshot treści (artefakt) | `.md` osadzone w JS, by działało po `file://` | `content.js` (generowany) |
 | Build snapshotu | Skrypt łączący `.md` → `content.js` | `build.py` |
 | Czcionki | Google Fonts (Playfair Display, Outfit, JetBrains Mono) | `<link>` w `index.html` |
 
-**Jedyny build to `build.py`** (concat `.md` → `content.js`) — żadnego bundlera, package.json,
-testów ani backendu. To repozytorium **dokumentacji**. „Kod" to `index.html` + `build.py`; trzymaj
-prosto, nie over-engineeruj (→ [12](12-flexibility-and-scalability.md)).
+**Jedyny build to `build.py`** (concat `.md` → `content.js`) — żadnego bundlera, package.json ani
+backendu. Narzędzia: `test.py` (smoke), `add_chapter.py` (wpinanie rozdziału), `guards/` (szablony testów
+dla projektów, rozdz. 17). To repozytorium **dokumentacji**; trzymaj prosto (→ [12](12-flexibility-and-scalability.md)).
 
 ## Jak uruchomić / podejrzeć
 
@@ -104,15 +104,17 @@ python test.py                  # smoke: parytet PL/EN, martwe linki, świeżoś
   `href="#..."`, klucze `data-i18n`↔`UI`, `data-bf-label`↔`BRIEF_FIELDS`). Zielone = struktura i ścieżki
   spójne; nie łapie **zachowania** runtime JS (od tego podgląd w przeglądarce, Przykazanie III).
 - **Lista rozdziałów żyje w jednym miejscu** — tablica `CHAPTERS` w `<script>` w `index.html`.
-  Dodajesz/zmieniasz rozdział → aktualizujesz `CHAPTERS`/`CH_EN` (karty, dropdown i prev/next generują
-  się z niej), tabelę w `README.md`, oba `AI_README` (indeksy + liczby), liczbę w regule zero `00`
-  i `craft.json` `chapters` — potem `build.py` + `test.py`.
+  Nowy rozdział wpina **`python add_chapter.py NN slug …`** (dry-run → `--execute`): `CHAPTERS`/`CH_EN`,
+  tabelę w `README.md`, oba `AI_README`, `chapters` w `craft.json`, potem `build.py` + `test.py`. **Wersji
+  i CHANGELOG skrypt nie rusza** — numer wydania nadaje autor (wspólna oś wersji z Web).
 - **Numeracja i slugi są stabilne** — `NN-nazwa.md`. Nie zmieniaj istniejących nazw plików bez
   potrzeby; są kotwicami (`#NN-nazwa`) i celami linków względnych między rozdziałami.
 - **Linki między rozdziałami:** względne, w formie `[NN](NN-nazwa.md)` — `index.html` przepisuje
   je na hash-route w locie, a na GitHubie działają natywnie. Nie wpisuj `#`-linków w `.md`.
-- **Ton i forma:** zwarte, imperatywne, z „dlaczego". Każdy rozdział = jedno przykazanie/temat,
-  zakończony antywzorcami. Bez lania wody — to codex, nie esej.
+- **Ton i forma:** twarde reguły, nie wykład. Każdy rozdział = jeden temat w formacie: jednolinijkowy wstęp
+  (które przykazanie) → **Reguły** (numerowane, jedna linia + „dlaczego") → **Antywzorce**. Bez zakończeń
+  „W praktyce" (jedyna checklista to `07`). Wiedza, którą współczesny model ma i tak (definicje, podstawy
+  SEO/SQL), zostaje poza rdzeniem; **wyjaśnienia, przykłady i historie idą na stronę (Rzemiosło Web).**
 - **Dwa języki:** **EN (kanon, root, baza)** i PL (`pl/`). Nazwy, które drukuje narzędzie (komendy, flagi, statusy, tagi),
   zostają po angielsku w obu (→ [17](17-language-and-guards.md)). Pisz reguły **przekładalnie** (bez nieprzekładalnych gier słownych
   w samym sednie). Zmiana w EN → aktualizacja `pl/` (parytet, [10](10-seo-and-translations.md)).
@@ -128,9 +130,10 @@ python test.py                  # smoke: parytet PL/EN, martwe linki, świeżoś
   publikacji, commit + **annotated tag** `vX.Y.Z` (Przykazanie VIII). `version` musi zgadzać się z
   najwyższym wpisem changeloga. Witryna `ClaudeBuildCodexWeb` (Rzemiosło Web) konsumuje to przy buildzie i stempluje.
 
-## Stan bieżący (2026-06-19)
+## Stan bieżący (2026-11-20, v1.1.1)
 
-- **18 rozdziałów** (`00`–`17`) + `README.md`. Rdzeń: 00–08; pogłębienie: 09–17.
+- **20 rozdziałów** (`00`–`19`) + `intro.md` + `README.md`. Rdzeń: 00–08; pogłębienie: 09–19.
+  Treść EN ~62 tys. znaków po przejściu tnącym w 1.1.1 (przegląd z Claude Opus 5.5).
 - **Dwa języki:** **EN kanonicznie w rootcie (baza)**, PL w `pl/` (te same nazwy plików). `content.js`
   trzyma oba: `{lang:{slug:md}}`.
 - `index.html` — SPA-czytnik: strona główna (dekalog + karty) i widok rozdziału (render `.md`,
@@ -146,6 +149,6 @@ python test.py                  # smoke: parytet PL/EN, martwe linki, świeżoś
    Oszczędność kontekstu (reguła → [01](01-documentation-and-ai-readme.md)).
 1. Przeczytaj [00 — Dekalog](00-commandments.md) — cała doktryna na jednym ekranie.
 2. Zmiana treści → odpowiedni plik `.md`. Zmiana wyglądu/nawigacji → `index.html`.
-3. Po zmianie listy rozdziałów zsynchronizuj **trzy** miejsca: `CHAPTERS`, `README.md`, `AI_README.md`.
+3. Nowy rozdział → `python add_chapter.py` (wpina wszystko naraz); wersję i CHANGELOG ustawiasz sam.
 4. **Po edycji `.md` → `python build.py`** (regeneruje `content.js`).
 5. Sprawdź render przez lokalny serwer, zanim uznasz, że „działa" (Przykazanie III).

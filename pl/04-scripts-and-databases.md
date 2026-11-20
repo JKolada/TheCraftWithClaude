@@ -1,101 +1,36 @@
 # 04 — Skrypty i bazy danych
 
-> Przykazania IV i V: *Dry-run jest domyślny; backup to mechanizm rollbacku.*
+> Przykazania IV i V: *dry-run jest domyślny; backup to rollback.*
 
-## Skrypty — zasady
+## Skrypty
 
-### 1. Tryb próbny jest domyślny
-Każdy skrypt, który **zmienia dane**, działa domyślnie jako `--dry-run` i wypisuje plan:
-co, ile wierszy, gdzie. Mutację włącza świadome `--execute`. To uratowało projekt referencyjny
-niejeden raz — widzisz „4 OK, 0 pominiętych" zanim cokolwiek się zapisze.
+1. **Domyślnie dry-run.** Skrypt zmieniający dane wypisuje plan (co, ile wierszy, gdzie); świadome
+   `--execute` zapisuje.
+2. **Idempotentny.** Dwa przebiegi dają ten sam stan (`INSERT OR IGNORE` / `UPSERT`).
+3. **Wypisz, czego *nie* zrobiłeś** — ucięcie, próbkowanie, pominięte wiersze. Cisza czyta się jak „pokryłem wszystko".
+4. **Operacje mutujące katalog trzymaj poza automatycznymi pipeline'ami** (dedup, merge): dry-run → review → ręczne `--execute`.
+5. **Środowisko jest zapisane w `CLAUDE.md`** — interpreter, zmienne, venv. Agent nie zgaduje.
+6. **Ścieżki absolutne, gdy wartość przechodzi między narzędziami.** `/tmp` to jedno miejsce dla Git Bash,
+   inne dla Pythona na Windows, trzecie dla PowerShell — każde narzędzie czyta wtedy *inny plik*. Przekazuj
+   pełne ścieżki; gdy przebieg „nic nie zrobił", wypisz `os.path.abspath(p)` / `pwd -W` i porównaj.
 
-```
-python -m scripts.x.do_thing            # dry-run: pokazuje plan
-python -m scripts.x.do_thing --execute  # zapisuje
-```
+## Bazy i migracje
 
-### 2. Idempotencja
-Skrypt odpalony dwa razy ma dać ten sam stan, nie podwojony. Migracje/loadery treści
-pisz tak, by `INSERT OR IGNORE` / `UPSERT` — żeby ponowne uruchomienie było bezpieczne
-(w projekcie referencyjnym loadery treści z zewnętrznej bazy są jawnie idempotentne i to jest wymóg deployu).
+1. **Migracje forward-only.** Bez down-migracji; cofnięcie schematu = przywrócenie backupu.
+2. **Backup przed każdą zmianą schematu/danych na prodzie**, z timestampem i retencją:
+   `sqlite3 data/app.db ".backup backups/pre-deploy-$(date +%F_%H%M%S).db"`
+3. **Snapshot przez `.backup` / `VACUUM INTO`, nigdy `cp`/`scp` żywej bazy** — WAL robi kopię niespójną.
+4. **Additive przed destructive.** `ADD COLUMN` jest bezpieczne; `DROP`/`RENAME` czeka na późniejszy deploy,
+   gdy żaden działający kod nie czyta kolumny.
+5. **Integralność po każdej operacji na danych:** `integrity_check`, `foreign_key_check`, liczby wierszy.
+   Odróżnij szum zastany (jest przed i po) od regresji (nowe naruszenia).
+6. **Masową albo nieodwracalną mutację przećwicz na świeżej kopii proda** — dry-run pokazuje plan, nie wynik.
+   `.backup` proda → przebieg na kopii → sprawdź liczby, integralność i trudne przypadki → dopiero prod.
+   Brat tej reguły na poziomie deployu → [18](18-release-rehearsal.md).
 
-### 3. Organizacja przez etapy pipeline'u
-Skrypty grupuj wg fazy (`setup/`, `normalize/`, `enrich/`, `validate/`, `images/`,
-`dedup/`, `orchestration/`). Zostaw **shim-y kompatybilności**, gdy przenosisz pliki.
-Złóż je w **komponowalne pipeline'y** (`post-scrape`, `full`) — ale **mutujące katalog
-operacje trzymaj POZA automatycznym pipeline'em** (dedup/merge odpalasz ręcznie:
-dry-run → review → `--execute`).
-
-### 4. Loguj, czego NIE zrobiłeś
-Jeśli skrypt ucina zakres (top-N, sampling, pominięte wiersze) — **wypisz to**. Ciche
-ucięcie czyta się jako „pokryłem wszystko", a nie pokryłeś.
-
-### 5. Środowisko zapisz w dokumentacji
-Interpreter, zmienne (`PYTHONIOENCODING=utf-8` na Windows), skąd brać venv. Agent nie
-zgaduje ścieżki do Pythona — czyta ją z `CLAUDE.md`.
-
-### 6. Ścieżki absolutne, gdy wartość przechodzi między narzędziami
-Ścieżka pliku **nie jest przenośna między narzędziami.** Git Bash rozwija `/tmp` do katalogu temp MSYS;
-Python na Windows rozwija *to samo* `/tmp` do `<dysk-cwd>:\tmp`; PowerShell do jeszcze innego miejsca.
-Podaj ścieżkę względną — albo zakotwiczoną, ale bez litery dysku — z jednego narzędzia do drugiego, a
-każde czyta/pisze **inny plik**: skrypt migracji po cichu miele pustą bazę, gdy Twoja kopia 200 MB leży
-nietknięta w temp powłoki. Gdy ścieżka (lub dowolna wartość) przechodzi powłoka → interpreter → aplikacja,
-zrób z niej **absolutną, w pełni kwalifikowaną ścieżkę** (`Z:/work/x.db`, nie `/tmp/x.db`), albo rozwiń ją
-raz i przekazuj rozwiniętą. Gdy wynik „nic nie zrobił" Cię zaskakuje, wypisz `os.path.abspath(p)` / `pwd -W`
-i porównaj — zwykle to dwa narzędzia niezgodne co do tego, gdzie wskazuje ścieżka względna.
-
-## Bazy danych i migracje
-
-### Migracje są forward-only
-Brak down-migracji. Jeden numerowany plik = jeden krok naprzód. **Rollback schematu =
-przywrócenie backupu**, nie odwrotna migracja. Dlatego:
-
-### Backup PRZED każdą zmianą schematu/danych na prodzie
-```bash
-sqlite3 data/app.db ".backup backups/pre-deploy-$(date +%F_%H%M%S).db"
-```
-To nie ostrożność — to *mechanizm cofania*. Trzymaj retencję (np. 14 dni) i nazwij
-snapshoty czytelnie (`pre-deploy-*`, `pre-swap-*`, `replaced-prod-*`).
-
-### Additive > destructive
-`ADD COLUMN` jest backward-compatible (stary kod dalej działa). **Nigdy nie DROP/RENAME
-kolumny w tej samej migracji, której wciąż używa działający stary kod** — rozbij zmianę
-destrukcyjną na późniejszy deploy, gdy nikt już kolumny nie czyta.
-
-### Integralność po fakcie
-Po każdej operacji na danych: `PRAGMA integrity_check` + `PRAGMA foreign_key_check` +
-policz wiersze. Odróżnij **szum zastany** (osierocone wiersze staging obecne i przed, i po)
-od **regresji** (nowe naruszenia, których wcześniej nie było). W projekcie referencyjnym scalona DB
-miała *mniej* naruszeń niż lokalna — to był sygnał, że migracja posprzątała, nie zepsuła.
-
-### Model „aktywny wiersz" zamiast nadpisywania
-Wzorzec z cen: zamiast UPDATE in-place, **wygaszaj** stary wiersz (`expired_at`) i wstawiaj
-nowy; partial unique index pilnuje „jeden aktywny na klucz". Historia zostaje, audyt jest
-darmowy. Rozważ taki model wszędzie, gdzie historia ma wartość.
-
-### Snapshot do transferu rób przez `.backup` / `VACUUM INTO`, nie `cp` żywego pliku
-Żywy SQLite z WAL skopiowany `cp` bywa niespójny. `.backup` (online-safe) albo
-`VACUUM INTO` dają spójną, zdefragmentowaną kopię. **Nigdy nie SCP żywego `.db`.**
-
-### Masową/nieodwracalną mutację danych przećwicz na świeżej KOPII proda — nie na samym dry-run
-Dry-run pokazuje *plan*; nie dowodzi *wyniku* ani nie ujawnia konfliktów, które żyją tylko w realnych
-danych — np. narzędzie merge, które błędnie czyta **przeterminowany wiersz** jako konflikt i kasuje zły
-*aktywny*, albo snapshot, którego ID dryfnęły od czasu napisania planu. Przed masowym merge/dedup/mass-update
-na prodzie: `.backup` proda → odpal operację na **kopii** → sprawdź wynik (liczby wierszy, `integrity_check`
-i spot-check trudnych przypadków). Snapshot proda z tymi samymi ID pozwala przećwiczyć *dokładnie* ten
-przebieg, zanim dotkniesz żywych danych — dużo taniej niż rollback. To danowy brat „przećwicz deploy na
-preprodzie" (→ [05](05-git-and-deployments.md)).
-
-## Anty-wzorce
+## Antywzorce
 - 🚫 Skrypt mutujący bez `--dry-run`.
-- 🚫 Deploy z migracją bez backupu „bo additive".
-- 🚫 DROP kolumny używanej przez działający kod.
-- 🚫 `cp app.db` przy włączonym serwerze → niespójny snapshot.
-- 🚫 Wpięcie operacji mutującej katalog w automatyczny pipeline.
-
-## W praktyce
-- Relacyjna baza → migracje forward-only + backup przed każdą.
-- **Pipeline przetwarzający dane wrażliwe** (np. anonimizacja / destylacja wniosków) = osobny,
-  idempotentny skrypt z dry-run; kontrakt: na wejściu dane surowe, na wyjściu **dane bez PII**,
-  z testem, że re-identyfikacja jest niemożliwa. Trzymaj go POZA ścieżką user-facing. →
-  [09](09-law-and-protecting-the-creator.md), [11](11-data-model-and-normalization.md)
+- 🚫 Migracja wdrożona bez backupu „bo additive".
+- 🚫 `DROP` kolumny, którą czyta działający kod.
+- 🚫 `cp app.db` przy działającym serwerze.
+- 🚫 Krok mutujący katalog wpięty w automatyczny pipeline.

@@ -18,8 +18,48 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 
 ## 1.1.1 — 2026-11-20
 
-Nowy rozdział **17 — Język kodu i strażnicy** ([17-language-and-guards.md](17-language-and-guards.md)),
-przeniesiony do kanonu z projektu-gospodarza (tam jako `1.1.0`), w obu językach.
+**Przegląd całej doktryny i przejście tnące, wykonane z Claude Opus 5.5.** The Craft to twarde reguły dla
+projektów prowadzonych z AI — więc rdzeń zawiera tylko reguły; wiedzę, którą współczesny model ma i tak,
+oraz wyjaśnienia przeniesiono na stronę. Treść EN: ~160 → ~62 tys. znaków, **żadna twarda reguła nie
+wypadła**. Do tego nowy rozdział 17 z projektu-gospodarza (tam jako `1.1.0`) oraz podział 05 na 05/18/19.
+Wszystko w obu językach.
+
+### Przebudowane
+- **Jeden format rozdziału:** jednolinijkowy wstęp → **Reguły** (numerowane, jedna linia + dlaczego) →
+  **Antywzorce**. Usunięte wykłady, definicje (np. litery SOLID, podstawy SEO/SQL, piramida testów) i
+  zakończenia „W praktyce" — jedyną checklistą jest [07].
+- **[05] podzielony** (23 kB łamało regułę „jeden plik = jeden temat" z [01]): 05 = git + cofanie + praca
+  równoległa + polityka deployu; nowe **[18] Próba generalna wydania** (dev → preprod → prod) i
+  **[19] Runbook swapu bazy**.
+- **[intro]** skrócone do „czym jest / dla kogo / jak zacząć" — manifest idzie na stronę.
+
+### Dodane
+- **[17] Kod zawsze po angielsku** — identyfikatory, **także nazwy testów**, baza, CLI, klucze, opisy commitów;
+  proza w języku projektu, zadeklarowanym raz w `CLAUDE.md`.
+- **[17] „Reguła bez strażnika to życzenie"** — strażnik indeksu `AI_README` i strażnik języka kodu jako
+  **zapadka**; gotowe pliki w **`guards/`** (celowo bez nazwy `test_*.py`, żeby pytest gospodarza nie zbierał
+  ich z `docs/rules/`).
+- **`add_chapter.py`** — wpina nowy rozdział wszędzie naraz (dry-run domyślnie); **nie rusza wersji ani
+  CHANGELOG** (wspólna oś wersji z Web).
+
+### Zmienione
+- **[00, 07] Reguła zerowa:** wskaźnik zwykłym językiem tylko w `CLAUDE.md` i `AGENTS.md` — **bez etykiet
+  `SYSTEM`/`URGENT`** (dla współczesnego modelu to kształt prompt injection) i bez wpisu w publicznym `README.md`.
+- **[00] Przykazanie VII uogólnione** — z przepisu na swap bazy na regułę: nie gub, nie wyciekaj, nie mutuj
+  bez backupu, mapuj po stabilnym kluczu; szczegóły w [19].
+- **[06] Pamięć:** jedna reguła zamiast własnego systemu — korzystaj z wbudowanej pamięci agenta, nie kopiuj
+  do niej faktów z repo. Usunięte zachowania, które są już defaultem modelu.
+- **[16]** tylko polityka projektu (kiedy plan mode jest obowiązkowy, autopilot w mapie uprawnień, model wg
+  stawki, worktree na sesję) — bez opisu funkcji harnessu, które starzeją się z wydaniami.
+- **[17, 06] Złagodzona reguła terminów:** po angielsku zostają **nazwy, które drukuje narzędzie**; zwykłe
+  słowo na czynność może być w języku prozy („wdrożenie"). [06] nie wymaga już „docsów technicznych po angielsku".
+- **[07]** brief zapisuje się jako `project-brief.md` (było: `brief-projektu.md` — sprzeczne z [17]);
+  usunięta wzmianka o edycjach (to sprawa Web).
+- **[08]** rozstrzygnięty konflikt Python vs Node: Python domyślnie, Node gdy warstwa web już jest w JS.
+- **[09]** prawo właściwe = Twoja jurysdykcja (było: na sztywno Polska).
+- **[12]** feature flagi z pierwszą ryzykowną zmianą dla żywych userów (było: w Dniu 0); ADR tylko przy
+  odejściu od domyślnego stacku.
+- **`CLAUDE.md` repo** zaktualizowany (zakres rozdziałów, EN jako baza, narzędzia, stan bieżący).
 
 ### Dodane
 - **[17] Kod zawsze po angielsku** — identyfikatory, **także nazwy testów**, baza, CLI, klucze, opisy commitów;

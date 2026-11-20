@@ -79,8 +79,9 @@ meta utrzymania **tego** repo.
 
 - **`AI_README.md`** — *wejście agenta*: mapa rozdziałów + grep-index. (Bez przycinania — czytnik/build są
   w paczce, więc opis `index.html`/`build.py` jest tu prawdziwy.)
-- **`00-commandments.md` … `16-driving-claude.md`** — komplet rozdziałów (17).
-- **`intro.md`** — manifest.
+- **`00-commandments.md` … `19-database-swap-runbook.md`** — komplet rozdziałów (20).
+- **`intro.md`** — krótkie wprowadzenie.
+- **`guards/`** — gotowi strażnicy testowi z rozdziału 17 (szablony do `tests/` projektu; celowo bez nazwy `test_*.py`).
 - **`pl/`** (i kolejne `<lang>/`) — wersje w innych językach, jeśli chcesz pełny **przełącznik EN/PL** w
   czytniku. Per-jeden-język: pomiń pozostałe (czytnik wtedy jednojęzyczny).
 - **`craft.json`** — stempel: `version`, `language`(/`languages`), `edition`, `released`, `source` (commit/URL).
@@ -96,7 +97,7 @@ meta utrzymania **tego** repo.
 **NIE pakuj** (meta utrzymania tego repo, nie doktryna):
 
 - `CLAUDE.md` (konstytucja **tego** repo — docelowy projekt ma własny `CLAUDE.md`),
-- `README.md` (front door GitHuba), `docs/` (plany repo), `CHANGELOG.md`, `test.py` (CI tego repo), `.git*`.
+- `README.md` (front door GitHuba), `docs/` (plany repo), `CHANGELOG.md`, `test.py` (CI tego repo), `add_chapter.py` (narzędzie autora), `.git*`.
 
 **Struktura zipa (pełna, dwujęzyczna — zalecana do przeglądania):**
 
@@ -104,9 +105,9 @@ meta utrzymania **tego** repo.
 docs/rules/
   AI_README.md          # mapa + grep-index (EN/baza)
   index.html  content.js  build.py  public/logo.png   # czytnik
-  intro.md
-  00-commandments.md … 16-driving-claude.md           # treść EN
-  pl/  AI_README.md  intro.md  00-…16-….md             # treść PL
+  intro.md  guards/
+  00-commandments.md … 19-database-swap-runbook.md    # treść EN
+  pl/  AI_README.md  intro.md  00-…19-….md             # treść PL
   craft.json
 ```
 
@@ -119,8 +120,8 @@ docs/rules/
   = mniejszy zip, czytnik bez drugiego języka. Wybór po stronie Web (przycisk „pobierz: EN / PL / EN+PL").
 - **Edycja:** na teraz tylko **TECHNICZNA**; BIZ-TECH/biznesowa to ten sam zestaw plików, inny rejestr →
   pole `edition` w stemplu, gdy powstaną.
-- **Wpięcie u klienta** (→ [07](../../07-new-project-day-0.md)): submodule albo kopia + wpis w `CLAUDE.md`
-  projektu „czytaj `docs/rules/` co sesję; grep po `docs/rules/AI_README.md`; do przeglądania otwórz `docs/rules/index.html`".
+- **Wpięcie u klienta** (→ [07](../../07-new-project-day-0.md)): submodule albo kopia + zwykły wskaźnik (bez etykiet `SYSTEM`)
+  na górze `CLAUDE.md` i `AGENTS.md` projektu: „przeczytaj `docs/rules/00-commandments.md`, potem grep po `docs/rules/AI_README.md`; do przeglądania otwórz `docs/rules/index.html`".
 
 ## Otwarte (do rozstrzygnięcia przy starcie EN)
 

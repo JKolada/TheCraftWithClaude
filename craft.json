@@ -5,10 +5,16 @@
   "version": "1.1.1",
   "released": "2026-11-20",
   "url": "https://thecraft.jakub.solutions",
-  "chapters": 18,
-  "languages": ["en", "pl"],
+  "chapters": 20,
+  "languages": [
+    "en",
+    "pl"
+  ],
   "default_language": "en",
-  "lang_paths": { "en": ".", "pl": "pl" },
+  "lang_paths": {
+    "en": ".",
+    "pl": "pl"
+  },
   "edition": "techniczna",
   "editions": {
     "techniczna": "available",

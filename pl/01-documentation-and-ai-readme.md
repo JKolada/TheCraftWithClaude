@@ -1,160 +1,42 @@
 # 01 — Dokumentacja i AI_README
 
-> Przykazanie I: *Dokumentuj dla agenta, nie dla archiwum.*
+> Przykazanie I: *dokumentuj dla agenta, nie dla archiwum.* Cel: następna sesja rozumie katalog bez
+> czytania całego jego kodu.
 
-Dokumentacja w projekcie z agentem AI ma jeden nadrzędny cel: **żeby następna sesja (albo
-inny agent) zrozumiała katalog bez czytania całego kodu.** To nie jest archiwum dla potomnych
-— to interfejs onboardingu, czytany co sesję.
+## Trzy warstwy, podzielone wg czytelnika
 
-## Trzy warstwy dokumentacji
+| Warstwa | Plik | Zawiera |
+|---|---|---|
+| **Konstytucja** | `CLAUDE.md` (root) | czym jest projekt, dokładne komendy uruchomienia, **polityki nadpisujące domyślne zachowanie**, datowany „Stan bieżący" z liczbami. Ładowany co sesję. |
+| **Mapa katalogu** | `AI_README.md` w każdym katalogu z kodem | indeks modułów, kluczowe API (sygnatura + kontrakt), pułapki, liczby, indeks grep. Czytany **zanim** dotkniesz katalogu. |
+| **Referencja / plany** | `docs/` | architektura, model danych, runbooki, `plans/`. |
 
-| Warstwa | Plik | Rola |
-|---------|------|------|
-| **Konstytucja** | `CLAUDE.md` (root) | Źródło prawdy o projekcie: stack, jak uruchomić, polityki (np. „nigdy nie deployuj automatycznie"), aktualny stan. Ładowane co sesję. |
-| **Mapa katalogu** | `AI_README.md` (w każdym istotnym katalogu) | Co tu jest, API modułów, gotchas, liczby, grep-index. Czytasz **przed** dotknięciem kodu w tym katalogu. |
-| **Encyklopedia / plany** | `docs/` | Stabilna referencja (architektura, schemat DB), plany na przyszłość, standardy. |
+`README.md` to publiczne drzwi wejściowe (czym jest, jak zacząć) — nie warstwa dla agenta. **Gdzie wpisać
+fakt? Zapytaj, kto go czyta** — i wpisz raz; pozostałe pliki linkują.
 
-`README.md` **nie** jest jedną z tych warstw — to **front door GitHuba**: opis dla odwiedzających
-(czym projekt jest, jak go wpiąć, spis treści). Trzymaj z dala od niego szczegóły utrzymania; te żyją
-w `CLAUDE.md`. Podział wg **odbiorcy** trzyma duplikację przy zerze:
+## Reguły
 
-- **`README.md` → dla człowieka na GitHubie.** Czym jest, po co, jak zacząć. Po angielsku (publiczna twarz).
-- **`CLAUDE.md` → dla agenta/utrzymującego *to* repo.** Jak uruchomić, zbudować, testować, polityki.
-  **Jeden język roboczy — nie tłumaczony** (tłumaczenie własnej konstytucji repo nic nie daje).
-- **`AI_README.md` → dla agenta nawigującego po *treści*.** Mapa katalogu + grep-index słowo→plik.
-  **Tłumaczony per język** — podróżuje w `docs/rules/<lang>/`, więc agent w docelowym projekcie grepuje
-  go w swoim języku. Każdy język ma swój `AI_README` obok rozdziałów.
+1. **`CLAUDE.md` wskazuje na mapy `AI_README.md`** — bez tego wskaźnika nowa sesja nie wie, że istnieją.
+2. **`AI_README.md` aktualizujesz przed commitem**, w tym samym commicie co kod. Indeksu pilnuje test
+   (każdy moduł wymieniony, sufit rozmiaru) → [17](17-language-and-guards.md).
+3. **Indeks pisz pod `grep`, nie do czytania.** Gęste od słów kluczowych jednolinijkowce: konkretne nazwy,
+   synonimy, oba języki w projekcie dwujęzycznym. `grep -i <temat>` ma trafić **jedną linię** wskazującą **jeden plik**.
+4. **Jeden plik = jeden temat.** Temat rozsypany po pięciu plikach to pięć trafień i spalony kontekst.
+5. **Stan, nie intencja.** Opisuj, co kod robi teraz; kasuj wpisy usuniętego kodu — martwy wpis jest gorszy
+   niż żaden. Liczby (rekordy, testy) się starzeją → aktualizuj je.
+6. **`docs/` opisuje wyłącznie bieżącą wersję.** Historia żyje w gicie i `CHANGELOG`; aktualizujesz dokument,
+   nie trzymasz starej wersji obok.
+7. **`docs/plans/` to żywy backlog.** Problem → opcje → wybór → dlaczego. Gdy plan wejdzie, wpisz decyzję do
+   dokumentu / `CLAUDE.md`, którym rządzi, i **usuń plan** — git trzyma zapis.
+8. **Nowy katalog powstaje razem ze swoim `AI_README.md`** — nigdy „później".
+9. **Artefakty generowane (HTML, snapshoty) to pochodne:** commituj, nigdy nie edytuj ręcznie, regeneruj na
+   polecenie (skill), nie przy każdym commicie.
 
-Gdy nie wiesz, gdzie wpada fakt: *kto to czyta?* To wybiera plik — i znaczy, że jest napisany raz.
+Aktualizuj docsy przy: nowym module/funkcji/skrypcie/fladze, zmianie schematu, zmianie zachowania (próg,
+fallback), zmianie liczb. Nie przy: czystym bugfixie bez zmiany API, literówkach.
 
-### `CLAUDE.md` — konstytucja
-- Krótkie „Quick orientation" (tabela: warstwa → tech → lokalizacja).
-- **Jak uruchomić** każdy element (dokładne komendy z interpreterem/portem).
-- **Polityki, które nadpisują domyślne zachowanie** — najważniejsze: deployment policy
-  („nigdy automatycznie na prod"), git workflow, zasady scraperów/walidacji.
-- Sekcja **„Current state"** z datą i liczbami (ile rekordów, jakie migracje zastosowane).
-  To jest pierwsze, co czyta agent — musi być aktualne.
-- **Reguła:** instrukcje w `CLAUDE.md` mają pierwszeństwo przed domyślnym zachowaniem agenta.
-  Pisz je jak prawo: konkretnie, z „dlaczego".
-
-### `AI_README.md` — w każdym katalogu
-Reguła z projektu referencyjnego, którą warto przenieść: **każdy katalog ma `AI_README.md`**, a jego
-aktualizacja jest częścią workflow commita:
-
-```
-kod  →  /update-ai-readme  →  git commit
-```
-
-**Pilnuje tego test** — każdy moduł wymieniony w indeksie swojego katalogu, sufit 20 kB, lista
-pilnowanych katalogów pilnująca sama siebie; przenośny strażnik jest w [17](17-language-and-guards.md).
-
-Co powinno być w `AI_README.md`:
-- **Indeks plików/modułów** z jednozdaniowym „po co to".
-- **API** kluczowych funkcji (sygnatura + kontrakt), żeby nie czytać implementacji.
-- **Gotchas** — pułapki, których nie widać z kodu (np. „FB nie renderuje WebP jako og:image",
-  „ten CDN zwraca 200 z HTML przy błędzie").
-- **Liczby** — ile rekordów, ile testów, jakie pokrycie. Liczby się starzeją → aktualizuj.
-- **Martwe wpisy usuwaj** — odniesienie do skasowanego kodu jest gorsze niż brak wpisu.
-
-> **Test jakości AI_README:** czy agent po jego przeczytaniu może bezpiecznie zmienić kod w
-> tym katalogu, nie skanując wszystkich plików? Jeśli nie — czegoś brakuje.
-
-**Reguła wiążąca warstwy:** `CLAUDE.md` (root) **wskazuje na `AI_README.md` w każdym folderze**
-jako obowiązkowe uzupełnienie — to konstytucja deleguje szczegóły katalogu do jego mapy. Konstytucja
-mówi „gdzie i czym jest projekt"; `AI_README` mówi „co dokładnie jest w tym katalogu". Bez tego
-wskazania nowa sesja nie wie, że mapy istnieją.
-
-## AI_README pod grep — oszczędność kontekstu
-
-W docelowym projekcie agent **nie czyta wszystkiego** — przy konkretnym zadaniu **grepuje po słowach
-kluczowych** i czyta tylko trafiony plik. Dlatego `AI_README.md` projektuj jako **indeks pod grep**,
-nie jako prozę:
-
-- **Opis każdego pliku gęsty w keywordy.** Nie „różne reguły", lecz konkretne terminy, których ktoś
-  poszuka: nazwy funkcji, pojęcia, technologie, **synonimy** i **oba języki**, jeśli projekt jest
-  dwujęzyczny (`RODO`/`GDPR`, `migracja`/`migration`, `kolejka`/`queue`). `grep -i <temat>` ma trafić
-  w **jedną linię** i wskazać właściwy plik.
-- **Jeden plik = jeden temat.** Dziel treść tak, by trafienie było precyzyjne. Temat rozlany na pięć
-  plików = pięć trafień i przepalony kontekst; temat zwarty w jednym = jedno trafienie, jedno czytanie
-  (→ [12](12-flexibility-and-scalability.md): rozdziel warstwy).
-- **Mapa „temat → plik".** Trzymaj w `AI_README` zwięzły indeks (keywordy + nazwa pliku w jednej linii),
-  utrzymywany aktualnie. To nawigacja: grep po nim zwraca *gdzie iść*, nie całą treść.
-- **Po co:** kontekst to budżet. Im celniej `AI_README` kieruje, tym mniej tokenów schodzi na szukanie,
-  a więcej zostaje na robotę. To Przykazanie II (szukaj, zanim napiszesz) zastosowane do **czytania**.
-
-## Struktura `/docs` i foldery
-
-Dokumentacja „cięższa niż mapa katalogu" mieszka w **`/docs`** — jedno miejsce na referencję
-bieżącego stanu i żywe plany, żeby nie puchły `AI_README` ani `CLAUDE.md`. **`docs/` opisuje system
-*taki, jaki jest teraz* (najnowsza wersja) — nie historię.** Historię trzyma git i `CHANGELOG`; gdy coś
-się zmienia, **aktualizujesz** dokument, nie zostawiasz starej wersji obok nowej.
-
-```
-docs/
-  AI_README.md          # spis treści docs: „gdzie zacząć dla zadania X"
-  architecture.md       # warstwy, granice, przepływy
-  data_model.md         # schemat DB, ERD, controlled vocabulary (→ [11])
-  deployment_runbook.md # procedura + ponumerowane lekcje z incydentów (→ [05], [14])
-  plans/                # plany na przyszłość, RFC, decyzje (jeden plik = jeden temat)
-    NNNN-tytul.md
-```
-
-- **`/docs/plans/` to *żywy* backlog — utrzymywany na bieżąco, bez zalegających skończonych zadań.** Plan
-  to dokument, nie myśl w głowie: problem → opcje → wybór → „dlaczego". **Gdy plan wchodzi, wtop jego
-  decyzję w dokument / `CLAUDE.md` / rozdział, którego dotyczy, a plan zamknij (usuń)** — historię trzyma
-  git. `plans/` trzyma tylko otwarte, aktywne kierunki; folder pełen „zrobionych" planów to szum — historię
-  i tak masz w git, więc nie ma po co trzymać skończonego planu (zombie) tutaj.
-- **Folder bez `AI_README.md` to folder-zagadka.** Tworząc nowy istotny katalog — twórz go **razem**
-  z `AI_README.md` (choćby szkielet). To samo przy refaktorze: rozbijasz moduł na podkatalogi →
-  każdy nowy katalog dostaje mapę w tym samym kroku, nie „później".
-- **Im konkretniej, tym lepiej.** Lepsza struktura folderów (jasne granice: dane / ingest / web /
-  skrypty, → [12](12-flexibility-and-scalability.md)) + gęstszy, konkretny `AI_README` w każdym z
-  nich bije jeden ogólnikowy plik w rootcie. Ważne informacje (gotchas, kontrakty, liczby) trzymaj
-  **blisko kodu, którego dotyczą**.
-
-## Kiedy aktualizować (a kiedy nie)
-
-| Zmiana | Aktualizować dokumentację? |
-|--------|----------------------------|
-| Nowy moduł / funkcja / skrypt / flaga CLI | ✅ |
-| Nowa migracja / kolumna / tabela | ✅ (doc DB + doc skryptów) |
-| Zmiana liczby testów / rekordów | ✅ |
-| Zmiana zachowania (nowy próg, nowy fallback) | ✅ |
-| Czysty bugfix bez zmiany API/struktury | ❌ (odnotuj, że sprawdziłeś) |
-| Literówka, formatowanie | ❌ |
-
-## Dokumentacja jako kod
-- **Źródło prawdy to `.md`** — ręcznie pisany, wersjonowany w git jak reszta kodu. Historia docsów
-  (`git log` po `.md`) mówi *kiedy i czemu* reguła się zmieniła. Nie trzymaj prawdy w wygenerowanym HTML.
-- **Linki względne** między plikami `.md` — żeby dało się klikać i walidować.
-- **Jeden „spis treści"** (np. `docs/AI_README.md`) z tabelą „gdzie zacząć dla zadania X".
-
-## Czytnik dokumentacji i regeneracja
-
-`.md` jest źródłem prawdy, ale człowiek czyta wygodniej w przeglądarce. Dodaj **jednoplikowy czytnik
-w rootcie repo** (np. `index.html` albo `documentation.html`) — renderuje `.md` (np. `marked`),
-wersjonowany w git jak każdy plik. Jeden plik, bez bundlera; działa z dwukliku i z serwera (ten codex
-sam to dostarcza jako `index.html`).
-
-- **Wygenerowany artefakt (snapshot/HTML) jest pochodną, nie źródłem.** Commituj go, ale **nigdy
-  nie edytuj ręcznie** — nadpisze go build.
-- **Regeneracja NIE odpala się sama.** Żadnego auto-buildu przy każdym commicie (szum, zwłoka,
-  konflikty). Odpalasz ją **na polecenie** — najlepiej skillem (→ [02](02-skills-and-refactoring.md)),
-  nie hookiem.
-- **Skill regeneracji patrzy w git od ostatniej aktualizacji docsów.** Zamiast ślepo przebudowywać
-  wszystko: czyta `git log <ostatni-commit-docs>..HEAD` (albo od taga `docs-*`), widzi **co realnie
-  się zmieniło** (Przykazanie II → [05](05-git-and-deployments.md)), aktualizuje dotknięte sekcje i
-  **wypisuje, co zmienił**. Tani, świadomy, sprawdzalny — zamiast „przebuduj i ufaj".
-
-## Anty-wzorce
-- 🚫 „Zaktualizuję docs na końcu" → koniec nie nadchodzi, dokumentacja kłamie.
-- 🚫 AI_README opisujący *intencję* zamiast *stanu* — agent działa na tym, co napisane, nie na marzeniach.
-- 🚫 Duplikowanie stanu z `CLAUDE.md` do pięciu miejsc — jedno źródło prawdy, reszta linkuje.
-- 🚫 **Opis pliku zbyt ogólny** („różne reguły", „helpery") — grep nie trafia, agent skanuje wszystko
-  i przepala kontekst. Opisuj keywordami, nie etykietami.
-
-## W praktyce
-Start nowego projektu: najpierw `CLAUDE.md` (stack, jak uruchomić, polityki i **twarde reguły
-domeny** — np. prywatność, ograniczenia prawne), potem `AI_README.md` w katalogach o największej
-wadze (auth, i18n, pipeline'y danych). Reguły nadrzędne (np. privacy-by-design) zapisuj jako
-**politykę w konstytucji**, nie jako luźną notatkę. → [07](07-new-project-day-0.md)
+## Antywzorce
+- 🚫 „Uzupełnię docsy na końcu" — koniec nie nadchodzi, docsy kłamią.
+- 🚫 `AI_README` opisujący życzenia zamiast stanu.
+- 🚫 Ten sam stan skopiowany do pięciu plików — jedno źródło prawdy, reszta linkuje.
+- 🚫 Ogólnikowe opisy („helpery", „różne reguły") — grep pudłuje, agent czyta wszystko.
