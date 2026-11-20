@@ -130,7 +130,7 @@ python test.py                  # smoke: parytet PL/EN, martwe linki, świeżoś
   publikacji, commit + **annotated tag** `vX.Y.Z` (Przykazanie VIII). `version` musi zgadzać się z
   najwyższym wpisem changeloga. Witryna `ClaudeBuildCodexWeb` (Rzemiosło Web) konsumuje to przy buildzie i stempluje.
 
-## Stan bieżący (2026-11-20, v1.1.1)
+## Stan bieżący (2026-11-20, v1.1.2)
 
 - **20 rozdziałów** (`00`–`19`) + `intro.md` + `README.md`. Rdzeń: 00–08; pogłębienie: 09–19.
   Treść EN ~62 tys. znaków po przejściu tnącym w 1.1.1 (przegląd z Claude Opus 5.5).

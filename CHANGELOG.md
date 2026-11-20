@@ -16,9 +16,9 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
-## Niewydane (po 1.1.1)
+## 1.1.2 — 2026-11-20
 
-Numer nadaje autor przy wydaniu (wspólna oś z Web). Do rozesłania u gospodarzy dopiero po wydaniu.
+Język dobierany do zadania (Python jako default, nie dogmat) i porządki w `docs/`.
 
 ### Zmienione
 - **[08] Język wg dopasowania, nie z przyzwyczajenia.** Python zostaje domyślny (najszerszy ekosystem do

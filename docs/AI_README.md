@@ -10,7 +10,7 @@ w numerowanych rozdziałach `NN-*.md` w rootcie i w `pl/`). Konwencja z rozdzia�
 | `packaging.md` | **Kontrakt z Web:** co trafia do paczki `docs/rules/`, a co nie; układ; zasady rozsyłania do gospodarzy. Dokument stanu bieżącego. |
 | `plans/0002-monetization-and-payments.md` | **Otwarty** — płatności. Brak hands-on → świadomie bez rozdziału; plan trzyma kierunek. |
 | `plans/0003-doctrine-expansion-backlog.md` | **Otwarty backlog** kandydatów na rozdziały/sekcje (autoryzacja, sekrety + runbook wycieku, CI/CD, a11y, FinOps). |
-| `plans/0004-web-sync-1.1.1.md` | **Aktywny** — prompt dla Rzemiosło Web: aktualizacja witryny do 1.1.1. Usuń, gdy Web go wykona. |
+| `plans/0004-web-sync-1.1.2.md` | **Aktywny** — prompt dla Rzemiosło Web: aktualizacja witryny do 1.1.2. Usuń, gdy Web go wykona. |
 
 ## Zasady
 
