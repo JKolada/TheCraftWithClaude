@@ -45,6 +45,9 @@ updating it is part of the commit workflow:
 code  →  /update-ai-readme  →  git commit
 ```
 
+**A test enforces it** — every module named in its directory's index, a 20 kB ceiling, the list of
+guarded directories guarding itself; the portable guard is in [17](17-language-and-guards.md).
+
 What belongs in `AI_README.md`:
 - A **file/module index** with a one-sentence "what it's for."
 - The **API** of the key functions (signature + contract), so you don't read the implementation.

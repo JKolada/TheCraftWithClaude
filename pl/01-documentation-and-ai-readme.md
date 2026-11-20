@@ -45,6 +45,9 @@ aktualizacja jest częścią workflow commita:
 kod  →  /update-ai-readme  →  git commit
 ```
 
+**Pilnuje tego test** — każdy moduł wymieniony w indeksie swojego katalogu, sufit 20 kB, lista
+pilnowanych katalogów pilnująca sama siebie; przenośny strażnik jest w [17](17-language-and-guards.md).
+
 Co powinno być w `AI_README.md`:
 - **Indeks plików/modułów** z jednozdaniowym „po co to".
 - **API** kluczowych funkcji (sygnatura + kontrakt), żeby nie czytać implementacji.

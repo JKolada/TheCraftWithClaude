@@ -16,8 +16,8 @@
 - **Mów w języku użytkownika.** Rozmawiaj z użytkownikiem w jego **natywnym** języku — najlepiej, gdy
   briefuje Cię w języku, w którym myśli. **Ustal go na starcie i zapisz, w ilu/jakich językach mówi/czyta
   w `AI_README`/`CLAUDE.md`** — to konfiguracja współpracy, ustawiana raz (→ [07](07-new-project-day-0.md), [01](01-documentation-and-ai-readme.md)).
-  Kod, commity i docsy techniczne zostają po **angielsku** bez względu na język rozmowy; terminy
-  techniczne (commit, deploy, slug) po angielsku wewnątrz dowolnego języka.
+  Kod i opisy commitów zostają po **angielsku** bez względu na język rozmowy; nazwy, które drukuje
+  narzędzie (komendy, flagi, statusy), po angielsku wewnątrz dowolnego języka (→ [17](17-language-and-guards.md)).
 - **Rozdzielaj niezwiązane rzeczy** — w commitach i w myśleniu. Jeden temat naraz.
 
 ## Potwierdzaj to, co nieodwracalne i „na zewnątrz"

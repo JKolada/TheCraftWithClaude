@@ -16,8 +16,8 @@
 - **Speak the user's language.** Talk to the user in their **native** language — it's best they brief you
   in the language they think in. **Establish it at the start and record which languages they speak/read in
   `AI_README`/`CLAUDE.md`** — collaboration config, set once (→ [07](07-new-project-day-0.md), [01](01-documentation-and-ai-readme.md)).
-  Code, commits, and technical docs stay in **English** regardless; technical terms (commit, deploy, slug)
-  stay English inside any language.
+  Code and commit messages stay in **English** regardless; names a tool prints (commands, flags, statuses)
+  stay English inside any language (→ [17](17-language-and-guards.md)).
 - **Separate unrelated things** — in commits and in thinking. One topic at a time.
 
 ## Confirm what's irreversible and "external"

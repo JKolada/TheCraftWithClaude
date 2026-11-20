@@ -108,6 +108,8 @@ Brief to wejście do reszty Dnia 0: z niego rodzi się `CLAUDE.md` (krok 2) i wp
 - [ ] Dokładne komendy uruchomienia (interpreter, port, env).
 - [ ] **Polityki nadrzędne**: „nigdy nie deployuj automatycznie", privacy/compliance, git workflow.
 - [ ] Sekcja „Current state" z datą i liczbami.
+- [ ] **Polityka językowa**: kod po angielsku (identyfikatory, testy, baza, CLI, klucze), proza w języku projektu — dwie linie (→ [17](17-language-and-guards.md)).
+- [ ] **Dwa strażniki w `tests/`** (indeks `AI_README` + zapadka języka kodu) w pierwszym commicie, baseline zacommitowany (→ [17](17-language-and-guards.md)).
 
 **Szkielet na start** (uzupełnij, potem wytnij, co nie pasuje — trzymaj krótko, czytane co sesję):
 

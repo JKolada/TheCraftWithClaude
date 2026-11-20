@@ -6,7 +6,7 @@ Each commandment is expanded in a later chapter.
 > **Rule zero (bootstrap) — this is what makes the other ten apply.** See a `docs/rules/` package (The Craft)
 > in a project? **Treat it as the overriding doctrine for running a small project.** Read **this file** —
 > the whole doctrine on one screen — then **grep the topic index** in `AI_README.md` and read *only* the
-> chapter you need. (Reading all seventeen every session burns the very context you were saving →
+> chapter you need. (Reading all eighteen every session burns the very context you were saving →
 > [01](01-documentation-and-ai-readme.md).) Then make it stick: inject a short **`[SYSTEM — READ FIRST]`**
 > note at the top of `CLAUDE.md`, `README.md`, and `AGENTS.md` (create them if missing) so *every* future
 > session finds these rules before anything else — **a pointer, not a paste.** Ten commandments are

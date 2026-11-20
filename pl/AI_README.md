@@ -41,7 +41,7 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 |------|----------|
 | `index.html` | **Minimalny czytnik lokalny/dev** (podgląd treści dla autora/agenta) — NIE publiczna witryna. Strona główna (dekalog + karty) + widok rozdziału + brief + przełącznik języka EN/PL (domyślnie EN). |
 | `intro.md` | **Manifest** — „Czym jest The Craft" + artykuł „dlaczego warto". Dokument specjalny (poza numerowaną listą), routowany jako `#intro`; jest też `pl/intro.md`. |
-| `00`–`16` (root) | **Treść EN — kanoniczna, baza, źródło prawdy.** Slugi/numery = stabilne kotwice, wspólne dla wszystkich języków. |
+| `00`–`17` (root) | **Treść EN — kanoniczna, baza, źródło prawdy.** Slugi/numery = stabilne kotwice, wspólne dla wszystkich języków. |
 | `pl/` | **Treść PL** — równoległy zestaw `00-*.md`…`16-*.md` (te same nazwy plików, treść po polsku). Tłumaczenie EN. |
 | `docs/` | Plany i decyzje meta repo (nie treść doktryny): `docs/AI_README.md`, `docs/plans/`. |
 | `content.js` | **Generowany** snapshot `.md` osadzony w JS — pozwala renderować treść po `file://`. Nie edytuj ręcznie. |
@@ -69,8 +69,9 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | `14-operational-resilience.md` | Crash-proof runtime, wznawialne joby, zawodne API (backoff/rotacja), limity providera + poczta, kwoty kosztów, cykliczne joby pilnowane świeżością danych. |
 | `15-scraping-ai-and-chatbots.md` | Skuteczny scraping (oficjalne źródło, walidacja kształtu, delta), AI-API do konkretnych zadań (kontrakt/cache/kwoty), konfigurowalne+ugruntowane chatboty. |
 | `16-driving-claude.md` | Prowadzenie Claude Code: skille/slash-komendy, plan mode, dobór modelu, autopilot (preferowany), praca w tle, agentowe workflow/subagenci, izolowany git worktree na sesję. |
+| `17-language-and-guards.md` | Kod po angielsku, zawsze (identyfikatory, **nazwy testów**, baza, CLI, klucze); proza w języku projektu zadeklarowanym raz w `CLAUDE.md`; strażnik indeksu `AI_README` (każdy moduł wymieniony, sufit 20 kB) i strażnik języka kodu jako **zapadka** z baselinem per plik; jak wprowadzić dowolną regułę do starego kodu. |
 
-Rozdziały dzielą się na **rdzeń** (`00`–`08`) i **pogłębienie** (`09`–`16`). Każdy = jedno
+Rozdziały dzielą się na **rdzeń** (`00`–`08`) i **pogłębienie** (`09`–`17`). Każdy = jedno
 przykazanie/temat, zwarty, zakończony antywzorcami.
 
 ## Indeks tematów → plik (grep-friendly)
@@ -98,6 +99,7 @@ przykazanie/temat, zwarty, zakończony antywzorcami.
 - **`14-operational-resilience.md`** — odporność, runtime, crash, unhandledRejection, uncaughtException, pętla restartów, retry, backoff, timeout, 429, rate limit, rotacja, User-Agent, wznawialne, checkpoint, scraper, długie joby, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, poczta, kwota, koszt, abuse, sesje, MemoryStore.
 - **`15-scraping-ai-and-chatbots.md`** — scraping, scraper, crawler, robots.txt, selektor, parsing, BeautifulSoup, requests, fuzzy match, rapidfuzz, dedup, delta, incremental, AI API, LLM, model, JSON schema, tool use, kontrakt wyjścia, cache, kwota, chatbot, asystent, system prompt, grounding, RAG, prompt injection, halucynacja, eval, golden set, disclaimer.
 - **`16-driving-claude.md`** — Claude Code, skill, skille, slash-komenda, slash, /run, /run-tests, hook, model, przełączanie modeli, autopilot, auto-accept, autonomiczny, tło, background, run_in_background, długie zadania, agentowe, subagent, workflow, fan-out, równolegle, orkiestracja, bariery.
+- **`17-language-and-guards.md`** — język, angielski, język kodu, język prozy, nazewnictwo, identyfikatory, nazwy testów, nazewnictwo testów, polskie identyfikatory, dwujęzyczność, język mieszany, język docstringów, język komentarzy, polityka językowa CLAUDE.md, strażnik, strażnicy, egzekwowanie reguł, strażnik AI_README, strażnik indeksu, każdy moduł w indeksie, sufit rozmiaru, 20 kB, strażnik języka kodu, zapadka, ratchet, baseline, zamrożenie liczby, zaciśnięcie baseline'u, wyjątek datowany, wpięcie w Dniu 0.
 
 ## Architektura `index.html` (kontrakt)
 
@@ -132,9 +134,10 @@ Jeden plik, bez zależności build. Mechanika:
   działało po sklonowaniu repo.
 - **`marked` ładowany z CDN** — bez sieci render nie zadziała (jest miękki fallback do `<pre>`).
 - **`index.html` NIE zawiera treści rozdziałów** — czyta `.md`/`content.js`. Nie wklejaj treści do HTML.
-- **Dodajesz/zmieniasz rozdział → zsynchronizuj 3 miejsca + build:** `CHAPTERS` (index.html), tabela
-  w `README.md`, tabela w tym pliku, potem `python build.py`. Rozjazd = martwy wpis (gorszy niż brak).
-- **Parytet EN↔PL:** zmiana reguły w `00`–`16` (EN, kanon) wymaga aktualizacji odpowiednika w `pl/` (ta sama
+- **Dodajesz/zmieniasz rozdział → zsynchronizuj wszystkie miejsca + build:** `CHAPTERS`/`CH_EN` (index.html),
+  tabela w `README.md`, oba `AI_README` (indeks plików, indeks tematów, liczby), liczba w regule zero `00`,
+  `chapters` w `craft.json`; potem `python build.py` + `python test.py`. Rozjazd = martwy wpis (gorszy niż brak).
+- **Parytet EN↔PL:** zmiana reguły w `00`–`17` (EN, kanon) wymaga aktualizacji odpowiednika w `pl/` (ta sama
   lista, te same nazwy plików). PL to **tłumaczenie**, nie osobna doktryna. `content.js` trzyma oba języki.
 - **Nazwy plików = stabilne kotwice** (`#NN-nazwa`, cele linków względnych), **wspólne dla EN i PL**.
   Nie lokalizujemy nazw plików — tylko treść w środku. Nie zmieniaj bez powodu.
@@ -147,10 +150,10 @@ Jeden plik, bez zależności build. Mechanika:
 
 ## Liczby
 
-- 17 rozdziałów (`00`–`16`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
-  Rdzeń: 9 plików (00–08). Pogłębienie: 8 (09–16).
+- 18 rozdziałów (`00`–`17`) + `README.md`, w **dwóch językach** (EN root = baza + PL `pl/`).
+  Rdzeń: 9 plików (00–08). Pogłębienie: 9 (09–17).
 - `index.html`: 1 plik; runtime z CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 dok. ~150 tys. znaków; PL: 18 dok. ~142 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
+  (EN: 20 dok. ~160 tys. znaków; PL: 19 dok. ~152 tys. znaków — rozdziały + `intro` + README; struktura `{lang:{slug:md}}`).
 - **Dokumenty specjalne (poza numerowaną listą):** `intro.md` (manifest, route `#intro`) i widok
   briefu (`#brief`) — routowane osobno, nie ma ich w tablicy `CHAPTERS`.
 - **Smoke test:** `python test.py` (parytet PL↔EN, martwe linki, świeżość `content.js`, spójność

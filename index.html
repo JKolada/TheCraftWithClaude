@@ -586,7 +586,8 @@
     {file:"13-performance-frontend-and-sql.md",no:"13", group:"deep", title:"Wydajność: frontend i SQL",  desc:"Mierz najpierw, indeksy i partial index, brak N+1, streaming."},
     {file:"14-operational-resilience.md",   no:"14", group:"deep", title:"Odporność operacyjna",       desc:"Crash-proof runtime, wznawialne joby, zawodne API, limity providera, kwoty kosztów."},
     {file:"15-scraping-ai-and-chatbots.md", no:"15", group:"deep", title:"Scraping, AI-API i chatboty", desc:"Skuteczny scraping, AI do konkretnych zadań, konfigurowalne i ugruntowane asystenty."},
-    {file:"16-driving-claude.md",          no:"16", group:"deep", title:"Prowadzenie Claude",          desc:"Skille, dobór modelu, autopilot (preferowany), praca w tle, agentowe workflow."}
+    {file:"16-driving-claude.md",          no:"16", group:"deep", title:"Prowadzenie Claude",          desc:"Skille, dobór modelu, autopilot (preferowany), praca w tle, agentowe workflow."},
+    {file:"17-language-and-guards.md",     no:"17", group:"deep", title:"Język kodu i strażnicy",      desc:"Kod po angielsku, proza w języku projektu; strażnik AI_README i zapadka języka kodu."}
   ];
 
   var slug = function(file){ return file.replace(/\.md$/,""); };
@@ -622,7 +623,8 @@
     "13-performance-frontend-and-sql":{t:"Performance: frontend and SQL",d:"Measure first, indexes & partial index, no N+1, streaming."},
     "14-operational-resilience":{t:"Operational resilience",d:"Crash-proof runtime, resumable jobs, unreliable APIs, provider limits, cost quotas."},
     "15-scraping-ai-and-chatbots":{t:"Scraping, AI APIs, and chatbots",d:"Effective scraping, AI for specific tasks, configurable & grounded assistants."},
-    "16-driving-claude":{t:"Driving Claude",d:"Skills, picking the model, autopilot (preferred), background work, agentic workflows."}
+    "16-driving-claude":{t:"Driving Claude",d:"Skills, picking the model, autopilot (preferred), background work, agentic workflows."},
+    "17-language-and-guards":{t:"Language of code and guards",d:"Code in English, prose in the project's language; the AI_README guard and the code-language ratchet."}
   };
   function cTitle(c){ var e=CH_EN[slug(c.file)]; if(LANG==="en"){ if(c===INTRO) return c.title_en; if(e) return e.t; } return c.title; }
   function cDesc(c){ var e=CH_EN[slug(c.file)]; return (LANG==="en" && e) ? e.d : c.desc; }

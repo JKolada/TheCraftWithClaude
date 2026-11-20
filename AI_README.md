@@ -3,10 +3,10 @@
 > ## ⚠️ Vendored into a host project? Then this is a **rules pack, not the host's constitution**
 >
 > If you found this file under a host project's `docs/rules/`, read that project's **root
-> `CLAUDE.md`** first — it is in charge. Here, only the **content** travels: `00`–`16` + `intro.md`
+> `CLAUDE.md`** first — it is in charge. Here, only the **content** travels: `00`–`17` + `intro.md`
 > + this map. The repo mechanics described below (`build.py`, `test.py`, `pl/`, `content.js`,
 > `index.html`, `CHAPTERS`) belong to the doctrine repo `ClaudeBuildCodex` and are usually absent
-> from a vendored copy. **Don't read all seventeen chapters** — grep the
+> from a vendored copy. **Don't read all eighteen chapters** — grep the
 > **"Topic index → file"** section below and read only the chapter you need.
 
 > Directory map for the next session / another agent. Read it **before** touching any files here.
@@ -50,7 +50,7 @@ Direction for the EN version and per-language packaging → [docs/plans/0001-i18
 |------|----------|
 | `index.html` | **Minimal local/dev reader** (content preview for the author/agent) — NOT a public site. Home page (decalogue + cards) + chapter view + brief + EN/PL language switcher (EN by default). |
 | `intro.md` | **Manifesto** — "What The Craft is" + a "why it's worth it" article. A special document (outside the numbered list), routed as `#intro`; there's also `pl/intro.md`. |
-| `00`–`16` (root) | **EN content — canonical, base, source of truth.** Slugs/numbers = stable anchors, shared across all languages. |
+| `00`–`17` (root) | **EN content — canonical, base, source of truth.** Slugs/numbers = stable anchors, shared across all languages. |
 | `pl/` | **PL content** — a parallel set of `00-*.md`…`16-*.md` (the same file names, content in Polish). Translation of the EN. |
 | `docs/` | Plans and meta decisions for the repo (not doctrine content): `docs/AI_README.md`, `docs/plans/`. |
 | `content.js` | **Generated** snapshot of the `.md` embedded in JS — lets content render over `file://`. Do not edit by hand. |
@@ -78,8 +78,9 @@ Direction for the EN version and per-language packaging → [docs/plans/0001-i18
 | `14-operational-resilience.md` | Crash-proof runtime, resumable jobs, unreliable APIs (backoff/rotation), provider limits + email, cost quotas, recurring jobs watched by data freshness. |
 | `15-scraping-ai-and-chatbots.md` | Effective scraping (official source, shape validation, delta), AI APIs for specific tasks (contract/cache/quotas), configurable+grounded chatbots. |
 | `16-driving-claude.md` | Operating Claude Code: skills/slash-commands, plan mode, picking the model, autopilot (preferred), background jobs, agentic workflows/subagents, isolated worktree per session. |
+| `17-language-and-guards.md` | Code in English, always (identifiers, **test names**, DB, CLI, keys); prose in the project's language declared once in `CLAUDE.md`; the `AI_README` index guard (every module named, 20 kB ceiling) and the code-language guard as a **ratchet** with a per-file baseline; how to introduce any rule into an old codebase. |
 
-The chapters split into a **core** (`00`–`08`) and a **deep dive** (`09`–`16`). Each = one
+The chapters split into a **core** (`00`–`08`) and a **deep dive** (`09`–`17`). Each = one
 commandment/topic, terse, ending with anti-patterns.
 
 ## Topic index → file (grep-friendly)
@@ -108,6 +109,7 @@ commandment/topic, terse, ending with anti-patterns.
 - **`14-operational-resilience.md`** — resilience, runtime, crash, unhandledRejection, uncaughtException, restart loop, retry, backoff, timeout, 429, rate limit, rotation, User-Agent, resumable, checkpoint, scraper, long jobs, SMTP, 587, STARTTLS, deliverability, SPF, DKIM, email, quota, cost, abuse, sessions, MemoryStore, recurring job, nightly, cron, scheduler, scheduled task, watchdog, data freshness, stale data, silent failure, runner lifetime, detached process.
 - **`15-scraping-ai-and-chatbots.md`** — scraping, scraper, crawler, robots.txt, selector, parsing, BeautifulSoup, requests, fuzzy match, rapidfuzz, dedup, delta, incremental, AI API, LLM, model, JSON schema, tool use, output contract, cache, quota, chatbot, assistant, system prompt, grounding, RAG, prompt injection, hallucination, eval, golden set, disclaimer.
 - **`16-driving-claude.md`** — Claude Code, skill, slash-command, slash, /run, /run-tests, hook, model, model switch, autopilot, auto-accept, autonomous, plan mode, planning, approve the plan, background, run_in_background, long jobs, agentic, subagent, workflow, fan-out, parallel, orchestration, guardrails, git worktree, concurrent sessions, shared checkout.
+- **`17-language-and-guards.md`** — language, English, code language, prose language, naming, identifiers, test names, test naming, Polish identifiers, bilingual, mixed language, docstring language, comments language, CLAUDE.md language policy, guard, guards, rule enforcement, AI_README guard, index guard, every module in the index, size ceiling, 20 kB, code-language guard, ratchet, baseline, freeze the count, tighten the baseline, dated exception, Day 0 wiring.
 
 ## `index.html` architecture (contract)
 
@@ -142,9 +144,10 @@ A single file, no build dependencies. Mechanics:
   works after the repo is cloned.
 - **`marked` is loaded from a CDN** — without network the render won't work (there's a soft fallback to `<pre>`).
 - **`index.html` does NOT contain chapter content** — it reads `.md`/`content.js`. Don't paste content into the HTML.
-- **Add/change a chapter → sync 3 places + build:** `CHAPTERS` (index.html), the table
-  in `README.md`, the table in this file, then `python build.py`. A mismatch = a dead entry (worse than none).
-- **EN↔PL parity:** changing a rule in `00`–`16` (EN, canon) requires updating the counterpart in `pl/` (the same
+- **Add/change a chapter → sync every place + build:** `CHAPTERS`/`CH_EN` (index.html), the table in `README.md`,
+  both `AI_README` (file index, topic index, counts), the rule-zero count in `00`, `craft.json` `chapters`; then
+  `python build.py` + `python test.py`. A mismatch = a dead entry (worse than none); `test.py` catches most of it.
+- **EN↔PL parity:** changing a rule in `00`–`17` (EN, canon) requires updating the counterpart in `pl/` (the same
   list, the same file names). PL is a **translation**, not a separate doctrine. `content.js` holds both languages.
 - **File names = stable anchors** (`#NN-name`, targets of relative links), **shared between EN and PL**.
   We don't localize file names — only the content inside. Don't change them without reason.
@@ -157,10 +160,10 @@ A single file, no build dependencies. Mechanics:
 
 ## Numbers
 
-- 17 chapters (`00`–`16`) + `README.md`, in **two languages** (EN root = base + PL `pl/`).
-  Core: 9 files (00–08). Deep dive: 8 (09–16).
+- 18 chapters (`00`–`17`) + `README.md`, in **two languages** (EN root = base + PL `pl/`).
+  Core: 9 files (00–08). Deep dive: 9 (09–17).
 - `index.html`: 1 file; runtime from a CDN (`marked` + Google Fonts). Build: `build.py` → `content.js`
-  (EN: 19 docs ~150k chars; PL: 18 docs ~142k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
+  (EN: 20 docs ~160k chars; PL: 19 docs ~152k chars — chapters + `intro` + README; structure `{lang:{slug:md}}`).
 - **Special documents (outside the numbered list):** `intro.md` (manifesto, route `#intro`) and the
   brief view (`#brief`) — routed separately, not present in the `CHAPTERS` array.
 - **Smoke test:** `python test.py` (PL↔EN parity, dead links, `content.js` freshness, consistency of

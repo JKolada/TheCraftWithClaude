@@ -9,11 +9,32 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 
 > **Wspólna oś wersji z witryną Rzemiosło Web.** Rdzeń reguł i witryna dzielą numerację, więc numer
 > **pominięty tutaj oznacza wydanie po stronie witryny** — `1.0.1` i `1.0.2` należały do Web, dlatego
-> rdzeń idzie `1.0.0 → 1.0.3`. Luki są zamierzone, nie brakiem.
+> rdzeń idzie `1.0.0 → 1.0.3`. `1.1.0` istniało tylko w kopiach u gospodarzy (powstało tam, zanim trafiło
+> do kanonu), więc kanon wydaje tę treść jako `1.1.1`. Luki są zamierzone, nie brakiem.
 
 > **MAJOR** — przebudowa/usunięcie reguł lub rozdziału (zmiana niekompatybilna z dotychczasowym
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
+
+## 1.1.1 — 2026-11-20
+
+Nowy rozdział **17 — Język kodu i strażnicy** ([17-language-and-guards.md](17-language-and-guards.md)),
+przeniesiony do kanonu z projektu-gospodarza (tam jako `1.1.0`), w obu językach.
+
+### Dodane
+- **[17] Kod zawsze po angielsku** — identyfikatory, **także nazwy testów**, baza, CLI, klucze, opisy commitów;
+  proza (docsy, komentarze, docstringi, UI) w języku projektu, zadeklarowanym raz w `CLAUDE.md`.
+- **[17] „Reguła bez strażnika to życzenie"** — strażnik indeksu `AI_README` (każdy moduł wymieniony, sufit
+  20 kB, lista katalogów pilnująca siebie) i strażnik języka kodu jako **zapadka** z baselinem per plik;
+  wzorzec zapadki do wprowadzania dowolnej reguły w stary kod.
+- **[01]** wskaźnik: indeksu pilnuje test. **[07]** dwa punkty checklisty Dnia 0 (polityka językowa, strażnicy).
+
+### Zmienione
+- **[17, 06] Złagodzona reguła terminów:** po angielsku zostają **nazwy, które drukuje narzędzie** (komenda,
+  flaga, status, plik, tag) — zwykłe słowo na czynność może być w języku prozy („wdrożenie"). Usuwa sprzeczność
+  z polskim tłumaczeniem doktryny.
+- **[06]** „docsy techniczne po angielsku" usunięte — spójnie z [17] (proza w języku projektu); po angielsku
+  zostają kod i opisy commitów.
 
 ## 1.0.3 — 2026-08-24
 

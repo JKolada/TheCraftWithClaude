@@ -50,6 +50,7 @@ under [`pl/`](pl/00-commandments.md) (same chapters, same filenames). The in-bro
 | 14 | [Operational resilience](14-operational-resilience.md) | Crash-proof runtime, resumable jobs, unreliable APIs (backoff/rotation), provider limits, cost quotas |
 | 15 | [Scraping, AI APIs, and chatbots](15-scraping-ai-and-chatbots.md) | Effective scraping, AI for specific tasks (contract + cache), configurable & grounded assistants |
 | 16 | [Driving Claude](16-driving-claude.md) | Skills/slash-commands, picking the model, autopilot (preferred), background work, agentic workflows |
+| 17 | [Language of code and guards](17-language-and-guards.md) | Code in English (identifiers, tests, DB, CLI), prose in the project's language; the `AI_README` index guard and the code-language ratchet |
 
 ## The philosophy in one sentence
 

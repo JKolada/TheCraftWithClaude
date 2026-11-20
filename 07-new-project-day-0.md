@@ -109,6 +109,8 @@ The brief is the entry point to the rest of Day 0: from it spring `CLAUDE.md` (s
 - [ ] Exact run commands (interpreter, port, env).
 - [ ] **Overriding policies**: "never deploy automatically", privacy/compliance, git workflow.
 - [ ] A "Current state" section with a date and numbers.
+- [ ] **Language policy**: code in English (identifiers, tests, DB, CLI, keys), prose in the project's language — two lines (→ [17](17-language-and-guards.md)).
+- [ ] **The two guards in `tests/`** (`AI_README` index + code-language ratchet) in the first commit, baseline committed (→ [17](17-language-and-guards.md)).
 
 **Skeleton to start from** (fill in, then prune what doesn't apply — keep it short, it's read every session):
 

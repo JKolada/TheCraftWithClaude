@@ -8,7 +8,7 @@
 >
 > Dlatego opisane niżej kroki **w kopii wendorowanej najczęściej nie mają zastosowania** —
 > `test.py`, katalog `pl/` i `docs/plans/` zwykle w niej nie jadą (w tej kopii ich nie ma).
-> Podróżuje wyłącznie **treść**: `00`–`16` + `intro.md` + `AI_README.md`.
+> Podróżuje wyłącznie **treść**: `00`–`17` + `intro.md` + `AI_README.md`.
 >
 > Poprawiasz regułę, pracując w projekcie-gospodarzu? Zrób to tutaj, a potem **przenieś zmianę
 > do kanonu** (`ClaudeBuildCodex`, wraz z tłumaczeniem `pl/`) — inaczej kanon cicho się rozjedzie.
@@ -104,16 +104,17 @@ python test.py                  # smoke: parytet PL/EN, martwe linki, świeżoś
   `href="#..."`, klucze `data-i18n`↔`UI`, `data-bf-label`↔`BRIEF_FIELDS`). Zielone = struktura i ścieżki
   spójne; nie łapie **zachowania** runtime JS (od tego podgląd w przeglądarce, Przykazanie III).
 - **Lista rozdziałów żyje w jednym miejscu** — tablica `CHAPTERS` w `<script>` w `index.html`.
-  Dodajesz/zmieniasz rozdział → aktualizujesz `CHAPTERS` (karty, dropdown i prev/next generują się
-  z niej) **oraz** tabelę w `README.md` i `AI_README.md`.
+  Dodajesz/zmieniasz rozdział → aktualizujesz `CHAPTERS`/`CH_EN` (karty, dropdown i prev/next generują
+  się z niej), tabelę w `README.md`, oba `AI_README` (indeksy + liczby), liczbę w regule zero `00`
+  i `craft.json` `chapters` — potem `build.py` + `test.py`.
 - **Numeracja i slugi są stabilne** — `NN-nazwa.md`. Nie zmieniaj istniejących nazw plików bez
   potrzeby; są kotwicami (`#NN-nazwa`) i celami linków względnych między rozdziałami.
 - **Linki między rozdziałami:** względne, w formie `[NN](NN-nazwa.md)` — `index.html` przepisuje
   je na hash-route w locie, a na GitHubie działają natywnie. Nie wpisuj `#`-linków w `.md`.
 - **Ton i forma:** zwarte, imperatywne, z „dlaczego". Każdy rozdział = jedno przykazanie/temat,
   zakończony antywzorcami. Bez lania wody — to codex, nie esej.
-- **Dwa języki:** **EN (kanon, root, baza)** i PL (`pl/`). Terminy techniczne (commit, dry-run, deploy)
-  zostają po angielsku w obu. Pisz reguły **przekładalnie** (bez nieprzekładalnych gier słownych
+- **Dwa języki:** **EN (kanon, root, baza)** i PL (`pl/`). Nazwy, które drukuje narzędzie (komendy, flagi, statusy, tagi),
+  zostają po angielsku w obu (→ [17](17-language-and-guards.md)). Pisz reguły **przekładalnie** (bez nieprzekładalnych gier słownych
   w samym sednie). Zmiana w EN → aktualizacja `pl/` (parytet, [10](10-seo-and-translations.md)).
 - **Marka:** zachowaj paletę CSS (`--accent` fiolet, `--accent-2` cyan), Playfair w nagłówkach,
   minimalistyczny styl. Tryb jasny/ciemny: domyślnie wg systemu (`prefers-color-scheme`),
@@ -129,7 +130,7 @@ python test.py                  # smoke: parytet PL/EN, martwe linki, świeżoś
 
 ## Stan bieżący (2026-06-19)
 
-- **17 rozdziałów** (`00`–`16`) + `README.md`. Rdzeń: 00–08; pogłębienie: 09–16.
+- **18 rozdziałów** (`00`–`17`) + `README.md`. Rdzeń: 00–08; pogłębienie: 09–17.
 - **Dwa języki:** **EN kanonicznie w rootcie (baza)**, PL w `pl/` (te same nazwy plików). `content.js`
   trzyma oba: `{lang:{slug:md}}`.
 - `index.html` — SPA-czytnik: strona główna (dekalog + karty) i widok rozdziału (render `.md`,

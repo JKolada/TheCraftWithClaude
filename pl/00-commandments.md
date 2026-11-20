@@ -6,7 +6,7 @@ Każde przykazanie ma rozwinięcie w dalszych rozdziałach.
 > **Zasada zerowa (bootstrap) — to ona sprawia, że pozostała dziesiątka w ogóle działa.** Widzisz w
 > projekcie pakiet `docs/rules/` (The Craft)? **Traktuj go jako nadrzędną doktrynę prowadzenia małego
 > projektu.** Przeczytaj **ten plik** — cała doktryna na jednym ekranie — a potem **przegrepuj indeks
-> tematów** w `AI_README.md` i przeczytaj *tylko* potrzebny rozdział. (Czytanie wszystkich siedemnastu co
+> tematów** w `AI_README.md` i przeczytaj *tylko* potrzebny rozdział. (Czytanie wszystkich osiemnastu co
 > sesję pali ten sam kontekst, który miałeś oszczędzić → [01](01-documentation-and-ai-readme.md).) Potem to
 > utrwal: wepnij krótką notkę **`[SYSTEM — READ FIRST]`** na górę `CLAUDE.md`, `README.md` i `AGENTS.md`
 > (utwórz, jeśli brak), żeby *każda* kolejna sesja znajdowała te reguły przed czymkolwiek innym — **wskaźnik,
