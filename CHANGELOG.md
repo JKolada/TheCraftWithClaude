@@ -39,6 +39,7 @@ Wszystko w obu językach.
 - **[17] „Reguła bez strażnika to życzenie"** — strażnik indeksu `AI_README` i strażnik języka kodu jako
   **zapadka**; gotowe pliki w **`guards/`** (celowo bez nazwy `test_*.py`, żeby pytest gospodarza nie zbierał
   ich z `docs/rules/`).
+- **[01]** wskaźnik: indeksu pilnuje test. **[07]** dwa punkty checklisty Dnia 0 (polityka językowa, strażnicy).
 - **`add_chapter.py`** — wpina nowy rozdział wszędzie naraz (dry-run domyślnie); **nie rusza wersji ani
   CHANGELOG** (wspólna oś wersji z Web).
 
@@ -60,21 +61,6 @@ Wszystko w obu językach.
 - **[12]** feature flagi z pierwszą ryzykowną zmianą dla żywych userów (było: w Dniu 0); ADR tylko przy
   odejściu od domyślnego stacku.
 - **`CLAUDE.md` repo** zaktualizowany (zakres rozdziałów, EN jako baza, narzędzia, stan bieżący).
-
-### Dodane
-- **[17] Kod zawsze po angielsku** — identyfikatory, **także nazwy testów**, baza, CLI, klucze, opisy commitów;
-  proza (docsy, komentarze, docstringi, UI) w języku projektu, zadeklarowanym raz w `CLAUDE.md`.
-- **[17] „Reguła bez strażnika to życzenie"** — strażnik indeksu `AI_README` (każdy moduł wymieniony, sufit
-  20 kB, lista katalogów pilnująca siebie) i strażnik języka kodu jako **zapadka** z baselinem per plik;
-  wzorzec zapadki do wprowadzania dowolnej reguły w stary kod.
-- **[01]** wskaźnik: indeksu pilnuje test. **[07]** dwa punkty checklisty Dnia 0 (polityka językowa, strażnicy).
-
-### Zmienione
-- **[17, 06] Złagodzona reguła terminów:** po angielsku zostają **nazwy, które drukuje narzędzie** (komenda,
-  flaga, status, plik, tag) — zwykłe słowo na czynność może być w języku prozy („wdrożenie"). Usuwa sprzeczność
-  z polskim tłumaczeniem doktryny.
-- **[06]** „docsy techniczne po angielsku" usunięte — spójnie z [17] (proza w języku projektu); po angielsku
-  zostają kod i opisy commitów.
 
 ## 1.0.3 — 2026-08-24
 
