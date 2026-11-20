@@ -9,7 +9,7 @@ The Craft opisuje to, co **przeżyte i zweryfikowane** (Przykazanie III: *weryfi
 Monetyzacji i integracji płatności **jeszcze nie wdrożyliśmy** w projekcie referencyjnym — więc nie
 piszemy o nich reguł, bo nie mamy z czego destylować antywzorców. Ten plan trzyma **kierunek i pytania
 do rozstrzygnięcia**, gdy realnie to zrobimy. Dopiero **lekcje z wdrożenia** awansują do rozdziału
-(np. „15 — Płatności") z prawdziwymi „dlaczego" i antywzorcami z życia.
+(np. nowy rozdział „Płatności", wpięty przez `add_chapter.py`) z prawdziwymi „dlaczego" i antywzorcami z życia.
 
 > Brief (rozdz. 07) już **pyta** o monetyzację — ale „zaplanować" to nie „mieć wdrożone". Tu trzymamy
 > granicę: pytanie o monetyzację jest w doktrynie, *implementacja płatności* czeka na hands-on.
@@ -27,7 +27,7 @@ do rozstrzygnięcia**, gdy realnie to zrobimy. Dopiero **lekcje z wdrożenia** a
 - **Podatki i prawo**: VAT/OSS, miejsce świadczenia, faktury; merchant-of-record (Paddle/LemonSqueezy)
   vs własne rozliczanie VAT; zgody i RODO przy danych płatniczych (→ [09](../../09-law-and-protecting-the-creator.md)).
 - **Bezpieczeństwo i nadużycia**: kwoty/rate-limit na płatnych endpointach (już w [14](../../14-operational-resilience.md)),
-  idempotentne tworzenie zamówień, ochrona przed fraudem i double-charge.
+  idempotentne tworzenie zamówień, autoryzacja per zasób (→ [09](../../09-law-and-protecting-the-creator.md)), ochrona przed fraudem i double-charge.
 - **Testy**: tryb testowy dostawcy, webhooki w CI, scenariusze brzegowe (płatność nieudana, chargeback,
   anulowanie, proracja, zwrot) (→ [03](../../03-testing-and-verification.md)).
 - **Wdrożenie**: środowiska test/live, runbook + rollback, monitoring nieudanych płatności (→ [05](../../05-git-and-deployments.md)).

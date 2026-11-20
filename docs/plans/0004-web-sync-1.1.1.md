@@ -10,7 +10,7 @@
 Aktualizujesz witrynę **The Craft (Rzemiosło Web)** do wersji rdzenia **1.1.1** (repo `ClaudeBuildCodex`,
 `craft.json`: `version 1.1.1`, `chapters 20`, `released 2026-11-20`). Rdzeń jest źródłem prawdy dla reguł;
 witryna je **prezentuje i rozwija** — nie zmienia ich brzmienia. Najpierw przeczytaj w rdzeniu
-`CHANGELOG.md` (wpis 1.1.1), `AI_README.md` i `docs/plans/0001-i18n-and-packaging.md`.
+`CHANGELOG.md` (wpis 1.1.1), `AI_README.md` i `docs/packaging.md`.
 
 ### Co się zmieniło w rdzeniu (i dlaczego to dotyczy witryny)
 
@@ -39,7 +39,7 @@ witryna je **prezentuje i rozwija** — nie zmienia ich brzmienia. Najpierw prze
    formularz/generator i teksty na stronie.
 6. **Paczka do pobrania (`docs/rules/`):** dołącz katalog **`guards/`** (szablony testów z rozdziału 17);
    **nie** dołączaj `add_chapter.py` (narzędzie autora). Rozdziały `00`–`19`, `pl/` dla wersji EN+PL.
-   Szczegóły: `docs/plans/0001-i18n-and-packaging.md`.
+   Szczegóły: `docs/packaging.md`.
 7. **Wersja i changelog na witrynie:** stempel **1.1.1** z `craft.json`. Opis wydania dla ludzi (prostym
    językiem): „Rzemiosło jest teraz krótsze i twardsze: same reguły, bez wykładu — wyjaśnienia znajdziesz na
    tej stronie. Nowe: język kodu i strażnicy, próba generalna wydania, runbook podmiany bazy." Dodaj

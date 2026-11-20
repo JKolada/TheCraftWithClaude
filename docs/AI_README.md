@@ -1,24 +1,20 @@
 # AI_README — `docs/`
 
-Dokumentacja „cięższa niż mapa katalogu": **plany i decyzje dotyczące samego repo Rzemiosło**.
-Konwencja z rozdziału [01](../01-documentation-and-ai-readme.md). Uwaga: **to repo to zestaw reguł** —
-`docs/` trzyma plany jego rozwoju i decyzje meta, **nie** treść doktryny (ta żyje w `00-*.md`…`14-*.md`).
+Dokumentacja „cięższa niż mapa katalogu" **o samym repo Rzemiosło** — nie treść doktryny (ta żyje
+w numerowanych rozdziałach `NN-*.md` w rootcie i w `pl/`). Konwencja z rozdziału [01](../01-documentation-and-ai-readme.md).
 
 ## Zawartość
 
 | Ścieżka | Po co |
 |---------|-------|
-| `plans/` | Decyzje i kierunki rozwoju. Jeden plik = jeden temat (`NNNN-tytuł.md`). |
-| `plans/0001-i18n-and-packaging.md` | Kierunek: wersje językowe (EN) + pakowanie `docs/rules/` per język przez The Craft Web. |
-| `plans/0002-monetization-and-payments.md` | **Niezrealizowane** — monetyzacja i płatności. Brak hands-on → świadomie bez rozdziału doktryny; plan trzyma kierunek. |
-| `plans/0003-doctrine-expansion-backlog.md` | **Otwarty backlog** kandydatów na rozdziały/sekcje (auth/authz, secrets+runbook wycieku, CI/CD, a11y, FinOps) — z audytu. Zrealizowany → awansuje i znika. |
+| `packaging.md` | **Kontrakt z Web:** co trafia do paczki `docs/rules/`, a co nie; układ; zasady rozsyłania do gospodarzy. Dokument stanu bieżącego. |
+| `plans/0002-monetization-and-payments.md` | **Otwarty** — płatności. Brak hands-on → świadomie bez rozdziału; plan trzyma kierunek. |
+| `plans/0003-doctrine-expansion-backlog.md` | **Otwarty backlog** kandydatów na rozdziały/sekcje (autoryzacja, sekrety + runbook wycieku, CI/CD, a11y, FinOps). |
+| `plans/0004-web-sync-1.1.1.md` | **Aktywny** — prompt dla Rzemiosło Web: aktualizacja witryny do 1.1.1. Usuń, gdy Web go wykona. |
 
 ## Zasady
 
-- **`docs/` i `plans/` opisują stan BIEŻĄCY, nie historię.** Wszystko jest wersjonowane w git — więc
-  **nie trzymaj tu wpisów-zombie** (skończonych zadań, nieaktualnych decyzji). Skończone/nieaktualne →
-  **usuń**; historię i tak masz w `git log`.
-- **Plan = problem → opcje → decyzja → „dlaczego".** Gdy plan się zrealizuje: jego decyzja **awansuje** do
-  [CLAUDE.md](../CLAUDE.md) / właściwego dokumentu (tam *obowiązuje*), a sam plan **zamykasz/usuwasz**.
-  `plans/` trzyma tylko otwarte, aktywne kierunki.
-- Numeracja `NNNN` rośnie monotonicznie; numeru usuniętego planu nie reużywaj (był kotwicą w historii).
+- **`docs/` opisuje stan bieżący, nie historię.** Zrealizowany plan: decyzja awansuje do właściwego
+  dokumentu / [CLAUDE.md](../CLAUDE.md), a plan jest usuwany — git trzyma historię.
+- **Plan = problem → opcje → decyzja → „dlaczego".** `plans/` trzyma tylko otwarte kierunki.
+- Numeracja `NNNN` rośnie monotonicznie; numeru usuniętego planu nie reużywaj.

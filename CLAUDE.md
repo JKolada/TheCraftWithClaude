@@ -50,7 +50,7 @@ repo — odpowiada za publiczną stronę, **edycje** (rejestr podania) i **wersj
   Czytnik ma pełny **przełącznik EN/PL**. Paczki `docs/rules/<lang>/` per język montuje Web z treści tego repo.
 
 Tu, w rdzeniu: **nie dodawaj badge'y edycji ani marketingu** (to warstwa Web). Konwencja i18n i pakowania
-→ [docs/plans/0001-i18n-and-packaging.md](docs/plans/0001-i18n-and-packaging.md).
+→ [docs/packaging.md](docs/packaging.md).
 
 ## Stack i charakter repo
 

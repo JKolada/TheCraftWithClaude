@@ -8,8 +8,8 @@
 ## Kandydaci (priorytet malejąco)
 
 ### Auth/authz jako pełniejszy temat
-- **Dziś:** rozsiane — bcrypt/OAuth/`helmet` w [08](../../08-stack-and-technologies.md), sesje w
-  [05](../../05-git-and-deployments.md)/[14](../../14-operational-resilience.md), „testuj auth z obu
+- **Dziś:** rozsiane — bcrypt/OAuth w indeksie bezpieczeństwa [09](../../09-law-and-protecting-the-creator.md), sesje w
+  [14](../../14-operational-resilience.md)/[19](../../19-database-swap-runbook.md), „testuj auth z obu
   stron" w [03](../../03-testing-and-verification.md), indeks bezpieczeństwa w [09](../../09-law-and-protecting-the-creator.md).
 - **Luka:** brak skupionego traktowania **autoryzacji** — role/uprawnienia, IDOR, „czy *ten* user może
   ruszyć *ten* wiersz", privilege escalation, egzekwowanie server-side. (Authz domknięty na razie jednym
@@ -33,7 +33,7 @@
 - **Kiedy:** opcjonalnie sekcja w [13](../../13-performance-frontend-and-sql.md); świadomie odłożone.
 
 ### FinOps / incydenty / on-call *(na razie skip)*
-- Przedwczesne dla solo/monolitu; runbook z ponumerowanymi lekcjami (05/14) już to lekko łapie.
+- Przedwczesne dla solo/monolitu; runbook z ponumerowanymi lekcjami (05/14) i observability (14) już to lekko łapią.
 
 ## Reguła backlogu
 
