@@ -33,7 +33,7 @@ dla osób zaczynających z Claude. Szczegóły i polityki → [CLAUDE.md](CLAUDE
 > edycje i pakowanie wielojęzyczne dzieją się w **The Craft Web** (osobny projekt). Jeśli kusi Cię,
 > by tu dodać warstwę prezentacji/marketingu/edycji — to materiał dla Web, nie dla rdzenia.
 
-Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packaging.md](docs/plans/0001-i18n-and-packaging.md).
+Co trafia do paczki `docs/rules/` (kontrakt z Web) → [docs/packaging.md](../docs/packaging.md).
 
 ## Indeks plików
 
@@ -62,7 +62,7 @@ Kierunek wersji EN i pakowania per język → [docs/plans/0001-i18n-and-packagin
 | `05-git-and-deployments.md` | Szukanie w historii, cofanie/odzyskiwanie pracy, równoległe sesje i drabina branchowania, polityka deployu (origin, boot-check, tagi, changelog). |
 | `06-collaboration-and-memory.md` | Plan→szkic→skala, mapa uprawnień (wolno/zapytaj/nigdy), język usera, wbudowana pamięć, podsumowanie zmian, przekazanie stanu przy urwaniu kontekstu. |
 | `07-new-project-day-0.md` | Jedyna checklista: wpięcie The Craft (zwykły wskaźnik w CLAUDE.md/AGENTS.md), brief → `project-brief.md`, kroki Dnia 0, szkielet `CLAUDE.md`. |
-| `08-stack-and-technologies.md` | Domyślny stack (Python, SQLite, HTML z serwera, monolit na jednym VPS, Lucide) i kiedy od niego odejść — z ADR. |
+| `08-stack-and-technologies.md` | Domyślny stack (Python domyślnie — Go, Rust, Kotlin, TypeScript, gdy lepiej pasują do zadania; SQLite, HTML z serwera, monolit na jednym VPS, Lucide) i kiedy od niego odejść — z ADR. |
 | `09-law-and-protecting-the-creator.md` | Nigdy nie wymyślaj danych prawnych ani nie deklaruj niezrealizowanych praktyk; zawartość regulaminu/polityki; zgoda przed trackerami; indeks bezpieczeństwa. |
 | `10-seo-and-translations.md` | hreflang + x-default, kompletność języków jako test, strażnicy jakości stron programatycznych, YMYL/E-E-A-T, przegląd wrażliwych tłumaczeń, RTL. |
 | `11-data-model-and-normalization.md` | Słowniki lookup, slug zamiast ID, active-row, świadoma denormalizacja. |
@@ -94,7 +94,7 @@ przykazanie/temat, zwarty, zakończony antywzorcami.
 - **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, historia, .gitignore, CRLF, sieroty, niezacommitowana praca, opis commita, cofanie, odzyskiwanie utraconej pracy, reflog, git restore, reset --soft, ORIG_HEAD, odzyskanie skasowanej gałęzi, przywrócenie pliku ze starego commita, stash, punkt zapisu, straciłem commity, git straszy, issue, issues, GitHub Issues, gałąź, branching, drabina branchowania, trunk-based, feature branch, develop, PR, pull request, review, równoległe sesje, wiele sesji AI, solo developer, cherry-pick, merge wmiata pracę innej sesji, deploy, wdrożenie, polityka deployu, nigdy auto-deploy, origin vs lokalne, niewypchnięte commity, boot-check przed reloadem, okno maintenance, zero-downtime, tag deployu, rollback, changelog, runbook, lekcje z incydentów, nocny backup.
 - **`06-collaboration-and-memory.md`** — współpraca, plan iteruj review, pamięć, potwierdzaj nieodwracalne, raportuj uczciwie, feedback, podsumowanie zmian, widget, następne działania, język natywny, mapa uprawnień, tabela uprawnień, co mi wolno, wolno/zapytaj/nigdy, granica, trwała autoryzacja, zgoda per-akcja, przekazanie stanu, urywa się kontekst, kompaktowanie, podsumowana sesja, długa sesja, wznowienie, podjęcie zadania, stan w drzewie.
 - **`07-new-project-day-0.md`** — nowy projekt, Dzień 0, checklista, brief, brief produktowy, project-brief.md, monetyzacja, onboarding, setup, wpięcie The Craft, docs/rules, submodule, wskaźnik, AGENTS.md, szkielet CLAUDE.md, poziom techniczny, języki usera, znane technologie, polityka językowa, minimalny Dzień 0.
-- **`08-stack-and-technologies.md`** — stack, technologie, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolit, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
+- **`08-stack-and-technologies.md`** — Go, Golang, Rust, Kotlin, TypeScript, wybór języka wg dopasowania, wybór języka, przepisanie dla szybkości, stack, technologie, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolit, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
 - **`09-law-and-protecting-the-creator.md`** — prawo, regulamin, polityka prywatności, RODO, zgody, cookie, trackery, disclaimer, jurysdykcja, prawo właściwe, JDG, placeholder, wymyślony NIP, bramka wieku, 18+, retencja danych, prawa użytkownika, usunięcie konta, ochrona twórcy, checklista bezpieczeństwa, IDOR, autoryzacja.
 - **`10-seo-and-translations.md`** — SEO, hreflang, JSON-LD, schema, canonical, sitemap, meta, OG, Open Graph, E-E-A-T, YMYL, programmatic SEO, tłumaczenia, i18n, l10n, parytet językowy, RTL, lokalizacja.
 - **`11-data-model-and-normalization.md`** — model danych, normalizacja, denormalizacja, słownik lookup, controlled vocabulary, slug, slug zamiast ID, active-row, expired_at, partial index, junction, M:N, klucz obcy, ERD, schemat.
@@ -155,7 +155,7 @@ Jeden plik, bez zależności build. Mechanika:
 - **Treść generyczna, nie „pod jeden projekt".** Konkretne projekty służą
   tylko za ilustrację (`np. …`, „projekt referencyjny"), nigdy za temat rozdziału. Nie czyń żadnego projektu bohaterem doktryny.
 - **Dwa języki: EN (kanon, root, baza) + PL (`pl/`).** Pisz reguły przekładalnie. Kierunek i konwencja →
-  [docs/plans/0001-i18n-and-packaging.md](docs/plans/0001-i18n-and-packaging.md). Paczki per język montuje Web.
+  [docs/packaging.md](../docs/packaging.md). Paczki per język montuje Web.
 
 ## Liczby
 

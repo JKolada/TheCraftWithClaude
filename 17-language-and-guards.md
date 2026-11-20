@@ -32,6 +32,9 @@ Code: English (identifiers, tests, DB, CLI, keys). Prose: Polish (docs, comments
 
 Copy them into the project's `tests/` as `test_ai_readme.py` and `test_code_language.py`, adjust the
 directory lists, run them, commit the baseline — in the **first commit** (→ [07](07-new-project-day-0.md)).
+They are **pytest reference implementations**: a Python project copies them; a Go, Rust, Kotlin or TypeScript
+project ports the same spec to its own test runner (the index guard needs only file globs; the language guard
+needs that language's identifier parser or linter). The rule is the spec, not the Python file.
 
 - **[`guards/ai_readme_guard.py`](guards/ai_readme_guard.py)** — every directory with code has an
   `AI_README.md`; **every module is named in it**; a **20 kB ceiling** (past it the index stops being an index —

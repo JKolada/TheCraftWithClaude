@@ -42,7 +42,7 @@ people starting out with Claude. Details and policies → [CLAUDE.md](CLAUDE.md)
 > editions, and multi-language packaging happen in **The Craft Web** (a separate project). If you're tempted
 > to add a presentation/marketing/edition layer here — that's material for Web, not for the core.
 
-Direction for the EN version and per-language packaging → [docs/plans/0001-i18n-and-packaging.md](docs/plans/0001-i18n-and-packaging.md).
+What goes into a `docs/rules/` package (the contract with Web) → [docs/packaging.md](docs/packaging.md).
 
 ## File index
 
@@ -71,7 +71,7 @@ Direction for the EN version and per-language packaging → [docs/plans/0001-i18
 | `05-git-and-deployments.md` | Search history, undo/recover lost work, parallel sessions and branching ladder, the deploy policy (origin check, boot-check, deploy tags, changelog). |
 | `06-collaboration-and-memory.md` | Plan→sketch→scale, the permission map (free/ask/never), user's language, built-in memory, change summary, handoff when context runs out. |
 | `07-new-project-day-0.md` | The only checklist: wire The Craft in (plain pointer in CLAUDE.md/AGENTS.md), product brief → `project-brief.md`, Day 0 steps, `CLAUDE.md` skeleton. |
-| `08-stack-and-technologies.md` | Default stack (Python, SQLite, server-rendered HTML, one-VPS monolith, Lucide) and when to depart — with an ADR. |
+| `08-stack-and-technologies.md` | Default stack (Python by default — Go, Rust, Kotlin, TypeScript when they fit the job better; SQLite, server-rendered HTML, one-VPS monolith, Lucide) and when to depart — with an ADR. |
 | `09-law-and-protecting-the-creator.md` | Never invent legal data or declare unimplemented practices; terms/policy contents; consent before trackers; security index. |
 | `10-seo-and-translations.md` | hreflang + x-default, language completeness as a failing test, programmatic-page quality guards, YMYL/E-E-A-T, human review of sensitive translations, RTL. |
 | `11-data-model-and-normalization.md` | Lookup dictionaries, slug instead of ID, active-row, deliberate denormalization. |
@@ -104,7 +104,7 @@ commandment/topic, terse, ending with anti-patterns.
 - **`05-git-and-deployments.md`** — git, git log -S, pickaxe, blame, history, .gitignore, CRLF, orphans, uncommitted work, commit message, undo, recover lost work, reflog, git restore, reset --soft, ORIG_HEAD, recover deleted branch, restore a file from an old commit, stash, save point, I lost my commits, git is scary, issue, issues, GitHub Issues, branch, branching, branching ladder, trunk-based, feature branch, develop, PR, pull request, review, parallel sessions, concurrent AI sessions, solo developer, cherry-pick, merge sweeps other session's work, deploy, deployment, deploy policy, never auto-deploy, origin vs local, unpushed commits, boot-check before reload, maintenance window, zero-downtime, deploy tag, rollback, changelog, runbook, incident lessons, nightly backup.
 - **`06-collaboration-and-memory.md`** — collaboration, plan iterate review, memory, confirm irreversible, report honestly, feedback, change summary, widget, next actions, native language, permission map, permissions table, what may I do, free/ask/never, boundary, standing authorization, per-action consent, handoff, context runs out, compaction, summarized session, long session, resume, pick up where it left off, state in the tree.
 - **`07-new-project-day-0.md`** — new project, Day 0, checklist, brief, product brief, project-brief.md, monetization, onboarding, setup, wire The Craft, docs/rules, submodule, pointer, AGENTS.md, CLAUDE.md skeleton, technical level, languages spoken, technologies known, language policy, minimal Day 0.
-- **`08-stack-and-technologies.md`** — stack, technologies, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolith, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
+- **`08-stack-and-technologies.md`** — Go, Golang, Rust, Kotlin, TypeScript, choose the language by fit, language choice, rewrite for speed, stack, technologies, Python, Node.js, FastAPI, SQLite, PostgreSQL, Docker, nginx, pm2, Hetzner, VPS, monolith, serverless, scale-to-zero, ADR, Lucide, baseline, Claude Code, GitHub, Git, GitHub Issues, TDD.
 - **`09-law-and-protecting-the-creator.md`** — law, terms of service, ToS, privacy policy, GDPR, consent, cookie, trackers, disclaimer, jurisdiction, governing law, sole proprietorship, placeholder, invented tax ID, age gate, 18+, data retention, user rights, account deletion, protecting the creator, security checklist, IDOR, authorization.
 - **`10-seo-and-translations.md`** — SEO, hreflang, JSON-LD, schema, canonical, sitemap, meta, OG, Open Graph, E-E-A-T, YMYL, programmatic SEO, translations, i18n, l10n, language parity, RTL, localization.
 - **`11-data-model-and-normalization.md`** — data model, normalization, denormalization, lookup table, controlled vocabulary, slug, slug not ID, active-row, expired_at, partial index, junction, M:N, foreign key, ERD, schema.
@@ -165,7 +165,7 @@ A single file, no build dependencies. Mechanics:
 - **Content is generic, not "for one project".** Specific projects serve
   only as illustration (`e.g. …`, "reference project"), never as the topic. Don't make any project the hero of the doctrine.
 - **Two languages: EN (canon, root, base) + PL (`pl/`).** Write rules translatably. Direction and convention →
-  [docs/plans/0001-i18n-and-packaging.md](docs/plans/0001-i18n-and-packaging.md). Per-language packages are assembled by Web.
+  [docs/packaging.md](docs/packaging.md). Per-language packages are assembled by Web.
 
 ## Numbers
 

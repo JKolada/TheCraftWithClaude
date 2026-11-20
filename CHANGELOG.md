@@ -16,6 +16,23 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
+## Niewydane (po 1.1.1)
+
+Numer nadaje autor przy wydaniu (wspólna oś z Web). Do rozesłania u gospodarzy dopiero po wydaniu.
+
+### Zmienione
+- **[08] Język wg dopasowania, nie z przyzwyczajenia.** Python zostaje domyślny (najszerszy ekosystem do
+  skryptów, danych i spinania AI), ale nie jest dogmatem: **Go** (współbieżne usługi, jedna binarka),
+  **Rust** (gorące ścieżki, bezpieczeństwo pamięci), **Kotlin** (JVM, Android), **TypeScript/Node** (web w JS),
+  gdy wydajność, wdrożenie albo dostępność bibliotek przemawia za nimi — z ADR i pomiarem. + antywzorzec.
+- **[17]** strażnicy w `guards/` to referencyjne implementacje w pyteście; projekt w innym języku przenosi
+  specyfikację do własnego test runnera.
+
+### Porządki w repo
+- `docs/plans/0001` (i18n + pakowanie) usunięty jako zrealizowany: specyfikacja pakowania awansowała do
+  stałego dokumentu **`docs/packaging.md`**; reszta planu była historią. Odświeżone `docs/AI_README.md` i
+  odwołania w planach 0002/0003.
+
 ## 1.1.1 — 2026-11-20
 
 **Przegląd całej doktryny i przejście tnące, wykonane z Claude Opus 5.5.** The Craft to twarde reguły dla

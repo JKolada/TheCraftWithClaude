@@ -32,6 +32,9 @@ Code: English (identifiers, tests, DB, CLI, keys). Prose: Polish (docs, comments
 
 Skopiuj je do `tests/` projektu jako `test_ai_readme.py` i `test_code_language.py`, dopasuj listy katalogów,
 odpal, zacommituj baseline — w **pierwszym commicie** (→ [07](07-new-project-day-0.md)).
+To **referencyjne implementacje w pyteście**: projekt w Pythonie je kopiuje; projekt w Go, Rust, Kotlinie albo
+TypeScripcie przenosi tę samą specyfikację do własnego test runnera (strażnik indeksu potrzebuje tylko globów
+plików; strażnik języka — parsera identyfikatorów albo lintera danego języka). Regułą jest specyfikacja, nie plik w Pythonie.
 
 - **[`guards/ai_readme_guard.py`](../guards/ai_readme_guard.py)** — każdy katalog z kodem ma `AI_README.md`;
   **każdy moduł jest w nim wymieniony**; **sufit 20 kB** (powyżej indeks przestaje być indeksem — dziel
