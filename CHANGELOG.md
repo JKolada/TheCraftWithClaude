@@ -16,7 +16,7 @@ wpisowi poniżej. Każde wydanie tagujemy w gicie (`vMAJOR.MINOR.PATCH`) — Prz
 > rozumieniem). **MINOR** — nowy rozdział lub istotna nowa reguła. **PATCH** — doprecyzowanie,
 > przykład, literówka, drobna korekta.
 
-## 1.1.2 — 2026-11-20
+## 1.1.2 — 2026-11-21
 
 Język dobierany do zadania (Python jako default, nie dogmat) i porządki w `docs/`.
 
@@ -33,7 +33,7 @@ Język dobierany do zadania (Python jako default, nie dogmat) i porządki w `doc
   stałego dokumentu **`docs/packaging.md`**; reszta planu była historią. Odświeżone `docs/AI_README.md` i
   odwołania w planach 0002/0003.
 
-## 1.1.1 — 2026-11-20
+## 1.1.1 — 2026-11-21
 
 **Przegląd całej doktryny i przejście tnące, wykonane z Claude Opus 5.5.** The Craft to twarde reguły dla
 projektów prowadzonych z AI — więc rdzeń zawiera tylko reguły; wiedzę, którą współczesny model ma i tak,
